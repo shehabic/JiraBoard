@@ -9,6 +9,7 @@
           <set>
             <option value="/Volumes/Work/android/mutliqr" />
             <option value="/Volumes/Work/android/mutliqr/app" />
+            <option value="/Volumes/Work/android/mutliqr/jiraapi" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
