@@ -1,8 +1,11 @@
 package com.fullmob.multiqr;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,6 +19,7 @@ import com.fullmob.multiqr.data.Column;
 import com.fullmob.multiqr.data.Project;
 import com.fullmob.multiqr.processors.ImageProcessor;
 
+import java.io.File;
 import java.io.IOException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -26,11 +30,15 @@ import io.reactivex.schedulers.Schedulers;
 public class QRActivity extends AppCompatActivity {
 
     static final String PROJECT_PREFIX = "MOB";
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int CAPTURE_IMAGE_REQUEST = 1002;
+    private static final int PICK_IMAGE_REQUEST = 1001;
 
     TextView mTextMessage;
     View capture;
+    View pickImage;
     ImageView mImageView;
+
+
     Project project;
     TicketsAnalyzer ticketsAnalyzer;
     ImageProcessor imageProcessor;
@@ -44,6 +52,7 @@ public class QRActivity extends AppCompatActivity {
         imageProcessor = new ImageProcessor(this);
         mTextMessage = (TextView) findViewById(R.id.message);
         capture = findViewById(R.id.capture);
+        pickImage = findViewById(R.id.pick);
         mImageView = (ImageView) findViewById(R.id.image);
         capture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,12 +60,25 @@ public class QRActivity extends AppCompatActivity {
                 startCameraCapture();
             }
         });
+        pickImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPickingFile();
+            }
+        });
+    }
+
+    private void startPickingFile() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
         }
     }
 
@@ -65,42 +87,83 @@ public class QRActivity extends AppCompatActivity {
         dispatchTakePictureIntent();
     }
 
+    public int getCameraPhotoOrientation(Context context, Uri imageUri, String imagePath){
+        int rotate = 0;
+        try {
+            context.getContentResolver().notifyChange(imageUri, null);
+            File imageFile = new File(imagePath);
+
+            ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rotate;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
-            try {
-                project.setBitmap(null);
-                mImageView.setImageBitmap(null);
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                if(getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE){
-                    bitmap = imageProcessor.rotateImage(bitmap, 90);
+        if (resultCode == RESULT_OK  && data != null && data.getData() != null) {
+            if (requestCode == PICK_IMAGE_REQUEST || requestCode == CAPTURE_IMAGE_REQUEST) {
+                Uri imageUri = data.getData();
+                try {
+                    project.setBitmap(null);
+                    mImageView.setImageBitmap(null);
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(imageUri, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String filePath = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                    int rotate = 0;
+                    if (requestCode == PICK_IMAGE_REQUEST) {
+                        rotate = getCameraPhotoOrientation(this, imageUri, filePath);
+                    } else if(getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE){
+                        rotate = 90;
+                    }
+                    if (rotate != 0) {
+                        bitmap = imageProcessor.rotateImage(bitmap, rotate);
+                    }
+                    bitmap = imageProcessor.autoAdjustImage(bitmap);
+                    project.setBitmap(bitmap);
+                    mTextMessage.setText("Loading...");
+                    ticketsAnalyzer.analyzeProject(project)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new DefaultObserver<Project>() {
+                            @Override
+                            public void onNext(Project project) {
+                                showOutput(project);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                            }
+                        });
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                bitmap = imageProcessor.autoAdjustImage(bitmap);
-                project.setBitmap(bitmap);
-                mTextMessage.setText("Loading...");
-                ticketsAnalyzer.analyzeProject(project)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new DefaultObserver<Project>() {
-                        @Override
-                        public void onNext(Project project) {
-                            showOutput(project);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onComplete() {
-                        }
-                    });
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-
         }
     }
 
