@@ -1,5 +1,7 @@
 package com.fullmob.jiraapi.responses;
 
+import com.fullmob.jiraapi.models.LoginInfo;
+import com.fullmob.jiraapi.models.Session;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

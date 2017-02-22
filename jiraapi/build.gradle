@@ -14,7 +14,19 @@ android {
 
     }
     buildTypes {
+        debug {
+            // Notice: the following variables are defined in ~/.gradgle/gradle.properties (inside your user's dir)
+            buildConfigField "String", "JIRA_SUB_DOMAIN", "\"${jiraSubDomain}\""
+            buildConfigField "String", "JIRA_USERNAME", "\"${jiraUsername}\""
+            buildConfigField "String", "JIRA_PASSWORD", "\"${jiraPassword}\""
+            buildConfigField "String", "JIRA_TEST_TICKET_ID", "\"${jiraTestTicketId}\""
+        }
+
         release {
+            buildConfigField "String", "JIRA_SUB_DOMAIN", "\"\""
+            buildConfigField "String", "JIRA_USERNAME", "\"\""
+            buildConfigField "String", "JIRA_PASSWORD", "\"\""
+            buildConfigField "String", "JIRA_TEST_TICKET_ID", "\"\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -44,8 +56,6 @@ dependencies {
     testCompile 'org.powermock:powermock-core:1.6.1',
         'org.powermock:powermock-module-junit4:1.6.1',
         'org.powermock:powermock-api-mockito:1.6.1'
-
-
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
