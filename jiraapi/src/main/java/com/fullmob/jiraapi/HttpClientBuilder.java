@@ -46,7 +46,7 @@ public class HttpClientBuilder {
     private void addDebugInterceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        interceptors.add(interceptor);
+//        interceptors.add(interceptor);
     }
 
     private void buildInterceptors() {

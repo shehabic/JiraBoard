@@ -1,7 +1,7 @@
 package com.fullmob.jiraapi;
 
-import com.fullmob.jiraapi.api.AuthApi;
-import com.fullmob.jiraapi.config.ApiConfig;
+import com.fullmob.jiraapi.managers.IssuesManager;
+import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraapi.requests.LoginRequest;
 import com.fullmob.jiraapi.responses.AuthResponse;
 
@@ -9,7 +9,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.functions.Consumer;
@@ -21,19 +20,11 @@ import retrofit2.Response;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
-    int LOCK_WAIT_IN_SECONDS = 2;
-    protected CountDownLatch lock = new CountDownLatch(1);
+public class ApiTest extends BaseUnitTest {
 
     @Test
     public void basicApiTest() throws Exception {
-        ApiConfig apiConfig = new ApiConfig();
-        apiConfig.setBaseUrl("");
-        apiConfig.setDebug(true);
-
-        ApiClientBuilder<AuthApi> builder = new ApiClientBuilder(AuthApi.class);
-        AuthApi api = builder.setHttpClient(new HttpClientBuilder(apiConfig).build()).setConfig(apiConfig).build();
-        api.login(new LoginRequest("", ""))
+        getAuthApi().login(new LoginRequest(USERNAME, PASSWORD))
         .subscribeOn(Schedulers.io())
         .subscribe(new Consumer<Response<AuthResponse>>() {
             @Override
@@ -45,6 +36,24 @@ public class ExampleUnitTest {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 Assert.fail();
+            }
+        });
+        lock.await(LOCK_WAIT_IN_SECONDS, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void testTransitionTicket() throws Exception {
+        IssuesManager issuesManager = new IssuesManager(getIssuesApi());
+        issuesManager.moveIssue(TEST_TICKET_ID, "481").subscribe(new Consumer<Response<Issue>>() {
+            @Override
+            public void accept(Response<Issue> issueResponse) throws Exception {
+                lock.countDown();
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                throwable.printStackTrace();
+                lock.countDown();
             }
         });
         lock.await(LOCK_WAIT_IN_SECONDS, TimeUnit.SECONDS);

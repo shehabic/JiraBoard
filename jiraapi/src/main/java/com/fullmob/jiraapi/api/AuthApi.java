@@ -10,6 +10,6 @@ import retrofit2.http.POST;
 
 public interface AuthApi {
 
-    @POST("rest/auth/1/session")
+    @POST("/rest/auth/1/session")
     Observable<Response<AuthResponse>> login(@Body LoginRequest loginRequest);
 }
