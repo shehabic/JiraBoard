@@ -23,9 +23,6 @@ public class IssueFields implements Parcelable {
     @SerializedName("project")
     @Expose
     private Project project;
-    @SerializedName("customfield_11000")
-    @Expose
-    private CustomField customfield11000;
     @SerializedName("fixVersions")
     @Expose
     private List<FixVersion> fixVersions = null;
@@ -193,14 +190,6 @@ public class IssueFields implements Parcelable {
 
     public void setProject(Project project) {
         this.project = project;
-    }
-
-    public Object getCustomfield11000() {
-        return customfield11000;
-    }
-
-    public void setCustomfield11000(CustomField customfield11000) {
-        this.customfield11000 = customfield11000;
     }
 
     public List<FixVersion> getFixVersions() {
@@ -601,7 +590,6 @@ public class IssueFields implements Parcelable {
         dest.writeParcelable(this.issuetype, flags);
         dest.writeParcelable(this.timespent, flags);
         dest.writeParcelable(this.project, flags);
-        dest.writeParcelable(this.customfield11000, flags);
         dest.writeTypedList(this.fixVersions);
         dest.writeString(this.customfield11200);
         dest.writeParcelable(this.customfield, flags);
@@ -656,7 +644,6 @@ public class IssueFields implements Parcelable {
         this.issuetype = in.readParcelable(Issuetype.class.getClassLoader());
         this.timespent = in.readParcelable(CustomField.class.getClassLoader());
         this.project = in.readParcelable(Project.class.getClassLoader());
-        this.customfield11000 = in.readParcelable(CustomField.class.getClassLoader());
         this.fixVersions = in.createTypedArrayList(FixVersion.CREATOR);
         this.customfield11200 = in.readString();
         this.customfield = in.readParcelable(CustomField.class.getClassLoader());

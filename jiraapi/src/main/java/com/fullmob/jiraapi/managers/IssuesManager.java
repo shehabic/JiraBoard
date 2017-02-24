@@ -54,7 +54,8 @@ public class IssuesManager {
     }
 
     public Response<IssueTransitionsResponse> getPossibleIssueTransitionsSync(String key) throws IOException {
-        return issuesApi.getPossibleIssueTransitionsSync(key).execute();
+        String rand = String.valueOf(System.currentTimeMillis());
+        return issuesApi.getPossibleIssueTransitionsSync(key, rand).execute();
     }
 
     public Response moveIssueSync(String key, String transitionId) throws IOException {

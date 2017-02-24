@@ -19,6 +19,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface IssuesApi {
 
@@ -52,7 +53,7 @@ public interface IssuesApi {
     Call<Issue> getIssueSync(@Path("id") String issueId);
 
     @GET("issue/{id}/transitions")
-    Call<IssueTransitionsResponse> getPossibleIssueTransitionsSync(@Path("id") String issueId);
+    Call<IssueTransitionsResponse> getPossibleIssueTransitionsSync(@Path("id") String issueId, @Query("r") String rand);
 
     @POST("issue/{id}/transitions")
     Call<ResponseBody> moveIssueSync(@Path("id") String issueId, @Body TransitionRequest updateIssueRequest);

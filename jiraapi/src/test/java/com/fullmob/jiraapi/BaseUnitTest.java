@@ -19,6 +19,9 @@ class BaseUnitTest {
     static final String USERNAME = BuildConfig.JIRA_USERNAME;
     static final String PASSWORD = BuildConfig.JIRA_PASSWORD;
     static final String TEST_TICKET_ID = BuildConfig.JIRA_TEST_TICKET_ID;
+//    static final String TEST_TICKET_ID = "PFM-6550";
+//    static final String TEST_TICKET_ID = "LOG-1189";
+//    static final String TEST_TICKET_ID = "PTE-476";
 
     AuthApi getAuthApi() {
         return getApi(AuthApi.class, getNonAuthenticatedApiConfig());

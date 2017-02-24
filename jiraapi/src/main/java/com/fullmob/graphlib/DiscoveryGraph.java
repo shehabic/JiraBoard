@@ -4,23 +4,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class DiscoveryGraph {
-    public HashMap<String, Node> actionsToNodes = new HashMap<>();
+    public HashMap<String, Boolean> visited = new HashMap<>();
+    public HashMap<String, Boolean> visiting = new HashMap<>();
+
+
     public HashSet<String> nodeIds = new HashSet<>();
 
     public int size() {
-        return actionsToNodes.size();
-    }
-
-    public Node findById(String id) {
-        return actionsToNodes.get(id);
-    }
-
-    public Node getNode(Node node) {
-        return actionsToNodes.get(createKey(node));
+        return visited.size();
     }
 
     public boolean isVisited(Node node) {
-        return actionsToNodes.containsKey(createKey(node));
+        return visited.containsKey(createKey(node));
+    }
+
+    public boolean isVisiting(Node node) {
+        return visiting.containsKey(createKey(node));
     }
 
     private String createKey(Node node) {
@@ -28,22 +27,17 @@ public class DiscoveryGraph {
     }
 
     public DiscoveryGraph add(Node node) {
-        Node nodeToAdd = node.clone();
-        nodeToAdd.id = node.id != "0" ? node.toId : "0";
-        nodeToAdd.name = node.toName;
-        actionsToNodes.put(createKey(nodeToAdd), nodeToAdd);
+        visited.put(createKey(node), true);
         nodeIds.add(node.toId);
 
         return this;
     }
 
-    public Node addNode(Node node) {
-        Node nodeToAdd = node.clone();
-        nodeToAdd.id = node.id != "0" ? node.toId : "0";
-        nodeToAdd.name = node.toName;
-        actionsToNodes.put(createKey(nodeToAdd), nodeToAdd);
+    public Node setVisited(Node node) {
+        node.name = node.toName;
+        visited.put(createKey(node), true);
         nodeIds.add(node.toId);
 
-        return nodeToAdd;
+        return node;
     }
 }
