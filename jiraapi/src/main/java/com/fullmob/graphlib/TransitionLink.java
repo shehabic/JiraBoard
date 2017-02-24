@@ -27,9 +27,13 @@ public class TransitionLink {
 
         TransitionLink that = (TransitionLink) o;
 
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
-        if (via != null ? !via.equals(that.via) : that.via != null) return false;
-        return to != null ? to.equals(that.to) : that.to == null;
+        return this.from.equals(that.from)
+            && this.via.equals(that.via)
+            && this.to.equals(that.to);
+    }
 
+    @Override
+    public int hashCode() {
+        return (from + to + via).hashCode();
     }
 }
