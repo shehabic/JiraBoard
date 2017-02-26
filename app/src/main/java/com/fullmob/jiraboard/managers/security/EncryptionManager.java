@@ -19,11 +19,6 @@ public class EncryptionManager implements EncrypterInterface {
     }
 
     @Override
-    public boolean init() {
-        return crypto.isAvailable();
-    }
-
-    @Override
     public String encrypt(String key, String plainText) throws Exception {
         return Base64.encodeToString(
             crypto.encrypt(

@@ -1,7 +1,6 @@
 package com.fullmob.jiraboard.managers.security;
 
 public interface EncrypterInterface {
-    boolean init();
 
     String encrypt(String key, String plainText) throws Exception;
 
