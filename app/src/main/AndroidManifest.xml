@@ -24,7 +24,7 @@
 
 
     <application
-        android:name=".app.FullmobApp"
+        android:name="com.fullmob.jiraboard.app.FullmobApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
