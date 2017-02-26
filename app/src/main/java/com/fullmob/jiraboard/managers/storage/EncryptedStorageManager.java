@@ -1,0 +1,62 @@
+package com.fullmob.jiraboard.managers.storage;
+
+import com.fullmob.jiraboard.managers.security.EncrypterInterface;
+
+public class EncryptedStorageManager implements EncryptedStorage {
+
+
+    private static final String JIRA_KEY_USERNAME = "jira_username";
+    private static final String JIRA_KEY_PASSWORD = "jira_password";
+    private static final String JIRA_KEY_SUBDOMAIN = "jira_subdomain";
+
+    private final LocalStorageInterface localStorage;
+    private final EncrypterInterface encrypter;
+
+    public EncryptedStorageManager(LocalStorageInterface localStorageInterface, EncrypterInterface encrypter) {
+        this.localStorage = localStorageInterface;
+        this.encrypter = encrypter;
+    }
+
+    @Override
+    public String getPassword() {
+        String encPassword = localStorage.getString(JIRA_KEY_PASSWORD);
+        try {
+            return encPassword != null ? encrypter.decrypt(JIRA_KEY_PASSWORD, encPassword) : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String getUsername() {
+        return localStorage.getString(JIRA_KEY_USERNAME);
+    }
+
+    @Override
+    public String getSubDomain() {
+        return localStorage.getString(JIRA_KEY_SUBDOMAIN);
+    }
+
+    @Override
+    public void saveSubDomain(String subDomain) {
+        localStorage.putString(JIRA_KEY_SUBDOMAIN, subDomain);
+    }
+
+    @Override
+    public void saveUsername(String user) {
+        localStorage.putString(JIRA_KEY_USERNAME, user);
+    }
+
+    @Override
+    public void savePassword(String password) {
+        try {
+            localStorage.putString(JIRA_KEY_PASSWORD, encrypter.encrypt(JIRA_KEY_PASSWORD, password));
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    public void deletePassword() {
+        localStorage.delete(JIRA_KEY_PASSWORD);
+    }
+}

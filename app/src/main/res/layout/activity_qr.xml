@@ -20,7 +20,7 @@
             android:layout_margin="0dp"
             android:orientation="vertical"
             android:padding="0dp"
-            tools:context="com.fullmob.multiqr.QRActivity">
+            tools:context="com.fullmob.jiraboard.ui.home.QRActivity">
 
 
             <ImageView
