@@ -2,6 +2,7 @@ package com.fullmob.jiraboard;
 
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
 import com.fullmob.jiraapi.HttpClientBuilder;
 
 public class DebugUtils {
@@ -12,6 +13,6 @@ public class DebugUtils {
     }
 
     public static void initDebugTools(Context appContext) {
-//        Stetho.initializeWithDefaults(appContext);
+        Stetho.initializeWithDefaults(appContext);
     }
 }

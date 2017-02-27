@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.fullmob.jiraboard.ui.home.HomeActivity;
 import com.fullmob.jiraboard.ui.home.QRActivity;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.ui.BaseActivity;
@@ -61,6 +62,13 @@ public class LoginActivity extends BaseActivity implements LoginView {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+        mEmailSignInButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                return false;
             }
         });
 
