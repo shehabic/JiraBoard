@@ -9,18 +9,20 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.fullmob.jiraboard.ui.home.HomeActivity;
-import com.fullmob.jiraboard.ui.home.QRActivity;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.ui.BaseActivity;
+import com.fullmob.jiraboard.ui.home.QRActivity;
 
 import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A onLoginRequested screen that offers onLoginRequested via email/password.
@@ -28,11 +30,15 @@ import javax.inject.Inject;
 public class LoginActivity extends BaseActivity implements LoginView {
 
     // UI references.
-    private EditText emailText;
-    private EditText passwordText;
-    private EditText subDomainText;
-    private View mProgressView;
-    private View mLoginFormView;
+    @BindView(R.id.email) EditText emailText;
+    @BindView(R.id.password) EditText passwordText;
+    @BindView(R.id.subdomain) EditText subDomainText;
+    @BindView(R.id.login_progress) View progressView;
+    @BindView(R.id.login_form) View loginFormView;
+    @BindView(R.id.email_sign_in_button) Button signInButton;
+    @OnClick(R.id.email_sign_in_button) void onClick() {
+        attemptLogin();
+    }
 
     @Inject LoginPresenter presenter;
 
@@ -40,12 +46,13 @@ public class LoginActivity extends BaseActivity implements LoginView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getApp().createLoginScreenComponent(this).inject(this);
-        presenter.onViewCreated();
         setContentView(R.layout.activity_login);
-        // Set up the onLoginRequested form.
-        subDomainText = (EditText) findViewById(R.id.subdomain);
-        emailText = (EditText) findViewById(R.id.email);
-        passwordText = (EditText) findViewById(R.id.password);
+        ButterKnife.bind(this);
+        presenter.onViewCreated();
+        initUI();
+    }
+
+    private void initUI() {
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -56,24 +63,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 return false;
             }
         });
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-        mEmailSignInButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                return false;
-            }
-        });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -148,34 +137,29 @@ public class LoginActivity extends BaseActivity implements LoginView {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            loginFormView.animate().setDuration(shortAnimTime).alpha(
                 show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressView.animate().setDuration(shortAnimTime).alpha(
                 show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -218,6 +202,11 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void hideLoading() {
         showProgress(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
 
