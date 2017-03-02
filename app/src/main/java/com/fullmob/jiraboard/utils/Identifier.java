@@ -1,11 +1,11 @@
 package com.fullmob.jiraboard.utils;
 
-import com.fullmob.jiraboard.data.Project;
+import com.fullmob.jiraboard.data.Board;
 
 public class Identifier {
-    private final Project project;
+    private final Board project;
 
-    public Identifier(Project project) {
+    public Identifier(Board project) {
         this.project = project;
     }
 

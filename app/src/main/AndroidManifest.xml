@@ -53,6 +53,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.fullmob.jiraboard.ui.BaseActivity"/>
         </activity>
+
+        <service
+            android:name=".services.WorkflowDiscoveryService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
 
 </manifest>

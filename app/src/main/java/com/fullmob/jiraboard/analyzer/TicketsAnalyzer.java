@@ -8,7 +8,7 @@ import android.graphics.Paint;
 
 import com.fullmob.jiraboard.data.Column;
 import com.fullmob.jiraboard.data.Point;
-import com.fullmob.jiraboard.data.Project;
+import com.fullmob.jiraboard.data.Board;
 import com.fullmob.jiraboard.data.Ticket;
 import com.fullmob.jiraboard.utils.Identifier;
 import com.google.zxing.BinaryBitmap;
@@ -43,21 +43,21 @@ public class TicketsAnalyzer {
         this.debug = debug;
     }
 
-    public Observable<Project> analyzeProject(final Project project) {
-        return Observable.fromCallable(new Callable<Project>() {
+    public Observable<Board> analyzeProject(final Board project) {
+        return Observable.fromCallable(new Callable<Board>() {
             @Override
-            public Project call() throws Exception {
+            public Board call() throws Exception {
                 return analyzeProjectFromImage(project);
             }
         });
     }
 
-    private Project analyzeProjectFromImage(Project project) {
+    private Board analyzeProjectFromImage(Board project) {
         readQRImage(project.getBitmap(), project);
         return project;
     }
 
-    public void readQRImage(Bitmap bMap, Project project) {
+    public void readQRImage(Bitmap bMap, Board project) {
 
         Bitmap mutableBitmap = bMap.copy(Bitmap.Config.ARGB_8888, true);
 
@@ -95,7 +95,7 @@ public class TicketsAnalyzer {
         }
     }
 
-    private void orderColumnsAndTickets(Project project, List<Column> ticketList, Bitmap mutableBitmap) {
+    private void orderColumnsAndTickets(Board project, List<Column> ticketList, Bitmap mutableBitmap) {
         int ImageWidth = mutableBitmap.getWidth();
         prepareColumns(project, ImageWidth);
         for (int i = 0; i < ticketList.size(); i++) {
@@ -115,7 +115,7 @@ public class TicketsAnalyzer {
         }
     }
 
-    private void drawDebugLines(Project project, Bitmap mutableBitmap) {
+    private void drawDebugLines(Board project, Bitmap mutableBitmap) {
         for (int i = 0; i < project.getColumns().size(); i++) {
             Column col = project.getColumns().get(i);
             drawSeparators(mutableBitmap, col.minX, Color.GREEN);
@@ -126,7 +126,7 @@ public class TicketsAnalyzer {
         }
     }
 
-    private void prepareColumns(Project project, int imageWidth) {
+    private void prepareColumns(Board project, int imageWidth) {
         Collections.sort(project.getColumns(), new Comparator<Column>() {
             @Override
             public int compare(Column c1, Column c2) {

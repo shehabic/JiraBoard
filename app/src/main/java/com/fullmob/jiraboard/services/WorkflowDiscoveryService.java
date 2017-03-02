@@ -7,9 +7,11 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 public class WorkflowDiscoveryService extends Service {
+    public WorkflowDiscoveryService() {
+    }
+
     private static final String START_DISCOVERY_ACTION = "START_DISCOVERY_ACTION";
     private static final String STOP_DISCOVERY_ACTION = "STOP_DISCOVERY_ACTION";
-
 
 
     @Nullable
@@ -18,14 +20,14 @@ public class WorkflowDiscoveryService extends Service {
         return null;
     }
 
-    public static void startWorkflowDiscoveryService(Context context) {
+    public static void start(Context context) {
         Intent intent = new Intent(context, WorkflowDiscoveryService.class);
         intent.setAction(START_DISCOVERY_ACTION);
         context.startService(intent);
     }
 
     // call only in case when you user login/loggedOut or changing country/location
-    public static void stopWorkflowDiscoveryService(Context context) {
+    public static void stop(Context context) {
         Intent intent = new Intent(context, WorkflowDiscoveryService.class);
         intent.setAction(STOP_DISCOVERY_ACTION);
         context.startService(intent);
@@ -41,7 +43,7 @@ public class WorkflowDiscoveryService extends Service {
                     break;
 
                 case STOP_DISCOVERY_ACTION:
-                    stopDiscover();
+                    stopDiscovery();
                     stopSelf();
                     break;
             }
@@ -50,7 +52,7 @@ public class WorkflowDiscoveryService extends Service {
         return START_STICKY;
     }
 
-    private void stopDiscover() {
+    private void stopDiscovery() {
 
     }
 

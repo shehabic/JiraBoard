@@ -18,7 +18,7 @@ import com.fullmob.jiraboard.BuildConfig;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.analyzer.TicketsAnalyzer;
 import com.fullmob.jiraboard.data.Column;
-import com.fullmob.jiraboard.data.Project;
+import com.fullmob.jiraboard.data.Board;
 import com.fullmob.jiraboard.processors.ImageProcessor;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public class QRActivity extends AppCompatActivity {
     ImageView mImageView;
 
 
-    Project project;
+    Board project;
     TicketsAnalyzer ticketsAnalyzer;
     ImageProcessor imageProcessor;
 
@@ -49,7 +49,7 @@ public class QRActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr);
-        project = new Project(PROJECT_PREFIX);
+        project = new Board(PROJECT_PREFIX);
         ticketsAnalyzer = new TicketsAnalyzer(BuildConfig.DEBUG);
         imageProcessor = new ImageProcessor(this);
         mTextMessage = (TextView) findViewById(R.id.message);
@@ -147,9 +147,9 @@ public class QRActivity extends AppCompatActivity {
                     ticketsAnalyzer.analyzeProject(project)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new DefaultObserver<Project>() {
+                        .subscribe(new DefaultObserver<Board>() {
                             @Override
-                            public void onNext(Project project) {
+                            public void onNext(Board project) {
                                 showOutput(project);
                             }
 
@@ -169,7 +169,7 @@ public class QRActivity extends AppCompatActivity {
         }
     }
 
-    private void showOutput(Project project) {
+    private void showOutput(Board project) {
         String headerOutput = "Columns: " + project.getColumns().size();
         String output = "";
         int ticketCount = 0;

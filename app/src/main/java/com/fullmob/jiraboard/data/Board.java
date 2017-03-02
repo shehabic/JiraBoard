@@ -5,12 +5,12 @@ import android.graphics.Bitmap;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Project {
+public class Board {
     private final String prefix;
     private Bitmap bitmap;
     private List<Column> columns;
 
-    public Project(String prefix) {
+    public Board(String prefix) {
         this.prefix = prefix;
         columns = new ArrayList<>();
     }

@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file:///Volumes/Work/android/mutliqr/app/app.iml" filepath="/Volumes/Work/android/mutliqr/app/app.iml" />
-      <module fileurl="file:///Volumes/Work/android/mutliqr/graphlib/graphlib.iml" filepath="/Volumes/Work/android/mutliqr/graphlib/graphlib.iml" />
-      <module fileurl="file:///Volumes/Work/android/mutliqr/jiraapi/jiraapi.iml" filepath="/Volumes/Work/android/mutliqr/jiraapi/jiraapi.iml" />
-      <module fileurl="file:///Volumes/Work/android/mutliqr/mutliqr.iml" filepath="/Volumes/Work/android/mutliqr/mutliqr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jiraapi/jiraapi.iml" filepath="$PROJECT_DIR$/jiraapi/jiraapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mutliqr.iml" filepath="$PROJECT_DIR$/mutliqr.iml" />
     </modules>
   </component>
 </project>

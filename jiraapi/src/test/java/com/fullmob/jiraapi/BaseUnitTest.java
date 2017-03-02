@@ -18,8 +18,10 @@ class BaseUnitTest {
     private static final String BASE_URL = "https://" + BuildConfig.JIRA_SUB_DOMAIN + ".atlassian.net/rest/api/2/";
     static final String USERNAME = BuildConfig.JIRA_USERNAME;
     static final String PASSWORD = BuildConfig.JIRA_PASSWORD;
-    static final String TEST_TICKET_ID = BuildConfig.JIRA_TEST_TICKET_ID;
+//    static final String TEST_TICKET_ID = BuildConfig.JIRA_TEST_TICKET_ID;
 //    static final String TEST_TICKET_ID = "PFM-6550";
+//    static final String TEST_TICKET_ID = "MOB-4943";
+    static final String TEST_TICKET_ID = "PFM-6595";
 //    static final String TEST_TICKET_ID = "LOG-1189";
 //    static final String TEST_TICKET_ID = "PTE-476";
 
@@ -57,7 +59,7 @@ class BaseUnitTest {
     private ApiConfig getNonAuthenticatedApiConfig() {
         ApiConfig apiConfig = new ApiConfig();
         apiConfig.setBaseUrl(BASE_URL);
-        apiConfig.setDebug(true);
+        apiConfig.setDebug(false);
 
         return apiConfig;
     }

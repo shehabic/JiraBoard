@@ -4,14 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fullmob.graphlib.DiscoveryGraph;
-import com.fullmob.graphlib.Graph;
 import com.fullmob.graphlib.Node;
 import com.fullmob.graphlib.TransitionLink;
 import com.fullmob.jiraapi.managers.IssuesManager;
+import com.fullmob.jiraapi.managers.ProjectsManager;
 import com.fullmob.jiraapi.models.Issue;
+import com.fullmob.jiraapi.models.ProjectIssueTypeStatus;
 import com.fullmob.jiraapi.models.issue.Status;
 import com.fullmob.jiraapi.requests.issue.Transition;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,68 +22,81 @@ import java.util.Map;
 import java.util.Stack;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.functions.Function;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 public class WorkflowDiscovery {
     private final IssuesManager manager;
+    private final ProjectsManager projectsManager;
     private boolean isDebug;
-    public WorkflowDiscovery(IssuesManager manager) {
-        this(manager, false);
+
+    public WorkflowDiscovery(IssuesManager manager, ProjectsManager projectsManager) {
+        this(manager, projectsManager, false);
     }
 
-    public WorkflowDiscovery(IssuesManager manager, boolean debug) {
+    public WorkflowDiscovery(IssuesManager manager, ProjectsManager projectsManager, boolean debug) {
         this.manager = manager;
+        this.projectsManager = projectsManager;
         isDebug = debug;
     }
 
-    private void addNodeIfDoesNotExist(Graph g, String name) {
-        if (!g.nameToNode.containsKey(name)) {
-            g.nameToNode.put(name, new Node(name));
-        }
+    public Observable<DiscoveryStatus> discoverWorkFlow(final String key) throws IOException {
+        return Observable.create(new ObservableOnSubscribe<DiscoveryStatus>() {
+            @Override
+            public void subscribe(final ObservableEmitter<DiscoveryStatus> em) throws Exception {
+                final DiscoveryStatus status = createDiscoveryStatus(key);
+                HashSet<String> badEnds = new HashSet<>();
+                Map<String, List<Node>> childNodes = new HashMap<>();
+
+                for (int i = 0; i < getMaxAttempts(badEnds); i++) {
+                    status.increasePasses();
+                    Node startingNode = findStartingNode(key);
+                    try {
+                        exploreOptimized(startingNode, new DiscoveryGraph(), key, childNodes, badEnds, status, new OnNodeVisited() {
+                            @Override
+                            public void onVisit(DiscoveryStatus discoveryStatus) {
+                                em.onNext(status);
+                            }
+                        });
+                    } catch (BadEndException expected) {
+                        badEnds.add(manager.getIssueSync(key).body().getIssueFields().getStatus().getName());
+                    }
+                    if (i < getMaxAttempts(badEnds)) {
+                        em.onNext(status);
+                    }
+                }
+                status.markCompleted();
+                em.onNext(status);
+                em.onComplete();
+            }
+        });
     }
 
-    private Graph buildGraphFromConnections(Map<String, Map<String, String>> connections) {
-        Graph g = new Graph();
-        for (Map.Entry<String, Map<String, String>> entry : connections.entrySet()) {
-            addNodeIfDoesNotExist(g, entry.getKey());
-            Node sourceNode = g.nameToNode.get(entry.getKey());
-            for (Map.Entry<String, String> targetMap : entry.getValue().entrySet()) {
-                addNodeIfDoesNotExist(g, targetMap.getValue());
-                Node targetNode = g.nameToNode.get(targetMap.getValue()).clone();
-                targetNode.id = targetMap.getKey();
-                sourceNode.addTarget(targetNode);
+    @NonNull
+    public DiscoveryStatus createDiscoveryStatus(String key) throws IOException {
+        Issue issue = manager.getIssueSync(key).body();
+        DiscoveryStatus status = new DiscoveryStatus(
+            issue.getIssueFields().getProject().getName(),
+            issue.getIssueFields().getProject().getKey(),
+            key
+        );
+        status.setPossibleNodes(getListOfPossibleStatusesForTicket(issue, issue.getIssueFields().getProject().getId()));
+
+        return status;
+    }
+
+    private HashSet<String> getListOfPossibleStatusesForTicket(Issue issue, String projectId) throws IOException {
+        HashSet<String> statuses = new HashSet<>();
+        List<ProjectIssueTypeStatus> issueTypeStatuses = projectsManager.getProjectIssueStatus(projectId).body();
+        for (ProjectIssueTypeStatus type : issueTypeStatuses) {
+            if (issue.getIssueFields().getIssuetype().getName().equals(type.getName())) {
+                for (Status status : type.getStatuses()) {
+                    statuses.add(status.getName());
+                }
             }
         }
 
-        return g;
-    }
-
-    public Observable<HashSet<TransitionLink>> discoverWorkFlow(String ticketKey) throws IOException {
-        return Observable.just(ticketKey)
-            .flatMap(new Function<String, ObservableSource<HashSet<TransitionLink>>>() {
-                @Override
-                public ObservableSource<HashSet<TransitionLink>> apply(String ticketKey) throws Exception {
-                    HashSet<String> badEnds = new HashSet<>();
-                    HashSet<TransitionLink> connections = new HashSet<>();
-                    Map<String, List<Node>> childNodes = new HashMap<>();
-                    for (int i = 0; i < getMaxAttempts(badEnds); i++) {
-                        Node startingNode = findStartingNode(ticketKey);
-                        if (isDebug){
-                            System.out.println("=======> Attempt " + (i + 1));
-                            System.out.println("->" + startingNode.toName);
-                        }
-                        try {
-                            exploreOptimized(startingNode, new DiscoveryGraph(), ticketKey, childNodes, badEnds, connections);
-                        } catch (BadEndException e) {
-                            badEnds.add(manager.getIssueSync(ticketKey).body().getIssueFields().getStatus().getName());
-                        }
-                    }
-                    System.out.println(new Gson().toJson(connections));
-
-                    return Observable.just(connections);
-                }
-            });
+        return statuses;
     }
 
     @NonNull
@@ -98,12 +111,9 @@ public class WorkflowDiscovery {
         return Math.max(1, Math.min(deadEnds.size() + 1, 10));
     }
 
-    private void addConnection(Node src, Node target, HashSet<TransitionLink> connections) {
+    private void addConnection(Node src, Node target, DiscoveryStatus status) {
         src.addTarget(target);
-        TransitionLink link = new TransitionLink(src.toName, target.id, target.toName);
-        if (!connections.contains(link)) {
-            connections.add(link);
-        }
+        status.addTransition(new TransitionLink(src.toName, target.id, target.toName));
     }
 
     private void exploreOptimized(
@@ -112,22 +122,28 @@ public class WorkflowDiscovery {
         String key,
         Map<String, List<Node>> childNodes,
         HashSet<String> badEnds,
-        HashSet<TransitionLink> connections
+        DiscoveryStatus status,
+        OnNodeVisited listener
     ) throws IOException, BadEndException {
+
         Stack<Node> stack = new Stack<>(), refStack = new Stack<>();
         Node referrer;
         stack.push(current);
         discoveryGraph.setVisited(current);
-        while (!stack.isEmpty()) {
+
+        while (!stack.isEmpty() && !areAllNodesCompleted(status)) {
             current = stack.peek();
             referrer = !refStack.isEmpty() ? refStack.peek() : null;
             moveToStatus(current, key);
-            Node child = getUnvisitedChild(current, key, discoveryGraph, badEnds, referrer, connections, childNodes);
+            Node child = getUnvisitedChild(current, key, discoveryGraph, badEnds, referrer, status, childNodes);
+            listener.onVisit(status);
             if (child != null) {
                 discoveryGraph.setVisited(child);
                 stack.push(child);
                 refStack.push(current);
             } else {
+                status.addCompletedNode(current);
+                listener.onVisit(status);
                 if (!stack.isEmpty()) {
                     stack.pop();
                 }
@@ -136,6 +152,8 @@ public class WorkflowDiscovery {
                     if (referrer != null) {
                         if (!canGoBack(referrer, current, childNodes)) {
                             throw new BadEndException("Can't go back");
+                        } else {
+                            status.addCompletedBranch(referrer, current);
                         }
                         stack.peek().id = referrer.id;
                     }
@@ -143,6 +161,10 @@ public class WorkflowDiscovery {
                 if (isDebug) System.out.println("<-Going back");
             }
         }
+    }
+
+    private boolean areAllNodesCompleted(DiscoveryStatus status) {
+        return status.getCompletedNodesCount() >= status.getPossibleNodesCount();
     }
 
     private void moveToStatus(Node current, String key) throws IOException, BadEndException {
@@ -175,7 +197,7 @@ public class WorkflowDiscovery {
         DiscoveryGraph discoveryGraph,
         HashSet<String> badEnds,
         Node referrer,
-        HashSet<TransitionLink> connections,
+        DiscoveryStatus status,
         Map<String, List<Node>> childNodes
     ) throws IOException {
         if (!childNodes.containsKey(current.toName)) {
@@ -186,10 +208,7 @@ public class WorkflowDiscovery {
             if (isDebug) {
                 System.out.println("\t-Child: " + child.id + ":" + child.toName);
             }
-            addConnection(current, child, connections);
-            if (isBackLink(referrer, child)) {
-                continue;
-            }
+            addConnection(current, child, status);
         }
 
         for (Node child : allChildNodes) {
@@ -199,7 +218,7 @@ public class WorkflowDiscovery {
                 }
                 continue;
             }
-            if (isBackLink(referrer, child)) {
+            if (isBackLink(referrer, child) || status.isCompletedVertex(current, child)) {
                 continue;
             }
             if (!discoveryGraph.isVisited(child)) {
@@ -243,13 +262,17 @@ public class WorkflowDiscovery {
         return nodes;
     }
 
-    private class BadEndException extends Throwable {
-        public BadEndException() {
+    public static class BadEndException extends Throwable {
+        BadEndException() {
             super("Invalid state exception");
         }
 
-        public BadEndException(String s) {
+        BadEndException(String s) {
             super(s);
         }
+    }
+
+    private interface OnNodeVisited {
+        void onVisit(DiscoveryStatus discoveryStatus);
     }
 }
