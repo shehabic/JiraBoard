@@ -1,1 +1,1 @@
-include ':app', ':jiraapi', ':graphlib'
+include ':app', ':jiraapi'

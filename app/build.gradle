@@ -60,6 +60,9 @@ dependencies {
     androidTestCompile('com.android.support:multidex-instrumentation:1.0.1') {
         exclude group: 'com.android.support', module: 'multidex'
     }
+    debugCompile('com.facebook.stetho:stetho:1.4.2@aar') {
+        transitive true;
+    }
     compile 'com.facebook.conceal:conceal:1.1.3@aar'
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:25.2.0'
@@ -73,13 +76,10 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    testCompile 'junit:junit:4.12'
     compile 'com.jakewharton:butterknife:8.5.1'
+    compile 'com.google.dagger:dagger:2.8'
+    testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
-    compile 'com.google.dagger:dagger:2.8'
-    debugCompile ('com.facebook.stetho:stetho:1.4.2@aar') {
-        transitive true;
-    }
     provided 'javax.annotation:jsr250-api:1.0'
 }

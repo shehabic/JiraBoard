@@ -19,7 +19,7 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
 
     void onViewCreated() {
         if (authManager.isAlreadyAuthorized()) {
-            getView().proceedToHomeScreen();
+            getView().proceedToNextScreen();
         }
     }
 
@@ -36,7 +36,7 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
                 public void onNext(Response<AuthResponse> response) {
                     getView().hideLoading();
                     if (authManager.isSuccess(response.body()) && getView() != null) {
-                        getView().proceedToHomeScreen();
+                        getView().proceedToNextScreen();
                     } else {
                         getView().showInvalidCredentials();
                     }

@@ -164,7 +164,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     @Override
-    public void proceedToHomeScreen() {
+    public void proceedToNextScreen() {
         startActivity(new Intent(this, QRActivity.class));
         finish();
     }
