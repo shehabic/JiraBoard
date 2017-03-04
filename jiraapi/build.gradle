@@ -9,9 +9,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
     buildTypes {
         debug {
@@ -19,21 +17,13 @@ android {
             buildConfigField "String", "JIRA_SUB_DOMAIN", "\"${jiraSubDomain}\""
             buildConfigField "String", "JIRA_USERNAME", "\"${jiraUsername}\""
             buildConfigField "String", "JIRA_PASSWORD", "\"${jiraPassword}\""
-            buildConfigField "String", "JIRA_TEST_TICKET_ID", "\"${jiraTestTicketId}\""
-            debuggable true
-            minifyEnabled false
-            shrinkResources false
-            zipAlignEnabled false
-            multiDexEnabled true
-        }
+            buildConfigField "String", "JIRA_TEST_TICKET_ID", "\"${jiraTestTicketId}\"" }
 
         release {
             buildConfigField "String", "JIRA_SUB_DOMAIN", "\"\""
             buildConfigField "String", "JIRA_USERNAME", "\"\""
             buildConfigField "String", "JIRA_PASSWORD", "\"\""
             buildConfigField "String", "JIRA_TEST_TICKET_ID", "\"\""
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }

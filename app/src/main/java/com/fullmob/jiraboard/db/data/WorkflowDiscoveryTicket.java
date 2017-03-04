@@ -1,12 +1,10 @@
 package com.fullmob.jiraboard.db.data;
 
-import com.fullmob.jiraboard.data.Board;
-
 import io.realm.RealmObject;
 
 public class WorkflowDiscoveryTicket extends RealmObject {
     private JiraSubDomain subDomain;
-    private Board project;
+    private JiraProject project;
     private String key;
     private String title;
     private String status;
@@ -21,11 +19,11 @@ public class WorkflowDiscoveryTicket extends RealmObject {
         this.subDomain = subDomain;
     }
 
-    public Board getProject() {
+    public JiraProject getProject() {
         return project;
     }
 
-    public void setProject(Board project) {
+    public void setProject(JiraProject project) {
         this.project = project;
     }
 
