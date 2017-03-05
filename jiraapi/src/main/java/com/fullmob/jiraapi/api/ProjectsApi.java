@@ -25,5 +25,5 @@ public interface ProjectsApi {
     Call<List<ProjectIssueTypeStatus>> getProjectIssueStatusesSync(@Path("id") String projectId);
 
     @GET("project")
-    Observable<Response<List<Project>>> getProjectsSync();
+    Call<List<Project>> getProjectsSync();
 }

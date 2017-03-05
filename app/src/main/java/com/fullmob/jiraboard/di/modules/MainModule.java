@@ -2,6 +2,8 @@ package com.fullmob.jiraboard.di.modules;
 
 import com.fullmob.jiraboard.app.FullmobAppInterface;
 import com.fullmob.jiraboard.app.FullmobDiApp;
+import com.fullmob.jiraboard.managers.db.DBManager;
+import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.security.EncrypterInterface;
 import com.fullmob.jiraboard.managers.security.EncryptionManager;
 import com.fullmob.jiraboard.managers.serializers.GsonSerializer;
@@ -16,6 +18,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 @Singleton
 @Module
@@ -51,5 +55,18 @@ public class MainModule {
     @Provides
     public EncryptedStorage providesEncryptedStorage(EncrypterInterface encrypter, LocalStorageInterface localStorage) {
         return new EncryptedStorageManager(localStorage, encrypter);
+    }
+
+    @Provides
+    public DBManagerInterface providesDBManagerInterface(FullmobAppInterface app) {
+        Realm.init(app.getContext());
+
+
+        RealmConfiguration.Builder builder = new RealmConfiguration.Builder();
+        builder.schemaVersion(DBManager.DB_VERSION)
+        .deleteRealmIfMigrationNeeded();
+        Realm.setDefaultConfiguration(builder.build());
+
+        return new DBManager(app.getContext());
     }
 }

@@ -1,11 +1,16 @@
 package com.fullmob.jiraboard.db.data;
 
 import io.realm.RealmObject;
+import io.realm.annotations.RealmClass;
+import io.realm.annotations.Required;
 
+@RealmClass
 public class WorkflowDiscoveryTicket extends RealmObject {
+
+    @Required
+    private String key;
     private JiraSubDomain subDomain;
     private JiraProject project;
-    private String key;
     private String title;
     private String status;
     private String statusId;

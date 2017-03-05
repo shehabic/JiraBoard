@@ -24,4 +24,8 @@ public class ProjectsManager extends AbstractApiManager<ProjectsApi> {
     public Response<List<ProjectIssueTypeStatus>> getProjectIssueStatus(String projectId) throws IOException {
         return api.getProjectIssueStatusesSync(projectId).execute();
     }
+
+    public List<Project> getProjectsAsync() throws IOException {
+        return api.getProjectsSync().execute().body();
+    }
 }

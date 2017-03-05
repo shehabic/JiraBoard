@@ -24,6 +24,7 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
     }
 
     void onLoginRequested(String subDomain, String user, String password) {
+        getView().showLoading();
         authManager.login(subDomain, user, password)
             .observeOn(FullmobSchedulers.getMainThread())
             .subscribe(new Observer<Response<AuthResponse>>() {

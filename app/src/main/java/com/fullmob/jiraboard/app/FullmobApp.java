@@ -6,11 +6,15 @@ import android.support.multidex.MultiDex;
 import com.fullmob.jiraboard.DebugUtils;
 
 public class FullmobApp extends FullmobDiApp {
+
+    public static FullmobApp instance;
+
     @Override
     public void onCreate() {
         super.onCreate();
         initDI();
         DebugUtils.initDebugTools(this);
+        instance = this;
     }
 
     @Override

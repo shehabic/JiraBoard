@@ -1,11 +1,7 @@
+package com.fullmob.jiraboard.ui.models;
 
-package com.fullmob.jiraboard.db.data;
-
-import io.realm.RealmObject;
-import io.realm.annotations.RealmClass;
-
-@RealmClass
-public class JiraAvatarUrls extends RealmObject {
+public class UIAvatarUrls {
+    private String id;
     private String _48x48;
     private String _24x24;
     private String _16x16;

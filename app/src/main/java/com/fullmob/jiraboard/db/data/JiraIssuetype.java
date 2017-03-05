@@ -2,16 +2,22 @@
 package com.fullmob.jiraboard.db.data;
 
 import io.realm.RealmObject;
+import io.realm.annotations.RealmClass;
+import io.realm.annotations.Required;
 
+@RealmClass
 public class JiraIssuetype extends RealmObject {
 
-    private String self;
+    @Required
     private String id;
+
+    private String self;
 
     private String description;
 
     private String iconUrl;
 
+    @Required
     private String name;
 
     private Boolean subtask;

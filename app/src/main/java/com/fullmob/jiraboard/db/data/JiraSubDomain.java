@@ -4,22 +4,23 @@ import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class JiraSubDomain extends RealmObject {
-    @PrimaryKey
-    public String subDomain;
+
+    @Required
+    public String subdomain;
 
     public RealmList<JiraProject> projects;
 
     public Date createdAt;
 
     public String getSubDomain() {
-        return subDomain;
+        return subdomain;
     }
 
     public void setSubDomain(String subDomain) {
-        this.subDomain = subDomain;
+        this.subdomain= subDomain;
     }
 
     public RealmList<JiraProject> getProjects() {

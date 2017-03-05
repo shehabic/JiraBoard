@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'realm-android'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
@@ -19,7 +19,6 @@ android {
         all {
             buildConfigField "String", "JIRA_CLOUD", "\".atlassian.net/rest/api/2/\"";
             buildConfigField "String", "JIRA_AUTH_URL", "\".atlassian.net/rest/auth/1/session\"";
-            multiDexEnabled true
         }
         debug {
             applicationIdSuffix '.dev'
@@ -27,11 +26,9 @@ android {
             minifyEnabled false
             shrinkResources false
             zipAlignEnabled false
-            multiDexEnabled true
         }
         release {
             minifyEnabled false
-            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -65,6 +62,7 @@ buildscript {
     dependencies {
         classpath 'com.newrelic.agent.android:agent-gradle-plugin:4.244.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath "io.realm:realm-gradle-plugin:3.0.0"
     }
 }
 
@@ -79,7 +77,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'multidex'
     }
     compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.jakewharton:butterknife:8.5.1'
     compile 'com.facebook.conceal:conceal:1.1.3@aar'
     compile 'com.android.support:design:25.2.0'
     compile 'com.android.support:support-vector-drawable:25.2.0'
@@ -87,15 +84,20 @@ dependencies {
     compile 'com.google.zxing:android-integration:3.3.0'
     compile 'com.google.zxing:android-core:3.3.0'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex.rxjava2:rxjava:2.0.1'
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    compile 'com.google.dagger:dagger:2.8'
     testCompile 'junit:junit:4.12'
     compile 'com.facebook.stetho:stetho:1.4.2'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     provided 'javax.annotation:jsr250-api:1.0'
-    provided 'com.google.dagger:dagger-compiler:2.8'
-    apt 'com.google.dagger:dagger-compiler:2.8'
+
+    compile 'com.google.dagger:dagger:2.0.2'
+    provided 'com.google.dagger:dagger-compiler:2.0.2'
+    apt 'com.google.dagger:dagger-compiler:2.0.2'
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile 'com.jakewharton:butterknife:8.0.1'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
+    compile 'com.github.shehabix:stetho-realm:v2.0.2'
 }

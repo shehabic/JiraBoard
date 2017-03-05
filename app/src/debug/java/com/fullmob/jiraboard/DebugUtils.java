@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.facebook.stetho.Stetho;
 import com.fullmob.jiraapi.HttpClientBuilder;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 public class DebugUtils {
     public DebugUtils() {
@@ -13,6 +14,11 @@ public class DebugUtils {
     }
 
     public static void initDebugTools(Context appContext) {
-        Stetho.initializeWithDefaults(appContext);
+        Stetho.initialize(
+            Stetho.newInitializerBuilder(appContext)
+                .enableDumpapp(Stetho.defaultDumperPluginsProvider(appContext))
+                .enableWebKitInspector(RealmInspectorModulesProvider.builder(appContext).build())
+                .build());
+
     }
 }

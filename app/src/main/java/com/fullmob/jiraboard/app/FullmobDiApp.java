@@ -4,18 +4,24 @@ import android.app.Application;
 import android.content.Context;
 
 import com.fullmob.jiraapi.HttpClientBuilder;
+import com.fullmob.jiraboard.DebugUtils;
 import com.fullmob.jiraboard.di.components.ApiComponent;
 import com.fullmob.jiraboard.di.components.DaggerMainComponent;
 import com.fullmob.jiraboard.di.components.LoginScreenComponent;
 import com.fullmob.jiraboard.di.components.MainComponent;
+import com.fullmob.jiraboard.di.components.ManagersComponent;
+import com.fullmob.jiraboard.di.components.ProjectsScreenComponent;
 import com.fullmob.jiraboard.di.modules.LoginScreenModule;
 import com.fullmob.jiraboard.di.modules.MainModule;
+import com.fullmob.jiraboard.di.modules.ProjectsScreenModule;
 import com.fullmob.jiraboard.ui.login.LoginView;
+import com.fullmob.jiraboard.ui.projects.ProjectsView;
 
 public class FullmobDiApp extends Application implements FullmobAppInterface {
 
     private MainComponent mainComponent;
     private ApiComponent apiComponent;
+    private ManagersComponent managersComponent;
 
     protected void initDI() {
         mainComponent = DaggerMainComponent.builder()
@@ -35,7 +41,7 @@ public class FullmobDiApp extends Application implements FullmobAppInterface {
 
     @Override
     public void addDebugInterceptors(HttpClientBuilder builder) {
-
+        DebugUtils.initDebugTools(this);
     }
 
     @Override
@@ -45,7 +51,7 @@ public class FullmobDiApp extends Application implements FullmobAppInterface {
 
     @Override
     public LoginScreenComponent createLoginScreenComponent(LoginView loginView) {
-        return getApiComponent().plus(new LoginScreenModule(loginView));
+        return getManagersModule().plus(new LoginScreenModule(loginView));
     }
 
     @Override
@@ -55,5 +61,19 @@ public class FullmobDiApp extends Application implements FullmobAppInterface {
         }
 
         return apiComponent;
+    }
+
+    @Override
+    public ProjectsScreenComponent createProjectsScreenComponent(ProjectsView projectsView) {
+        return getManagersModule().plusProjects(new ProjectsScreenModule(projectsView));
+    }
+
+    @Override
+    public ManagersComponent getManagersModule() {
+        if (managersComponent == null) {
+            managersComponent = getApiComponent().plus();
+        }
+
+        return managersComponent;
     }
 }

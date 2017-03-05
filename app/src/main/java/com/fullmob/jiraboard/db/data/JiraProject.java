@@ -2,16 +2,31 @@ package com.fullmob.jiraboard.db.data;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.RealmClass;
+import io.realm.annotations.Required;
 
+@RealmClass
 public class JiraProject extends RealmObject {
-    private String expand;
-    private String self;
+
+    @Required
     private String id;
+
+    @Required
+    private String subdomain;
+
+    private String expand;
+
+    private String self;
+
+    @Required
     private String key;
+
+    @Required
+    private String name;
+
     private String description;
     private RealmList<JiraIssuetype> issueTypes = null;
     private String assigneeType;
-    private String name;
     private JiraAvatarUrls avatarUrls;
     private String projectTypeKey;
 
@@ -93,5 +108,13 @@ public class JiraProject extends RealmObject {
 
     public void setProjectTypeKey(String projectTypeKey) {
         this.projectTypeKey = projectTypeKey;
+    }
+
+    public String getSubDomain() {
+        return subdomain;
+    }
+
+    public void setSubDomain(String subDomain) {
+        this.subdomain = subDomain;
     }
 }
