@@ -60,7 +60,10 @@ public class GlideSecuredImagesLoader implements SecuredImagesManagerInterface {
     @Override
     public void loadImage(String url, Context activityContext, final AppCompatImageView imageView) {
         GlideUrl glideUrl = createSecuredGlideUrl(getBiggerUrl(url));
-        Glide.with(activityContext).load(glideUrl).into(imageView);
+        Glide.with(activityContext)
+            .load(glideUrl)
+            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+            .into(imageView);
     }
 
     @NonNull
