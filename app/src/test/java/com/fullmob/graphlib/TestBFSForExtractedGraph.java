@@ -1,4 +1,4 @@
-package com.fullmob.jiraapi;
+package com.fullmob.graphlib;
 
 
 import com.fullmob.graphlib.Graph;

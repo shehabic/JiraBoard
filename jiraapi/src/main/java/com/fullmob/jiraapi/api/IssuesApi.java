@@ -46,9 +46,8 @@ public interface IssuesApi {
     @POST("issue/{id}/transitions")
     Observable<Response> moveIssue(@Path("id") String issueId, @Body TransitionRequest updateIssueRequest);
 
-
-
     // Synchronous
+
     @GET("issue/{id}")
     Call<Issue> getIssueSync(@Path("id") String issueId);
 
@@ -57,4 +56,7 @@ public interface IssuesApi {
 
     @POST("issue/{id}/transitions")
     Call<ResponseBody> moveIssueSync(@Path("id") String issueId, @Body TransitionRequest updateIssueRequest);
+
+    @GET("issuetype/{id}")
+    Call<Issuetype> getIssueTypeAsync(@Path("id") String id);
 }

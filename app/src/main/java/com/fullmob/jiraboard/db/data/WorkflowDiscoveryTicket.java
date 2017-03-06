@@ -6,11 +6,19 @@ import io.realm.annotations.Required;
 
 @RealmClass
 public class WorkflowDiscoveryTicket extends RealmObject {
-
     @Required
     private String key;
+
     private JiraSubDomain subDomain;
+
     private JiraProject project;
+
+    @Required
+    private String typeId;
+
+    @Required
+    private String workflowKey;
+
     private String title;
     private String status;
     private String statusId;
@@ -70,5 +78,13 @@ public class WorkflowDiscoveryTicket extends RealmObject {
 
     public void setDiscoveryStatus(String discoveryStatus) {
         this.discoveryStatus = discoveryStatus;
+    }
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
     }
 }

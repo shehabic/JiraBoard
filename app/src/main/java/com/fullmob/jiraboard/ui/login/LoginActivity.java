@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * A onLoginRequested screen that offers onLoginRequested via email/password.
+ * A onLoginRequested screen that offers onLoginRequested linkId email/password.
  */
 public class LoginActivity extends BaseActivity implements LoginView {
 

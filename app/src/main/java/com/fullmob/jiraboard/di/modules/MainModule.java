@@ -4,6 +4,8 @@ import com.fullmob.jiraboard.app.FullmobAppInterface;
 import com.fullmob.jiraboard.app.FullmobDiApp;
 import com.fullmob.jiraboard.managers.db.DBManager;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
+import com.fullmob.jiraboard.managers.images.GlideSecuredImagesLoader;
+import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
 import com.fullmob.jiraboard.managers.security.EncrypterInterface;
 import com.fullmob.jiraboard.managers.security.EncryptionManager;
 import com.fullmob.jiraboard.managers.serializers.GsonSerializer;
@@ -67,6 +69,11 @@ public class MainModule {
         .deleteRealmIfMigrationNeeded();
         Realm.setDefaultConfiguration(builder.build());
 
-        return new DBManager(app.getContext());
+        return new DBManager();
+    }
+
+    @Provides
+    public SecuredImagesManagerInterface providesSecuredImagesManagerInterface(EncryptedStorage encryptedStorage) {
+        return new GlideSecuredImagesLoader(encryptedStorage);
     }
 }

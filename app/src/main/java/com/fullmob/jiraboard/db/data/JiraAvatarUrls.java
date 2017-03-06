@@ -11,6 +11,9 @@ public class JiraAvatarUrls extends RealmObject {
     private String _16x16;
     private String _32x32;
 
+    public JiraAvatarUrls() {
+    }
+
     public String get48x48() {
         return _48x48;
     }

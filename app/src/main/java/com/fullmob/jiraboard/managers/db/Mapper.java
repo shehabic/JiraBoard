@@ -5,13 +5,23 @@ import android.support.annotation.NonNull;
 
 import com.fullmob.jiraapi.models.AvatarUrls;
 import com.fullmob.jiraapi.models.Project;
+import com.fullmob.jiraapi.models.ProjectIssueTypeStatus;
+import com.fullmob.jiraapi.models.issue.Status;
+import com.fullmob.jiraapi.models.issue.StatusCategory;
 import com.fullmob.jiraboard.db.data.JiraAvatarUrls;
+import com.fullmob.jiraboard.db.data.JiraIssueStatus;
+import com.fullmob.jiraboard.db.data.JiraIssueType;
 import com.fullmob.jiraboard.db.data.JiraProject;
+import com.fullmob.jiraboard.db.data.JiraStatusCategory;
 import com.fullmob.jiraboard.ui.models.UIAvatarUrls;
+import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import io.realm.RealmResults;
 
 public class Mapper {
 
@@ -22,7 +32,7 @@ public class Mapper {
     public JiraProject createJiraProjectFromProject(JiraProject jiraProject, Project proj, String subDomain) {
         jiraProject.setSubDomain(subDomain);
         jiraProject.setName(proj.getName());
-        jiraProject.setId(proj.getId());
+        jiraProject.setJiraId(proj.getId());
         jiraProject.setKey(proj.getKey());
         jiraProject.setDescription(proj.getDescription());
         jiraProject.setAssigneeType(proj.getAssigneeType());
@@ -50,7 +60,7 @@ public class Mapper {
         UIProject uiProject = new UIProject();
         uiProject.setSubDomain(project.getSubDomain());
         uiProject.setName(project.getName());
-        uiProject.setId(project.getId());
+        uiProject.setId(project.getJiraId());
         uiProject.setAssigneeType(project.getAssigneeType());
         uiProject.setDescription(project.getDescription());
         uiProject.setAvatarUrls(createUIAvatarUrlsFromDB(project.getAvatarUrls()));
@@ -101,5 +111,65 @@ public class Mapper {
         uiProject.setKey(project.getKey());
 
         return uiProject;
+    }
+
+    public void fillJiraStatusCategory(JiraStatusCategory jiraStatusCategory, StatusCategory statusCategory) {
+        jiraStatusCategory.setSelf(statusCategory.getSelf());
+        jiraStatusCategory.setColorName(statusCategory.getColorName());
+        jiraStatusCategory.setName(statusCategory.getName());
+        jiraStatusCategory.setKey(statusCategory.getKey());
+    }
+
+    public void fillJiraIssueStatus(JiraIssueStatus jiraIssueStatus, Status status, Map<Integer, JiraStatusCategory> jiraStatusCategories) {
+        jiraIssueStatus.setName(status.getName());
+        jiraIssueStatus.setSelf(status.getSelf());
+        jiraIssueStatus.setDescription(status.getDescription());
+        jiraIssueStatus.setIconUrl(status.getIconUrl());
+        if (status.getStatusCategory() != null) {
+            jiraIssueStatus.setStatusCategory(jiraStatusCategories.get(status.getStatusCategory().getId()));
+        }
+    }
+
+    public void fillJiraIssueType(JiraIssueType jiraIssueType, ProjectIssueTypeStatus typeStatus, Map<String, JiraIssueStatus> jiraIssueStatuses) {
+        jiraIssueType.setName(typeStatus.getName());
+        jiraIssueType.setId(typeStatus.getId());
+        jiraIssueType.setSelf(typeStatus.getSelf());
+        jiraIssueType.setSubtask(typeStatus.isSubtask());
+        jiraIssueType.setProjectId(typeStatus.getProjectId());
+        jiraIssueType.setIconUrl(typeStatus.getIconUrl());
+        jiraIssueType.setAvatarId(typeStatus.getAvatarId());
+        String workflowKey = "";
+        for (Status status : typeStatus.getStatuses()) {
+            workflowKey += status.getId() + " ";
+            if (jiraIssueStatuses.containsKey(status.getId())) {
+                jiraIssueType.getStatuses().add(jiraIssueStatuses.get(status.getId()));
+            }
+        }
+        jiraIssueType.setWorkflowKey(workflowKey.trim().replace(" ", "-"));
+    }
+
+    public List<UIIssueType> convertJiraIssueTypesToUIIssueTypes(RealmResults<JiraIssueType> jiraIssueTypes) {
+        List<UIIssueType> issueTypes = new ArrayList<>();
+        if (jiraIssueTypes != null) {
+            for (JiraIssueType jiraIssueType : jiraIssueTypes) {
+                issueTypes.add(convertJiraIssueTypeToUIIssueType(jiraIssueType));
+            }
+        }
+
+        return issueTypes;
+    }
+
+    public UIIssueType convertJiraIssueTypeToUIIssueType(JiraIssueType jiraIssueType) {
+        UIIssueType uiIssueType = new UIIssueType();
+        uiIssueType.setName(jiraIssueType.getName());
+        uiIssueType.setWorkflowKey(jiraIssueType.getWorkflowKey());
+        uiIssueType.setSelf(jiraIssueType.getSelf());
+        uiIssueType.setProjectId(jiraIssueType.getProjectId());
+        uiIssueType.setSubtask(jiraIssueType.getSubtask());
+        uiIssueType.setId(jiraIssueType.getId());
+        uiIssueType.setIconUrl(jiraIssueType.getIconUrl());
+        uiIssueType.setAvatarId(jiraIssueType.getAvatarId());
+
+        return uiIssueType;
     }
 }

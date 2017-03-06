@@ -87,7 +87,7 @@ public class WorkflowDiscovery {
 
     private HashSet<String> getListOfPossibleStatusesForTicket(Issue issue, String projectId) throws IOException {
         HashSet<String> statuses = new HashSet<>();
-        List<ProjectIssueTypeStatus> issueTypeStatuses = projectsManager.getProjectIssueStatus(projectId).body();
+        List<ProjectIssueTypeStatus> issueTypeStatuses = projectsManager.getProjectIssueStatus(projectId);
         for (ProjectIssueTypeStatus type : issueTypeStatuses) {
             if (issue.getIssueFields().getIssuetype().getName().equals(type.getName())) {
                 for (Status status : type.getStatuses()) {
@@ -113,7 +113,7 @@ public class WorkflowDiscovery {
 
     private void addConnection(Node src, Node target, DiscoveryStatus status) {
         src.addTarget(target);
-        status.addTransition(new TransitionLink(src.toName, target.id, target.toName));
+        status.addTransition(new TransitionLink(src.toName, target.id, target.name, target.toName));
     }
 
     private void exploreOptimized(

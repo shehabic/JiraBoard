@@ -21,8 +21,8 @@ public class ProjectsManager extends AbstractApiManager<ProjectsApi> {
         return api.getProjects().subscribeOn(Schedulers.io());
     }
 
-    public Response<List<ProjectIssueTypeStatus>> getProjectIssueStatus(String projectId) throws IOException {
-        return api.getProjectIssueStatusesSync(projectId).execute();
+    public List<ProjectIssueTypeStatus> getProjectIssueStatus(String projectId) throws IOException {
+        return api.getProjectIssueStatusesSync(projectId).execute().body();
     }
 
     public List<Project> getProjectsAsync() throws IOException {

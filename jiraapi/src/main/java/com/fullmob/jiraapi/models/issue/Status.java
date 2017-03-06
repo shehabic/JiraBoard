@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Status implements Parcelable {
+public class Status implements Parcelable, Cloneable {
 
     @SerializedName("self")
     @Expose
@@ -114,4 +114,17 @@ public class Status implements Parcelable {
             return new Status[size];
         }
     };
+
+    @Override
+    public Status clone() {
+        Status status = new Status();
+        status.setId(id);
+        status.setName(name);
+        status.setDescription(description);
+        status.setSelf(self);
+        status.setIconUrl(iconUrl);
+        status.setStatusCategory(statusCategory.clone());
+
+        return status;
+    }
 }

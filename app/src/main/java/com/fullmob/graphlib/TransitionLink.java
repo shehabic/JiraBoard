@@ -7,16 +7,20 @@ public class TransitionLink {
     @SerializedName("from")
     @Expose
     public String from;
-    @SerializedName("via")
+    @SerializedName("linkId")
     @Expose
-    public String via;
+    public String linkId;
+    @SerializedName("linkName")
+    @Expose
+    public String linkName;
     @SerializedName("to")
     @Expose
     public String to;
 
-    public TransitionLink(String from, String via, String to) {
+    public TransitionLink(String from, String linkId, String linkName, String to) {
         this.from = from;
-        this.via = via;
+        this.linkId = linkId;
+        this.linkName = linkName;
         this.to = to;
     }
 
@@ -28,12 +32,12 @@ public class TransitionLink {
         TransitionLink that = (TransitionLink) o;
 
         return this.from.equals(that.from)
-            && this.via.equals(that.via)
+            && this.linkId.equals(that.linkId)
             && this.to.equals(that.to);
     }
 
     @Override
     public int hashCode() {
-        return (from + to + via).hashCode();
+        return (from + to + linkId).hashCode();
     }
 }

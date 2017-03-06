@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class StatusCategory implements Parcelable {
+public class StatusCategory implements Parcelable, Cloneable {
 
     @SerializedName("self")
     @Expose
@@ -101,4 +101,16 @@ public class StatusCategory implements Parcelable {
             return new StatusCategory[size];
         }
     };
+
+    public StatusCategory clone() {
+        StatusCategory statusCategory = new StatusCategory();
+        statusCategory.setSelf(self);
+        statusCategory.setName(name);
+        statusCategory.setKey(key);
+        statusCategory.setId(id);
+        statusCategory.setColorName(colorName);
+        statusCategory.setSelf(self);
+
+        return statusCategory;
+    }
 }

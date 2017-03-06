@@ -58,6 +58,8 @@ public class Project implements Parcelable {
     @SerializedName("projectTypeKey")
     @Expose
     private String projectTypeKey;
+    @Expose
+    private List<ProjectIssueTypeStatus> issueTypeStatuses;
 
     public String getExpand() {
         return expand;
@@ -171,6 +173,14 @@ public class Project implements Parcelable {
         this.projectTypeKey = projectTypeKey;
     }
 
+    public List<ProjectIssueTypeStatus> getIssueTypeStatuses() {
+        return issueTypeStatuses;
+    }
+
+    public void setIssueTypeStatuses(List<ProjectIssueTypeStatus> issueTypeStatuses) {
+        this.issueTypeStatuses = issueTypeStatuses;
+    }
+
     public Project() {
     }
 
@@ -195,6 +205,7 @@ public class Project implements Parcelable {
         dest.writeParcelable(this.roles, flags);
         dest.writeParcelable(this.avatarUrls, flags);
         dest.writeString(this.projectTypeKey);
+        dest.writeTypedList(this.issueTypeStatuses);
     }
 
     protected Project(Parcel in) {
@@ -213,6 +224,7 @@ public class Project implements Parcelable {
         this.roles = in.readParcelable(Roles.class.getClassLoader());
         this.avatarUrls = in.readParcelable(AvatarUrls.class.getClassLoader());
         this.projectTypeKey = in.readString();
+        this.issueTypeStatuses = in.createTypedArrayList(ProjectIssueTypeStatus.CREATOR);
     }
 
     public static final Creator<Project> CREATOR = new Creator<Project>() {

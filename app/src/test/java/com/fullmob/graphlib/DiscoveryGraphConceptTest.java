@@ -1,4 +1,4 @@
-package com.fullmob.jiraapi;
+package com.fullmob.graphlib;
 
 public class DiscoveryGraphConceptTest {
 //    @Test

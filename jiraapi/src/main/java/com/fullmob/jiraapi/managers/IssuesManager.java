@@ -2,6 +2,7 @@ package com.fullmob.jiraapi.managers;
 
 import com.fullmob.jiraapi.api.IssuesApi;
 import com.fullmob.jiraapi.models.Issue;
+import com.fullmob.jiraapi.models.issue.Issuetype;
 import com.fullmob.jiraapi.requests.TransitionRequest;
 import com.fullmob.jiraapi.requests.issue.Transition;
 import com.fullmob.jiraapi.responses.IssueTransitionsResponse;
@@ -59,5 +60,9 @@ public class IssuesManager extends AbstractApiManager<IssuesApi> {
 
     public Response moveIssueSync(String key, String transitionId) throws IOException {
         return api.moveIssueSync(key, new TransitionRequest(new Transition(transitionId))).execute();
+    }
+
+    public Response<Issuetype> getIssueTypeAsync(String issueTypeId) throws IOException {
+        return api.getIssueTypeAsync(issueTypeId).execute();
     }
 }

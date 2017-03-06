@@ -15,4 +15,6 @@ public interface ProjectsView extends BaseView {
     void showErrorOccurred();
 
     void proceedToMainScreen();
+
+    void proceedToIssuesType();
 }

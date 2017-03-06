@@ -4,6 +4,7 @@ package com.fullmob.jiraboard.di.components;
 import com.fullmob.jiraboard.app.FullmobAppInterface;
 import com.fullmob.jiraboard.di.modules.MainModule;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
+import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
 import com.fullmob.jiraboard.managers.security.EncrypterInterface;
 import com.fullmob.jiraboard.managers.serializers.SerializerInterface;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
@@ -22,6 +23,8 @@ public interface MainComponent {
 
     FullmobAppInterface getApp();
 
+    SecuredImagesManagerInterface getSecuredImagesManagerInterface();
+
     EncryptedStorage getEncryptedStorage();
 
     EncrypterInterface getEncryptionManager();
@@ -29,4 +32,5 @@ public interface MainComponent {
     DBManagerInterface getDb();
 
     ApiComponent plus();
+
 }

@@ -1,6 +1,5 @@
 package com.fullmob.jiraboard.ui.projects;
 
-import com.fullmob.jiraboard.db.data.JiraProject;
 import com.fullmob.jiraboard.managers.projects.ProjManager;
 import com.fullmob.jiraboard.ui.AbstractPresenter;
 import com.fullmob.jiraboard.ui.models.UIProject;
@@ -45,8 +44,8 @@ public class ProjectsPresenter extends AbstractPresenter<ProjectsView> {
             });
     }
 
-    public void onProjectSelected(JiraProject jiraProject) {
-        projManager.saveDefaultProject(jiraProject);
-        getView().proceedToMainScreen();
+    public void onProjectSelected(UIProject project) {
+        projManager.saveDefaultProject(project);
+        getView().proceedToIssuesType();
     }
 }

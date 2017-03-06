@@ -6,13 +6,20 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.fullmob.jiraboard.app.FullmobAppInterface;
+import com.fullmob.jiraboard.managers.workflow.WorkflowDiscoveryManager;
+
+import javax.inject.Inject;
+
 public class WorkflowDiscoveryService extends Service {
-    public WorkflowDiscoveryService() {
-    }
 
     private static final String START_DISCOVERY_ACTION = "START_DISCOVERY_ACTION";
     private static final String STOP_DISCOVERY_ACTION = "STOP_DISCOVERY_ACTION";
 
+    @Inject WorkflowDiscoveryManager manager;
+
+    public WorkflowDiscoveryService() {
+    }
 
     @Nullable
     @Override
@@ -26,7 +33,6 @@ public class WorkflowDiscoveryService extends Service {
         context.startService(intent);
     }
 
-    // call only in case when you user login/loggedOut or changing country/location
     public static void stop(Context context) {
         Intent intent = new Intent(context, WorkflowDiscoveryService.class);
         intent.setAction(STOP_DISCOVERY_ACTION);
@@ -61,6 +67,10 @@ public class WorkflowDiscoveryService extends Service {
     }
 
     private void injectDependencies() {
+        getApp().createWorkflowDiscoveryComponent().inject(this);
+    }
 
+    public FullmobAppInterface getApp() {
+        return (FullmobAppInterface) getApplication();
     }
 }

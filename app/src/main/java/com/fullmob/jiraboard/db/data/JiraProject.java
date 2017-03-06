@@ -2,17 +2,22 @@ package com.fullmob.jiraboard.db.data;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 import io.realm.annotations.Required;
 
 @RealmClass
 public class JiraProject extends RealmObject {
 
+    @PrimaryKey
     @Required
     private String id;
 
     @Required
-    private String subdomain;
+    private String jiraId;
+
+    @Required
+    private String subDomain;
 
     private String expand;
 
@@ -25,10 +30,17 @@ public class JiraProject extends RealmObject {
     private String name;
 
     private String description;
-    private RealmList<JiraIssuetype> issueTypes = null;
+
+    private RealmList<JiraIssueType> issueTypes;
+
     private String assigneeType;
+
     private JiraAvatarUrls avatarUrls;
+
     private String projectTypeKey;
+
+    public JiraProject() {
+    }
 
     public String getExpand() {
         return expand;
@@ -70,11 +82,11 @@ public class JiraProject extends RealmObject {
         this.description = description;
     }
 
-    public RealmList<JiraIssuetype> getIssueTypes() {
+    public RealmList<JiraIssueType> getIssueTypes() {
         return issueTypes;
     }
 
-    public void setIssueTypes(RealmList<JiraIssuetype> issueTypes) {
+    public void setIssueTypes(RealmList<JiraIssueType> issueTypes) {
         this.issueTypes = issueTypes;
     }
 
@@ -111,10 +123,18 @@ public class JiraProject extends RealmObject {
     }
 
     public String getSubDomain() {
-        return subdomain;
+        return subDomain;
     }
 
     public void setSubDomain(String subDomain) {
-        this.subdomain = subDomain;
+        this.subDomain = subDomain;
+    }
+
+    public String getJiraId() {
+        return jiraId;
+    }
+
+    public void setJiraId(String jiraId) {
+        this.jiraId = jiraId;
     }
 }

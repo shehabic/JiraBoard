@@ -24,4 +24,8 @@
 
     <string name="action_settings">Settings</string>
     <string name="please_select_a_project">Please select a project</string>
+    <string name="issue_types">Issue Types</string>
+    <string name="explored">Explored?</string>
+    <string name="action">Action</string>
+    <string name="workflows">Workflows</string>
 </resources>

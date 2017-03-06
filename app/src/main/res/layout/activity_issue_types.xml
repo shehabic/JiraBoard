@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        >
+
+        <TextView
+            android:id="@+id/issue_types"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_weight="2"
+            android:gravity="start|center_vertical"
+            android:text="@string/issue_types"
+            android:textAlignment="viewStart"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/workflow_discovered"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="@string/explored"
+            android:textAlignment="viewStart"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/discover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_weight="1"
+            android:gravity="end|center_vertical"
+            android:text="@string/action"
+            android:textAlignment="textEnd"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/issue_types_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="64dp"/>
+
+    <LinearLayout
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginBottom="0dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="start|center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:gravity="start|center_vertical"
+            android:text="@string/issue_types"
+            android:textAlignment="viewStart"/>
+
+        <TextView
+            android:textColor="@color/yellow"
+            android:id="@+id/total_issue_types"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:text="16"
+            android:textAlignment="viewStart"/>
+
+        <TextView
+            android:layout_marginLeft="32dp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:gravity="start|center_vertical"
+            android:text="@string/workflows"
+            android:textAlignment="viewStart"/>
+
+        <TextView
+            android:textColor="@color/yellow"
+            android:id="@+id/total_workflows"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:text="2"
+            android:textAlignment="viewStart"/>
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/loader_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</FrameLayout>

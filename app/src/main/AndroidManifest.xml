@@ -62,6 +62,8 @@
 
         <activity android:name=".ui.projects.ProjectsActivity">
         </activity>
+        <activity android:name=".ui.issuetypes.IssueTypesActivity">
+        </activity>
     </application>
 
 </manifest>

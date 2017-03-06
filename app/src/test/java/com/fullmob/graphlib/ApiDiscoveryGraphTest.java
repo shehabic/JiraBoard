@@ -1,6 +1,5 @@
-package com.fullmob.jiraapi;
+package com.fullmob.graphlib;
 
-import com.fullmob.graphlib.TransitionLink;
 import com.fullmob.graphlib.discovery.DiscoveryStatus;
 import com.fullmob.graphlib.discovery.WorkflowDiscovery;
 import com.fullmob.jiraapi.managers.IssuesManager;
@@ -40,7 +39,7 @@ public class ApiDiscoveryGraphTest extends BaseUnitTest {
                     System.out.println(new Gson().toJson(status));
                     lock.countDown();
                     for (TransitionLink link : status.getVertices()) {
-                        System.out.print(link.from + "-----[" + link.via + "]------>" + link.to);
+                        System.out.print(link.from + "-----[" + link.linkId + "]------>" + link.to);
                     }
                 }
             }

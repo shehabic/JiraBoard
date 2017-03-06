@@ -9,18 +9,18 @@ import io.realm.annotations.Required;
 public class JiraSubDomain extends RealmObject {
 
     @Required
-    public String subdomain;
+    public String subDomain;
 
     public RealmList<JiraProject> projects;
 
     public Date createdAt;
 
     public String getSubDomain() {
-        return subdomain;
+        return subDomain;
     }
 
     public void setSubDomain(String subDomain) {
-        this.subdomain= subDomain;
+        this.subDomain = subDomain;
     }
 
     public RealmList<JiraProject> getProjects() {

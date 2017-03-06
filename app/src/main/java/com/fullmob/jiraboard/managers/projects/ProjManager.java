@@ -1,15 +1,21 @@
 package com.fullmob.jiraboard.managers.projects;
 
+import com.fullmob.jiraapi.managers.IssuesManager;
 import com.fullmob.jiraapi.managers.ProjectsManager;
 import com.fullmob.jiraapi.models.Project;
-import com.fullmob.jiraboard.db.data.JiraProject;
+import com.fullmob.jiraapi.models.ProjectIssueTypeStatus;
+import com.fullmob.jiraapi.models.issue.Issuetype;
 import com.fullmob.jiraboard.exceptions.SubDomainNotStoredException;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
-import com.fullmob.jiraboard.managers.db.Mapper;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
+import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -17,16 +23,21 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class ProjManager {
-    private final ProjectsManager api;
+    private final ProjectsManager projectsApi;
     private final DBManagerInterface dbManager;
     private final EncryptedStorage encStorage;
-    private final Mapper mapper;
+    private final IssuesManager issuesApi;
 
-    public ProjManager(ProjectsManager api, DBManagerInterface dbManager, EncryptedStorage encStorage) {
-        this.api = api;
+    public ProjManager(
+        ProjectsManager api,
+        IssuesManager issuesApi,
+        DBManagerInterface dbManager,
+        EncryptedStorage encStorage
+    ) {
+        this.projectsApi = api;
+        this.issuesApi = issuesApi;
         this.dbManager = dbManager;
         this.encStorage = encStorage;
-        this.mapper = new Mapper();
     }
 
     public rx.Observable<List<UIProject>> findAllJiraProjects() {
@@ -49,7 +60,9 @@ public class ProjManager {
                     List<UIProject> projects = jiraProjects;
                     if (jiraProjects.size() == 0) {
                         try {
-                            List<Project> apiProjects = api.getProjectsAsync();
+                            List<Project> apiProjects = projectsApi.getProjectsAsync();
+                            completeAllStatusesForProjects(apiProjects);
+
                             return saveProjects(subDomain, apiProjects);
                         } catch (java.io.IOException e) {
                         }
@@ -64,6 +77,36 @@ public class ProjManager {
                     throwable.printStackTrace();
                 }
             });
+    }
+
+    private void completeAllStatusesForProjects(List<Project> apiProjects) {
+        Map<String, Issuetype> cachedIssueTypes = new HashMap<>();
+        for (Project project : apiProjects) {
+            try {
+                project.setIssueTypeStatuses(projectsApi.getProjectIssueStatus(project.getId()));
+                fetchUniqueIssueTypes(project, cachedIssueTypes);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void fetchUniqueIssueTypes(Project project, Map<String, Issuetype> cachedIssueTypes) {
+        for (ProjectIssueTypeStatus projectIssueTypeStatus : project.getIssueTypeStatuses()) {
+            String id = projectIssueTypeStatus.getId();
+            if (!cachedIssueTypes.containsKey(id)) {
+                try {
+                    Issuetype issuetype = issuesApi.getIssueTypeAsync(id).body();
+                    cachedIssueTypes.put(issuetype.getId(), issuetype);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (cachedIssueTypes.containsKey(id)) {
+                projectIssueTypeStatus.setAvatarId(String.valueOf(cachedIssueTypes.get(id).getAvatarId()));
+                projectIssueTypeStatus.setIconUrl(String.valueOf(cachedIssueTypes.get(id).getIconUrl()));
+            }
+        }
     }
 
     private rx.Observable<List<UIProject>> saveProjects(final String subDomain, List<Project> projects) {
@@ -84,11 +127,19 @@ public class ProjManager {
             });
     }
 
-    public void saveDefaultProject(JiraProject jiraProject) {
-
+    public void saveDefaultProject(UIProject jiraProject) {
+        encStorage.saveDefaultProject(jiraProject);
     }
 
     public Observable<List<UIProject>> getAllJiraProjects() {
         return Observable.just(dbManager.findAllProjects(encStorage.getSubDomain()));
+    }
+
+    public Observable<List<UIIssueType>> findAllIssueTypesInCurrentProject() {
+        return Observable.just(dbManager.findProjectIssueTypes(encStorage.getDefaultProject()));
+    }
+
+    public Observable<HashSet<String>> findUniqueWorkflowsInCurrentProject() {
+        return Observable.just(dbManager.findProjectWorkflows(encStorage.getDefaultProject()));
     }
 }

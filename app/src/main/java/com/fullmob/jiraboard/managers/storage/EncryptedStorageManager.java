@@ -1,6 +1,7 @@
 package com.fullmob.jiraboard.managers.storage;
 
 import com.fullmob.jiraboard.managers.security.EncrypterInterface;
+import com.fullmob.jiraboard.ui.models.UIProject;
 
 public class EncryptedStorageManager implements EncryptedStorage {
 
@@ -8,6 +9,7 @@ public class EncryptedStorageManager implements EncryptedStorage {
     private static final String JIRA_KEY_USERNAME = "jira_username";
     private static final String JIRA_KEY_PASSWORD = "jira_password";
     private static final String JIRA_KEY_SUBDOMAIN = "jira_subdomain";
+    private static final String JIRA_DEFAULT_PROJECT = "jira_default_project";
 
     private final LocalStorageInterface localStorage;
     private final EncrypterInterface encrypter;
@@ -38,6 +40,11 @@ public class EncryptedStorageManager implements EncryptedStorage {
     }
 
     @Override
+    public String getDefaultProject() {
+        return localStorage.getString(JIRA_DEFAULT_PROJECT);
+    }
+
+    @Override
     public void saveSubDomain(String subDomain) {
         localStorage.putString(JIRA_KEY_SUBDOMAIN, subDomain);
     }
@@ -58,5 +65,10 @@ public class EncryptedStorageManager implements EncryptedStorage {
     @Override
     public void deletePassword() {
         localStorage.delete(JIRA_KEY_PASSWORD);
+    }
+
+    @Override
+    public void saveDefaultProject(UIProject project) {
+        localStorage.putString(JIRA_DEFAULT_PROJECT, project.getId());
     }
 }
