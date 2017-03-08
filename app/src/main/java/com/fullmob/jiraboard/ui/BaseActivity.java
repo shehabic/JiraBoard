@@ -13,10 +13,14 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showLoading() {
-        findViewById(R.id.loader_layout).setVisibility(View.VISIBLE);
+        if (findViewById(R.id.loader_layout) != null) {
+            findViewById(R.id.loader_layout).setVisibility(View.VISIBLE);
+        }
     }
 
     public void hideLoading() {
-        findViewById(R.id.loader_layout).setVisibility(View.GONE);
+        if (findViewById(R.id.loader_layout) != null) {
+            findViewById(R.id.loader_layout).setVisibility(View.GONE);
+        }
     }
 }

@@ -8,9 +8,9 @@ import com.fullmob.jiraapi.api.ProjectsApi;
 import com.fullmob.jiraapi.api.UserApi;
 import com.fullmob.jiraapi.config.ApiConfig;
 import com.fullmob.jiraapi.managers.AuthManager;
-import com.fullmob.jiraapi.managers.IssuesManager;
+import com.fullmob.jiraapi.managers.IssuesApiClient;
 import com.fullmob.jiraapi.managers.JiraCloudUserManager;
-import com.fullmob.jiraapi.managers.ProjectsManager;
+import com.fullmob.jiraapi.managers.ProjectsApiClient;
 import com.fullmob.jiraboard.BuildConfig;
 import com.fullmob.jiraboard.app.FullmobAppInterface;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
@@ -39,8 +39,8 @@ public class ApiModule {
     }
 
     @Provides
-    public IssuesManager providesIssuesManager(OkHttpClient httpClient, ApiConfig apiConfig) {
-        return new IssuesManager(getApi(IssuesApi.class, apiConfig, httpClient));
+    public IssuesApiClient providesIssuesManager(OkHttpClient httpClient, ApiConfig apiConfig) {
+        return new IssuesApiClient(getApi(IssuesApi.class, apiConfig, httpClient));
     }
 
     @Provides
@@ -49,8 +49,8 @@ public class ApiModule {
     }
 
     @Provides
-    public ProjectsManager providesProjectsManager(OkHttpClient httpClient, ApiConfig apiConfig) {
-        return new ProjectsManager(getApi(ProjectsApi.class, apiConfig, httpClient));
+    public ProjectsApiClient providesProjectsManager(OkHttpClient httpClient, ApiConfig apiConfig) {
+        return new ProjectsApiClient(getApi(ProjectsApi.class, apiConfig, httpClient));
     }
 
     @Provides

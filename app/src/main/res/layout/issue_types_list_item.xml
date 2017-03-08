@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="?android:attr/selectableItemBackground"
+              android:layout_height="48dp"
               android:gravity="center"
               android:orientation="horizontal"
-              android:padding="8dp">
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:paddingTop="0dp"
+              android:paddingBottom="0dp"
+
+    >
 
     <LinearLayout
         android:layout_width="0dp"
@@ -42,6 +46,8 @@
         android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatImageView
+            android:visibility="gone"
+            android:src="@drawable/ic_discovered"
             android:id="@+id/issue_explored"
             android:layout_width="32dp"
             android:layout_height="32dp"
@@ -50,19 +56,24 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="wrap_content"
+        android:id="@+id/action_explore"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_weight="1"
+        android:gravity="end|center_vertical"
+        android:visibility="gone"
+        android:layout_weight="0"
         android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/action_explore"
+            android:src="@drawable/ic_discover"
+            android:id="@+id/icon_explore"
+            android:tint="@color/colorPrimaryDark"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_gravity="center"
+            android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
             />
     </LinearLayout>
 

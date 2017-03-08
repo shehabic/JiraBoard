@@ -1,6 +1,7 @@
 package com.fullmob.jiraboard.di.modules;
 
-import com.fullmob.jiraboard.managers.projects.ProjManager;
+import com.fullmob.jiraboard.managers.issues.IssuesManager;
+import com.fullmob.jiraboard.managers.projects.ProjectsManager;
 import com.fullmob.jiraboard.managers.workflow.WorkflowDiscoveryManager;
 import com.fullmob.jiraboard.ui.issuetypes.IssueTypesScreenPresenter;
 import com.fullmob.jiraboard.ui.issuetypes.IssueTypesView;
@@ -20,10 +21,11 @@ public class IssueTypesModule {
 
     @Provides
     public IssueTypesScreenPresenter providesIssueTypesScreenPresenter(
-        ProjManager projManager,
-        WorkflowDiscoveryManager workflowDiscoveryManager
+        ProjectsManager projectsManager,
+        WorkflowDiscoveryManager workflowDiscoveryManager,
+        IssuesManager issuesManager
     ) {
-        return new IssueTypesScreenPresenter(view.get(), projManager, workflowDiscoveryManager);
+        return new IssueTypesScreenPresenter(view.get(), projectsManager, workflowDiscoveryManager, issuesManager);
     }
 
 }

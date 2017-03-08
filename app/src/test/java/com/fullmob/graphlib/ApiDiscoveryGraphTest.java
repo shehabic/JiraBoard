@@ -2,8 +2,8 @@ package com.fullmob.graphlib;
 
 import com.fullmob.graphlib.discovery.DiscoveryStatus;
 import com.fullmob.graphlib.discovery.WorkflowDiscovery;
-import com.fullmob.jiraapi.managers.IssuesManager;
-import com.fullmob.jiraapi.managers.ProjectsManager;
+import com.fullmob.jiraapi.managers.IssuesApiClient;
+import com.fullmob.jiraapi.managers.ProjectsApiClient;
 import com.google.gson.Gson;
 
 import junit.framework.Assert;
@@ -22,7 +22,7 @@ public class ApiDiscoveryGraphTest extends BaseUnitTest {
 
     @Before
     public void setup() {
-        discovery = new WorkflowDiscovery(new IssuesManager(getIssuesApi()), new ProjectsManager(getProjectsApi()), true);
+        discovery = new WorkflowDiscovery(new IssuesApiClient(getIssuesApi()), new ProjectsApiClient(getProjectsApi()), true);
     }
 
     @Test

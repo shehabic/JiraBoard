@@ -1,42 +1,56 @@
 package com.fullmob.jiraboard.db.data;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.RealmClass;
 import io.realm.annotations.Required;
 
 @RealmClass
 public class WorkflowDiscoveryTicket extends RealmObject {
+
+    @Ignore
+    public static final String STATUS_PENDING = "pending";
+    @Ignore
+    public static final String STATUS_PROCESSING = "processing";
+    @Ignore
+    public static final String STATUS_PROCESSED = "processed";
+    @Ignore
+    public static final String STATUS_FAILED = "failed";
+
     @Required
     private String key;
 
-    private JiraSubDomain subDomain;
+    private String subDomain;
 
-    private JiraProject project;
+    private String project;
 
-    @Required
     private String typeId;
 
-    @Required
     private String workflowKey;
 
     private String title;
+
+    @Required
     private String status;
+
     private String statusId;
+
+    @Required
     private String discoveryStatus;
 
-    public JiraSubDomain getSubDomain() {
+    public String getSubDomain() {
         return subDomain;
     }
 
-    public void setSubDomain(JiraSubDomain subDomain) {
+    public void setSubDomain(String subDomain) {
         this.subDomain = subDomain;
     }
 
-    public JiraProject getProject() {
+    public String getProject() {
         return project;
     }
 
-    public void setProject(JiraProject project) {
+    public void setProject(String project) {
         this.project = project;
     }
 
@@ -86,5 +100,13 @@ public class WorkflowDiscoveryTicket extends RealmObject {
 
     public void setTypeId(String typeId) {
         this.typeId = typeId;
+    }
+
+    public String getWorkflowKey() {
+        return workflowKey;
+    }
+
+    public void setWorkflowKey(String workflowKey) {
+        this.workflowKey = workflowKey;
     }
 }

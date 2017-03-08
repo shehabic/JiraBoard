@@ -1,6 +1,6 @@
 package com.fullmob.jiraapi;
 
-import com.fullmob.jiraapi.managers.IssuesManager;
+import com.fullmob.jiraapi.managers.IssuesApiClient;
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraapi.requests.LoginRequest;
 import com.fullmob.jiraapi.responses.AuthResponse;
@@ -43,8 +43,8 @@ public class ApiTest extends BaseUnitTest {
 
     @Test
     public void testTransitionTicket() throws Exception {
-        IssuesManager issuesManager = new IssuesManager(getIssuesApi());
-        issuesManager.moveIssue(TEST_TICKET_ID, "481").subscribe(new Consumer<Response<Issue>>() {
+        IssuesApiClient issuesApiClient = new IssuesApiClient(getIssuesApi());
+        issuesApiClient.moveIssue(TEST_TICKET_ID, "481").subscribe(new Consumer<Response<Issue>>() {
             @Override
             public void accept(Response<Issue> issueResponse) throws Exception {
                 lock.countDown();

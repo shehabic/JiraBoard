@@ -2,6 +2,7 @@ package com.fullmob.jiraboard.ui.issuetypes;
 
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +37,10 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
     public void onBindViewHolder(IssuesViewHolder holder, int position) {
         holder.uiIssueType = issueTypes.get(position);
         holder.itemName.setText(holder.uiIssueType.getName());
+        holder.actionView.setVisibility(TextUtils.isEmpty(holder.uiIssueType.getStatus()) ? View.VISIBLE : View.GONE);
+        holder.isDiscovered.setVisibility(TextUtils.isEmpty(holder.uiIssueType.getStatus()) ? View.GONE : View.VISIBLE);
         try {
-            secureImageLoader.loadSVG(holder.uiIssueType.getIconUrl(), holder.imageView.getContext(), holder.imageView);
+            secureImageLoader.loadSVG(holder.uiIssueType.getIconUrl(), holder.isDiscovered.getContext(), holder.isDiscovered);
         } catch (Exception e) {
 
         }
@@ -55,17 +58,19 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
     }
 
     public class IssuesViewHolder extends RecyclerView.ViewHolder {
-        public AppCompatImageView actionView;
+        public View actionView;
+        public AppCompatImageView actionIcon;
         public View itemView;
         public TextView itemName;
-        public AppCompatImageView imageView;
+        public AppCompatImageView isDiscovered;
         public UIIssueType uiIssueType;
 
         public IssuesViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            this.actionView = (AppCompatImageView) itemView.findViewById(R.id.action_explore);
-            this.imageView = (AppCompatImageView) itemView.findViewById(R.id.issue_type_icon);
+            this.actionIcon = (AppCompatImageView) itemView.findViewById(R.id.icon_explore);
+            this.actionView = itemView.findViewById(R.id.action_explore);
+            this.isDiscovered = (AppCompatImageView) itemView.findViewById(R.id.issue_type_icon);
             this.itemName = (TextView) itemView.findViewById(R.id.issue_type);
         }
 
@@ -73,13 +78,13 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
             actionView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClick(uiIssueType);
+                    listener.onDiscoverTicketClicked(uiIssueType);
                 }
             });
         }
     }
 
     public static interface Listener {
-        void onClick(UIIssueType issueType);
+        void onDiscoverTicketClicked(UIIssueType issueType);
     }
 }

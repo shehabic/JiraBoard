@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import com.fullmob.graphlib.DiscoveryGraph;
 import com.fullmob.graphlib.Node;
 import com.fullmob.graphlib.TransitionLink;
-import com.fullmob.jiraapi.managers.IssuesManager;
-import com.fullmob.jiraapi.managers.ProjectsManager;
+import com.fullmob.jiraapi.managers.IssuesApiClient;
+import com.fullmob.jiraapi.managers.ProjectsApiClient;
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraapi.models.ProjectIssueTypeStatus;
 import com.fullmob.jiraapi.models.issue.Status;
@@ -26,17 +26,17 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 
 public class WorkflowDiscovery {
-    private final IssuesManager manager;
-    private final ProjectsManager projectsManager;
+    private final IssuesApiClient manager;
+    private final ProjectsApiClient projectsApiClient;
     private boolean isDebug;
 
-    public WorkflowDiscovery(IssuesManager manager, ProjectsManager projectsManager) {
-        this(manager, projectsManager, false);
+    public WorkflowDiscovery(IssuesApiClient manager, ProjectsApiClient projectsApiClient) {
+        this(manager, projectsApiClient, false);
     }
 
-    public WorkflowDiscovery(IssuesManager manager, ProjectsManager projectsManager, boolean debug) {
+    public WorkflowDiscovery(IssuesApiClient manager, ProjectsApiClient projectsApiClient, boolean debug) {
         this.manager = manager;
-        this.projectsManager = projectsManager;
+        this.projectsApiClient = projectsApiClient;
         isDebug = debug;
     }
 
@@ -87,7 +87,7 @@ public class WorkflowDiscovery {
 
     private HashSet<String> getListOfPossibleStatusesForTicket(Issue issue, String projectId) throws IOException {
         HashSet<String> statuses = new HashSet<>();
-        List<ProjectIssueTypeStatus> issueTypeStatuses = projectsManager.getProjectIssueStatus(projectId);
+        List<ProjectIssueTypeStatus> issueTypeStatuses = projectsApiClient.getProjectIssueStatus(projectId);
         for (ProjectIssueTypeStatus type : issueTypeStatuses) {
             if (issue.getIssueFields().getIssuetype().getName().equals(type.getName())) {
                 for (Status status : type.getStatuses()) {

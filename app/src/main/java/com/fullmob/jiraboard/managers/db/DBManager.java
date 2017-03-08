@@ -35,6 +35,7 @@ public class DBManager implements DBManagerInterface {
     public static final String COL_PROJECT_ID = "projectId";
     public static final String COL_ID = "id";
     public static final String COL_WORKFLOW_KEY = "workflowKey";
+    public static final String COL_JIRA_ID = "jiraId";
     private Mapper mapper;
 
     public DBManager() {
@@ -299,5 +300,12 @@ public class DBManager implements DBManagerInterface {
         }
 
         return workflows;
+    }
+
+    @Override
+    public UIProject getProject(String projectId) {
+        JiraProject project = getRealm().where(JiraProject.class).equalTo(COL_JIRA_ID, projectId).findFirst();
+
+        return project != null ? mapper.createUIProjectFromDB(project) : null;
     }
 }

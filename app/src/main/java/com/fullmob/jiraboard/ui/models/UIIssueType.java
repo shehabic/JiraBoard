@@ -18,6 +18,8 @@ public class UIIssueType {
 
     private String avatarId;
 
+    private String status;
+
     public UIIssueType() {
     }
 
@@ -83,5 +85,13 @@ public class UIIssueType {
 
     public void setAvatarId(String avatarId) {
         this.avatarId = avatarId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

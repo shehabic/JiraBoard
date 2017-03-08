@@ -1,25 +1,36 @@
 package com.fullmob.jiraboard.db.data.workflow;
 
+import com.fullmob.jiraboard.db.data.WorkflowDiscoveryTicket;
+
 import io.realm.RealmObject;
 import io.realm.annotations.RealmClass;
 import io.realm.annotations.Required;
 
 @RealmClass
 public class Vertices extends RealmObject {
+
     @Required
     private String issueType;
+
     @Required
     private String projectId;
+
     @Required
     private String subDomain;
+
     @Required
     private String sourceStatus;
+
     @Required
     private String linkId;
+
     @Required
     private String linkName;
+
     @Required
     private String targetStatus;
+
+    private WorkflowDiscoveryTicket workflowDiscoveryTicket;
 
     public String getIssueType() {
         return issueType;
@@ -75,5 +86,13 @@ public class Vertices extends RealmObject {
 
     public void setTargetStatus(String targetStatus) {
         this.targetStatus = targetStatus;
+    }
+
+    public WorkflowDiscoveryTicket getWorkflowDiscoveryTicket() {
+        return workflowDiscoveryTicket;
+    }
+
+    public void setWorkflowDiscoveryTicket(WorkflowDiscoveryTicket workflowDiscoveryTicket) {
+        this.workflowDiscoveryTicket = workflowDiscoveryTicket;
     }
 }

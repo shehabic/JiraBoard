@@ -11,9 +11,9 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
-public class ProjectsManager extends AbstractApiManager<ProjectsApi> {
+public class ProjectsApiClient extends AbstractApiManager<ProjectsApi> {
 
-    public ProjectsManager(ProjectsApi api) {
+    public ProjectsApiClient(ProjectsApi api) {
         super(api);
     }
 

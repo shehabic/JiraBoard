@@ -1,7 +1,7 @@
 package com.fullmob.jiraboard.managers.projects;
 
-import com.fullmob.jiraapi.managers.IssuesManager;
-import com.fullmob.jiraapi.managers.ProjectsManager;
+import com.fullmob.jiraapi.managers.IssuesApiClient;
+import com.fullmob.jiraapi.managers.ProjectsApiClient;
 import com.fullmob.jiraapi.models.Project;
 import com.fullmob.jiraapi.models.ProjectIssueTypeStatus;
 import com.fullmob.jiraapi.models.issue.Issuetype;
@@ -22,15 +22,15 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class ProjManager {
-    private final ProjectsManager projectsApi;
+public class ProjectsManager {
+    private final ProjectsApiClient projectsApi;
     private final DBManagerInterface dbManager;
     private final EncryptedStorage encStorage;
-    private final IssuesManager issuesApi;
+    private final IssuesApiClient issuesApi;
 
-    public ProjManager(
-        ProjectsManager api,
-        IssuesManager issuesApi,
+    public ProjectsManager(
+        ProjectsApiClient api,
+        IssuesApiClient issuesApi,
         DBManagerInterface dbManager,
         EncryptedStorage encStorage
     ) {
@@ -141,5 +141,9 @@ public class ProjManager {
 
     public Observable<HashSet<String>> findUniqueWorkflowsInCurrentProject() {
         return Observable.just(dbManager.findProjectWorkflows(encStorage.getDefaultProject()));
+    }
+
+    public Observable<UIProject> getProject(String projectId) {
+        return Observable.just(dbManager.getProject(projectId));
     }
 }

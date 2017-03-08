@@ -28,4 +28,15 @@
     <string name="explored">Explored?</string>
     <string name="action">Action</string>
     <string name="workflows">Workflows</string>
+    <string name="jira_ticket_key">Please enter ticket key</string>
+    <string name="discover">Discover</string>
+    <string name="cancel">Cancel</string>
+    <string name="workflow_discovery">Workflow Discovery</string>
+    <string name="enter_ticket_key_for_discover" formatted="false"><![CDATA[
+        Please create a new ticket of type <font color="#303F9F"><b>"%s"</b></font> in the project <font color="#303F9F"><b>"%s"</b></font> and enter its number in the following field
+    ]]></string>
+    <string name="invalid_issue_key">Invalid issue key</string>
+    <string name="invalid_issue_type" formatted="false"><![CDATA[
+        Invalid issue type, expected <b>%s</b> but found <b>%s</b>
+    ]]></string>
 </resources>

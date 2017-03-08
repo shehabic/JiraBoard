@@ -26,4 +26,6 @@ public interface DBManagerInterface {
     List<UIIssueType> findProjectIssueTypes(String projectId);
 
     HashSet<String> findProjectWorkflows(String projectId);
+
+    UIProject getProject(String projectId);
 }

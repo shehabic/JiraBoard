@@ -1,6 +1,6 @@
 package com.fullmob.jiraboard.di.modules;
 
-import com.fullmob.jiraboard.managers.projects.ProjManager;
+import com.fullmob.jiraboard.managers.projects.ProjectsManager;
 import com.fullmob.jiraboard.ui.projects.ProjectsPresenter;
 import com.fullmob.jiraboard.ui.projects.ProjectsView;
 
@@ -18,7 +18,7 @@ public class ProjectsScreenModule {
     }
 
     @Provides
-    public ProjectsPresenter providesProjectsPresenter(ProjManager projManager) {
-        return new ProjectsPresenter(view.get(), projManager);
+    public ProjectsPresenter providesProjectsPresenter(ProjectsManager projectsManager) {
+        return new ProjectsPresenter(view.get(), projectsManager);
     }
 }

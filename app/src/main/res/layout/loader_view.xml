@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/loader_layout"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -8,9 +9,17 @@
               android:orientation="vertical"
               android:visibility="gone">
 
-    <android.support.v4.widget.ContentLoadingProgressBar
-        android:id="@+id/loader_progress"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"/>
+    <io.github.yuweiguocn.lib.squareloading.SquareLoading
+        android:id="@+id/extra_loader"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:dividerSize="3dp"
+        app:squareColor="@color/colorPrimaryDark"
+        app:squareCorner="2dp"
+        app:squareSize="16dp"
+        app:xCount="6"
+        app:yCount="3"
+        />
+
 </LinearLayout>

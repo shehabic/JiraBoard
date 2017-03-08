@@ -1,6 +1,6 @@
 package com.fullmob.jiraboard.ui.projects;
 
-import com.fullmob.jiraboard.managers.projects.ProjManager;
+import com.fullmob.jiraboard.managers.projects.ProjectsManager;
 import com.fullmob.jiraboard.ui.AbstractPresenter;
 import com.fullmob.jiraboard.ui.models.UIProject;
 
@@ -11,11 +11,11 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class ProjectsPresenter extends AbstractPresenter<ProjectsView> {
-    private final ProjManager projManager;
+    private final ProjectsManager projectsManager;
 
-    public ProjectsPresenter(ProjectsView view, ProjManager projManager) {
+    public ProjectsPresenter(ProjectsView view, ProjectsManager projectsManager) {
         super(view);
-        this.projManager = projManager;
+        this.projectsManager = projectsManager;
     }
 
     public void onViewPaused() {
@@ -23,12 +23,14 @@ public class ProjectsPresenter extends AbstractPresenter<ProjectsView> {
     }
 
     public void onViewResumed() {
-        projManager.findAllJiraProjects()
+        getView().showLoading();
+        projectsManager.findAllJiraProjects()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Action1<List<UIProject>>() {
                 @Override
                 public void call(List<UIProject> jiraProjects) {
+                    getView().hideLoading();
                     if (jiraProjects.size() == 0) {
                         getView().showNoProjectsFoundError();
                     } else {
@@ -38,6 +40,7 @@ public class ProjectsPresenter extends AbstractPresenter<ProjectsView> {
             }, new Action1<Throwable>() {
                 @Override
                 public void call(Throwable throwable) {
+                    getView().hideLoading();
                     throwable.printStackTrace();
                     getView().showErrorOccurred();
                 }
@@ -45,7 +48,7 @@ public class ProjectsPresenter extends AbstractPresenter<ProjectsView> {
     }
 
     public void onProjectSelected(UIProject project) {
-        projManager.saveDefaultProject(project);
+        projectsManager.saveDefaultProject(project);
         getView().proceedToIssuesType();
     }
 }

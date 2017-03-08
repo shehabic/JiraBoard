@@ -15,12 +15,16 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
-public class IssuesManager extends AbstractApiManager<IssuesApi> {
+public class IssuesApiClient extends AbstractApiManager<IssuesApi> {
 
-    public IssuesManager(IssuesApi issuesApi) {
+    public IssuesApiClient(IssuesApi issuesApi) {
         super(issuesApi);
     }
 
+
+    public Observable<Response<Issue>> getIssue(final String issueKey) {
+        return api.getIssue(issueKey).subscribeOn(Schedulers.io());
+    }
     public Observable<Response<Issue>> moveIssue(final String issueKey, final String toStateId) {
         return api.getPossibleIssueTransitions(issueKey)
             .subscribeOn(Schedulers.io())
