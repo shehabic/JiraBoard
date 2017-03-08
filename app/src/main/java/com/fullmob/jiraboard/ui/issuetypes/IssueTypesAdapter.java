@@ -40,7 +40,7 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
         holder.actionView.setVisibility(TextUtils.isEmpty(holder.uiIssueType.getStatus()) ? View.VISIBLE : View.GONE);
         holder.isDiscovered.setVisibility(TextUtils.isEmpty(holder.uiIssueType.getStatus()) ? View.GONE : View.VISIBLE);
         try {
-            secureImageLoader.loadSVG(holder.uiIssueType.getIconUrl(), holder.isDiscovered.getContext(), holder.isDiscovered);
+            secureImageLoader.loadSVG(holder.uiIssueType.getIconUrl(), holder.issueTypeIcon.getContext(), holder.issueTypeIcon);
         } catch (Exception e) {
 
         }
@@ -63,6 +63,7 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
         public View itemView;
         public TextView itemName;
         public AppCompatImageView isDiscovered;
+        public AppCompatImageView issueTypeIcon;
         public UIIssueType uiIssueType;
 
         public IssuesViewHolder(View itemView) {
@@ -70,7 +71,8 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
             this.itemView = itemView;
             this.actionIcon = (AppCompatImageView) itemView.findViewById(R.id.icon_explore);
             this.actionView = itemView.findViewById(R.id.action_explore);
-            this.isDiscovered = (AppCompatImageView) itemView.findViewById(R.id.issue_type_icon);
+            this.issueTypeIcon = (AppCompatImageView) itemView.findViewById(R.id.issue_type_icon);
+            this.isDiscovered = (AppCompatImageView) itemView.findViewById(R.id.issue_explored);
             this.itemName = (TextView) itemView.findViewById(R.id.issue_type);
         }
 
