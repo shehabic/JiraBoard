@@ -19,7 +19,7 @@ public interface FullmobAppInterface {
     MainComponent getMainComponent();
     void addDebugInterceptors(HttpClientBuilder builder);
 
-    public LoginScreenComponent createHomeScreenComponent();
+    LoginScreenComponent createHomeScreenComponent();
 
     LoginScreenComponent createLoginScreenComponent(LoginView loginView);
 

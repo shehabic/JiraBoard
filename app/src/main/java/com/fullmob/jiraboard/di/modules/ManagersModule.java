@@ -7,7 +7,11 @@ import com.fullmob.jiraapi.managers.JiraCloudUserManager;
 import com.fullmob.jiraapi.managers.ProjectsApiClient;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.issues.IssuesManager;
+import com.fullmob.jiraboard.managers.jobs.JobsHandler;
+import com.fullmob.jiraboard.managers.jobs.handlers.WorkflowJobHandler;
+import com.fullmob.jiraboard.managers.jobs.job.WorkflowDiscoveryJob;
 import com.fullmob.jiraboard.managers.projects.ProjectsManager;
+import com.fullmob.jiraboard.managers.queue.QueueManager;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
 import com.fullmob.jiraboard.managers.storage.LocalStorageInterface;
 import com.fullmob.jiraboard.managers.user.UserManager;
@@ -49,8 +53,17 @@ public class ManagersModule {
     @Provides
     public WorkflowDiscoveryManager providesWorkflowDiscoveryManager(
         DBManagerInterface db,
-        WorkflowDiscovery workflowDiscovery
+        WorkflowDiscovery workflowDiscovery,
+        QueueManager queue
     ) {
-        return new WorkflowDiscoveryManager(workflowDiscovery, db);
+        return new WorkflowDiscoveryManager(workflowDiscovery, db, queue);
+    }
+
+    @Provides
+    public JobsHandler jobsHandler(WorkflowDiscoveryManager discoveryManager) {
+        JobsHandler handler = new JobsHandler();
+        handler.addJobHandler(WorkflowDiscoveryJob.JOB_TYPE, new WorkflowJobHandler(discoveryManager));
+
+        return handler;
     }
 }

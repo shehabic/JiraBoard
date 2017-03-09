@@ -5,6 +5,8 @@ import com.fullmob.jiraboard.app.FullmobAppInterface;
 import com.fullmob.jiraboard.di.modules.MainModule;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
+import com.fullmob.jiraboard.managers.jobs.JobsHandler;
+import com.fullmob.jiraboard.managers.queue.QueueManager;
 import com.fullmob.jiraboard.managers.security.EncrypterInterface;
 import com.fullmob.jiraboard.managers.serializers.SerializerInterface;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
@@ -20,6 +22,8 @@ public interface MainComponent {
     LocalStorageInterface getLocalStorage();
 
     SerializerInterface getSerializer();
+
+    QueueManager getQueueManager();
 
     FullmobAppInterface getApp();
 

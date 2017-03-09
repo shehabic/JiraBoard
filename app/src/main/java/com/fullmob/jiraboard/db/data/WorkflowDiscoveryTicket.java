@@ -30,9 +30,6 @@ public class WorkflowDiscoveryTicket extends RealmObject {
 
     private String title;
 
-    @Required
-    private String status;
-
     private String statusId;
 
     @Required
@@ -68,14 +65,6 @@ public class WorkflowDiscoveryTicket extends RealmObject {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getStatusId() {

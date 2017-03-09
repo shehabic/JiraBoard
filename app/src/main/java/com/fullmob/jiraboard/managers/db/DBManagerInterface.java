@@ -1,5 +1,6 @@
 package com.fullmob.jiraboard.managers.db;
 
+import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraapi.models.Project;
 import com.fullmob.jiraboard.db.data.WorkflowDiscoveryTicket;
 import com.fullmob.jiraboard.ui.models.SubDomain;
@@ -28,4 +29,6 @@ public interface DBManagerInterface {
     HashSet<String> findProjectWorkflows(String projectId);
 
     UIProject getProject(String projectId);
+
+    void queueWorkflowDiscoveryTicket(Issue issue, UIProject uiProject, UIIssueType issueType);
 }

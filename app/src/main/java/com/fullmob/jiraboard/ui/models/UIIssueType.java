@@ -1,6 +1,9 @@
 package com.fullmob.jiraboard.ui.models;
 
-public class UIIssueType {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class UIIssueType implements Parcelable {
 
     private String projectId;
 
@@ -94,4 +97,46 @@ public class UIIssueType {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.projectId);
+        dest.writeString(this.id);
+        dest.writeString(this.self);
+        dest.writeString(this.name);
+        dest.writeValue(this.subtask);
+        dest.writeString(this.workflowKey);
+        dest.writeString(this.iconUrl);
+        dest.writeString(this.avatarId);
+        dest.writeString(this.status);
+    }
+
+    protected UIIssueType(Parcel in) {
+        this.projectId = in.readString();
+        this.id = in.readString();
+        this.self = in.readString();
+        this.name = in.readString();
+        this.subtask = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.workflowKey = in.readString();
+        this.iconUrl = in.readString();
+        this.avatarId = in.readString();
+        this.status = in.readString();
+    }
+
+    public static final Parcelable.Creator<UIIssueType> CREATOR = new Parcelable.Creator<UIIssueType>() {
+        @Override
+        public UIIssueType createFromParcel(Parcel source) {
+            return new UIIssueType(source);
+        }
+
+        @Override
+        public UIIssueType[] newArray(int size) {
+            return new UIIssueType[size];
+        }
+    };
 }

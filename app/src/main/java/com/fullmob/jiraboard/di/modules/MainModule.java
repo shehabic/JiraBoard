@@ -1,11 +1,14 @@
 package com.fullmob.jiraboard.di.modules;
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.fullmob.jiraboard.app.FullmobAppInterface;
 import com.fullmob.jiraboard.app.FullmobDiApp;
 import com.fullmob.jiraboard.managers.db.DBManager;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.images.GlideSecuredImagesLoader;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
+import com.fullmob.jiraboard.managers.queue.QueueManager;
 import com.fullmob.jiraboard.managers.security.EncrypterInterface;
 import com.fullmob.jiraboard.managers.security.EncryptionManager;
 import com.fullmob.jiraboard.managers.serializers.GsonSerializer;
@@ -75,5 +78,14 @@ public class MainModule {
     @Provides
     public SecuredImagesManagerInterface providesSecuredImagesManagerInterface(EncryptedStorage encryptedStorage) {
         return new GlideSecuredImagesLoader(encryptedStorage);
+    }
+
+    @Provides
+    public QueueManager providesQueueManager(FullmobAppInterface app) {
+        return new QueueManager(
+            new FirebaseJobDispatcher(
+                new GooglePlayDriver(app.getContext())
+            )
+        );
     }
 }

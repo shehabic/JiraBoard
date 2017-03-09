@@ -1,5 +1,6 @@
 package com.fullmob.jiraboard.managers.db;
 
+import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraapi.models.Project;
 import com.fullmob.jiraapi.models.ProjectIssueTypeStatus;
 import com.fullmob.jiraapi.models.issue.Status;
@@ -307,5 +308,20 @@ public class DBManager implements DBManagerInterface {
         JiraProject project = getRealm().where(JiraProject.class).equalTo(COL_JIRA_ID, projectId).findFirst();
 
         return project != null ? mapper.createUIProjectFromDB(project) : null;
+    }
+
+    @Override
+    public void queueWorkflowDiscoveryTicket(Issue issue, UIProject uiProject, UIIssueType issueType) {
+        getRealm().beginTransaction();
+        WorkflowDiscoveryTicket job = getRealm().createObject(WorkflowDiscoveryTicket.class);
+        job.setSubDomain(uiProject.getSubDomain());
+        job.setWorkflowKey(issueType.getWorkflowKey());
+        job.setKey(issue.getKey());
+        job.setProject(uiProject.getId());
+        job.setDiscoveryStatus(WorkflowDiscoveryTicket.STATUS_PENDING);
+        job.setTitle(issue.getIssueFields().getSummary());
+        job.setStatusId(issue.getIssueFields().getStatus().getId());
+        job.setTypeId(issueType.getId());
+        getRealm().commitTransaction();
     }
 }
