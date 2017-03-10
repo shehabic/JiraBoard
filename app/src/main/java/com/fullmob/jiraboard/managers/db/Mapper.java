@@ -13,9 +13,11 @@ import com.fullmob.jiraboard.db.data.JiraIssueStatus;
 import com.fullmob.jiraboard.db.data.JiraIssueType;
 import com.fullmob.jiraboard.db.data.JiraProject;
 import com.fullmob.jiraboard.db.data.JiraStatusCategory;
+import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
 import com.fullmob.jiraboard.ui.models.UIAvatarUrls;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
+import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,5 +173,33 @@ public class Mapper {
         uiIssueType.setAvatarId(jiraIssueType.getAvatarId());
 
         return uiIssueType;
+    }
+
+    public UIWorkflowQueueJob createUIWorkflowQueueJob(WorkflowDiscoveryQueueJob job) {
+        UIWorkflowQueueJob uiJob = new UIWorkflowQueueJob();
+
+        uiJob.setJobKey(job.getJobKey());
+        uiJob.setKey(job.getKey());
+        uiJob.setSubDomain(job.getSubDomain());
+        uiJob.setTypeId(job.getTypeId());
+        uiJob.setStatusId(job.getStatusId());
+        uiJob.setDiscoveryStatus(job.getDiscoveryStatus());
+        uiJob.setProject(job.getProject());
+        uiJob.setWorkflowKey(job.getWorkflowKey());
+        uiJob.setTitle(job.getTitle());
+
+        return uiJob;
+    }
+
+    public void updateWorkflowDiscoveryQueueJob(UIWorkflowQueueJob uiJob, WorkflowDiscoveryQueueJob queueJob) {
+        queueJob.setJobKey(uiJob.getJobKey());
+        queueJob.setKey(uiJob.getKey());
+        queueJob.setSubDomain(uiJob.getSubDomain());
+        queueJob.setTypeId(uiJob.getTypeId());
+        queueJob.setStatusId(uiJob.getStatusId());
+        queueJob.setDiscoveryStatus(uiJob.getDiscoveryStatus());
+        queueJob.setProject(uiJob.getProject());
+        queueJob.setWorkflowKey(uiJob.getWorkflowKey());
+        queueJob.setTitle(uiJob.getTitle());
     }
 }

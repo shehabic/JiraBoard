@@ -21,16 +21,17 @@ public class IssuesApiClient extends AbstractApiManager<IssuesApi> {
         super(issuesApi);
     }
 
-
     public Observable<Response<Issue>> getIssue(final String issueKey) {
         return api.getIssue(issueKey).subscribeOn(Schedulers.io());
     }
+
     public Observable<Response<Issue>> moveIssue(final String issueKey, final String toStateId) {
         return api.getPossibleIssueTransitions(issueKey)
             .subscribeOn(Schedulers.io())
             .concatMap(new Function<Response<IssueTransitionsResponse>, ObservableSource<Response>>() {
                 @Override
                 public ObservableSource<Response> apply(Response<IssueTransitionsResponse> response) throws Exception {
+                    response.raw().close();
                     for (Transition trans : response.body().getTransitions()) {
                         if (trans.getId().equals(toStateId)) {
                             return api.moveIssue(issueKey, new TransitionRequest(trans));
@@ -42,6 +43,7 @@ public class IssuesApiClient extends AbstractApiManager<IssuesApi> {
             .flatMap(new Function<Response, ObservableSource<Response<Issue>>>() {
                 @Override
                 public ObservableSource<Response<Issue>> apply(Response issueResponse) throws Exception {
+                    issueResponse.raw().close();
                     if (issueResponse.code() != 200) {
                         throw new Exception(issueResponse.errorBody().toString());
                     }
@@ -52,13 +54,12 @@ public class IssuesApiClient extends AbstractApiManager<IssuesApi> {
     }
 
     public Response<Issue> getIssueSync(String key) throws IOException {
-        Response<Issue> response = api.getIssueSync(key).execute();
-
-        return response;
+        return api.getIssueSync(key).execute();
     }
 
     public Response<IssueTransitionsResponse> getPossibleIssueTransitionsSync(String key) throws IOException {
         String rand = String.valueOf(System.currentTimeMillis());
+
         return api.getPossibleIssueTransitionsSync(key, rand).execute();
     }
 

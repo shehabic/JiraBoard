@@ -1,5 +1,6 @@
 package com.fullmob.jiraboard.managers.db;
 
+import com.fullmob.graphlib.TransitionLink;
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraapi.models.Project;
 import com.fullmob.jiraapi.models.ProjectIssueTypeStatus;
@@ -11,10 +12,12 @@ import com.fullmob.jiraboard.db.data.JiraIssueType;
 import com.fullmob.jiraboard.db.data.JiraProject;
 import com.fullmob.jiraboard.db.data.JiraStatusCategory;
 import com.fullmob.jiraboard.db.data.JiraSubDomain;
-import com.fullmob.jiraboard.db.data.WorkflowDiscoveryTicket;
+import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
+import com.fullmob.jiraboard.db.data.workflow.Vertices;
 import com.fullmob.jiraboard.ui.models.SubDomain;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
+import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +40,7 @@ public class DBManager implements DBManagerInterface {
     public static final String COL_ID = "id";
     public static final String COL_WORKFLOW_KEY = "workflowKey";
     public static final String COL_JIRA_ID = "jiraId";
+    private static final String COL_WORKFLOW_QUEUE_JOB_KEY = "jobKey";
     private Mapper mapper;
 
     public DBManager() {
@@ -258,7 +262,7 @@ public class DBManager implements DBManagerInterface {
     }
 
     @Override
-    public void saveDiscoveryJob(WorkflowDiscoveryTicket ticket) {
+    public void saveDiscoveryJob(WorkflowDiscoveryQueueJob ticket) {
     }
 
     @Override
@@ -311,17 +315,58 @@ public class DBManager implements DBManagerInterface {
     }
 
     @Override
-    public void queueWorkflowDiscoveryTicket(Issue issue, UIProject uiProject, UIIssueType issueType) {
+    public UIWorkflowQueueJob queueWorkflowDiscoveryTicket(Issue issue, UIProject uiProject, UIIssueType issueType) {
+        String jobKey
+            = issue.getKey() + "_" + uiProject.getId() + "_" + uiProject.getSubDomain() + System.currentTimeMillis();
         getRealm().beginTransaction();
-        WorkflowDiscoveryTicket job = getRealm().createObject(WorkflowDiscoveryTicket.class);
+        WorkflowDiscoveryQueueJob job = getRealm().createObject(WorkflowDiscoveryQueueJob.class);
+        job.setJobKey(jobKey);
         job.setSubDomain(uiProject.getSubDomain());
         job.setWorkflowKey(issueType.getWorkflowKey());
         job.setKey(issue.getKey());
         job.setProject(uiProject.getId());
-        job.setDiscoveryStatus(WorkflowDiscoveryTicket.STATUS_PENDING);
+        job.setDiscoveryStatus(WorkflowDiscoveryQueueJob.STATUS_PENDING);
         job.setTitle(issue.getIssueFields().getSummary());
         job.setStatusId(issue.getIssueFields().getStatus().getId());
         job.setTypeId(issueType.getId());
+        getRealm().commitTransaction();
+
+        return mapper.createUIWorkflowQueueJob(job);
+    }
+
+    @Override
+    public UIWorkflowQueueJob getUIWorkflowDiscoveryJob(String key) {
+        WorkflowDiscoveryQueueJob job = findWorkflowQueueJob(key);
+
+        return job != null ? mapper.createUIWorkflowQueueJob(job) : null;
+    }
+
+    @Override
+    public WorkflowDiscoveryQueueJob findWorkflowQueueJob(String key) {
+        return getRealm().where(WorkflowDiscoveryQueueJob.class).equalTo(COL_WORKFLOW_QUEUE_JOB_KEY, key).findFirst();
+    }
+
+    @Override
+    public void updateWorkflowQueueJob(UIWorkflowQueueJob uiJob) {
+        getRealm().beginTransaction();
+        WorkflowDiscoveryQueueJob job = findWorkflowQueueJob(uiJob.getJobKey());
+        mapper.updateWorkflowDiscoveryQueueJob(uiJob, job);
+        getRealm().commitTransaction();
+    }
+
+    @Override
+    public void addVertex(TransitionLink link, String jobKey) {
+        getRealm().beginTransaction();
+        WorkflowDiscoveryQueueJob job = findWorkflowQueueJob(jobKey);
+        Vertices vertex = getRealm().createObject(Vertices.class);
+        vertex.setSubDomain(job.getSubDomain());
+        vertex.setProjectId(job.getProject());
+        vertex.setIssueType(job.getTypeId());
+        vertex.setLinkId(link.linkId);
+        vertex.setLinkName(link.linkName);
+        vertex.setSourceStatus(link.from);
+        vertex.setTargetStatus(link.to);
+        vertex.setWorkflowDiscoveryTicket(job);
         getRealm().commitTransaction();
     }
 }

@@ -1,5 +1,6 @@
 package com.fullmob.jiraboard.ui.issuetypes;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -140,8 +141,36 @@ public class IssueTypesActivity extends BaseActivity implements IssueTypesView, 
     }
 
     @Override
-    public void showSuccess(Issue issue) {
-
+    public void showSuccess(final Issue issue, final UIIssueType issueType, final UIProject uiProject) {
+        alertDialog.dismiss();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.workflow_discovery);
+        String template = getString(
+            R.string.discovery_ticket_confirmation,
+            issue.getKey() + ": " + issue.getIssueFields().getSummary(),
+            uiProject.getName()
+        );
+        Spanned sp;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            sp = Html.fromHtml(template,Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            sp = Html.fromHtml(template);
+        }
+        builder.setMessage(sp);
+        builder.setPositiveButton(R.string.discover, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                presenter.onDiscoveryConfirmed(issue, issueType, uiProject);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setCancelable(true);
+        builder.show();
     }
 
     @Override

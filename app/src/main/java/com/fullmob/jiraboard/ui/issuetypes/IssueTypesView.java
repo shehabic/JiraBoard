@@ -17,7 +17,7 @@ public interface IssueTypesView extends BaseView {
 
     void showInvalidIssueType(String expectedType, String foundType);
 
-    void showSuccess(Issue issue);
+    void showSuccess(Issue issue, UIIssueType issueType, UIProject uiProject);
 
     void showDialogLoading();
 

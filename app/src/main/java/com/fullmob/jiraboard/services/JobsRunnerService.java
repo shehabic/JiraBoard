@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 public class JobsRunnerService extends JobService {
 
-    public static final String EXTRA_JOB_PAYLOAD = "queue_job_payload";
+    public static final String EXTRA_QUEUE_JOB_KEY = "queue_job_key";
     public static final String EXTRA_JOB_TYPE = "queue_job_type";
 
     @Inject JobsHandler jobsHandler;
@@ -22,13 +22,13 @@ public class JobsRunnerService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters job) {
-        String queueJob = job.getExtras() != null ? job.getExtras().getString(EXTRA_JOB_PAYLOAD) : null;
+        String queueJobKey = job.getExtras() != null ? job.getExtras().getString(EXTRA_QUEUE_JOB_KEY) : null;
         String jobType = job.getExtras() != null ? job.getExtras().getString(EXTRA_JOB_TYPE) : null;
-        if (queueJob != null && jobType != null) {
-            jobsHandler.handleJob(jobType, queueJob);
+        if (queueJobKey != null && jobType != null) {
+            jobsHandler.handleJob(jobType, queueJobKey);
         }
 
-        return queueJob != null;
+        return false;
     }
 
     @Override

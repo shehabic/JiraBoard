@@ -1,23 +1,14 @@
-package com.fullmob.jiraboard.db.data;
+package com.fullmob.jiraboard.ui.models;
 
-import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
-import io.realm.annotations.RealmClass;
-import io.realm.annotations.Required;
+public class UIWorkflowQueueJob {
 
-@RealmClass
-public class WorkflowDiscoveryTicket extends RealmObject {
-
-    @Ignore
     public static final String STATUS_PENDING = "pending";
-    @Ignore
     public static final String STATUS_PROCESSING = "processing";
-    @Ignore
     public static final String STATUS_PROCESSED = "processed";
-    @Ignore
     public static final String STATUS_FAILED = "failed";
 
-    @Required
+    private String jobKey;
+
     private String key;
 
     private String subDomain;
@@ -32,7 +23,6 @@ public class WorkflowDiscoveryTicket extends RealmObject {
 
     private String statusId;
 
-    @Required
     private String discoveryStatus;
 
     public String getSubDomain() {
@@ -97,5 +87,13 @@ public class WorkflowDiscoveryTicket extends RealmObject {
 
     public void setWorkflowKey(String workflowKey) {
         this.workflowKey = workflowKey;
+    }
+
+    public String getJobKey() {
+        return jobKey;
+    }
+
+    public void setJobKey(String jobKey) {
+        this.jobKey = jobKey;
     }
 }

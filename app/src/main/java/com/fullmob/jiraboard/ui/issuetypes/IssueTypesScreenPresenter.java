@@ -113,8 +113,7 @@ public class IssueTypesScreenPresenter extends AbstractPresenter<IssueTypesView>
                     } else if (!issue.getIssueFields().getIssuetype().getName().equals(issueType.getName())) {
                         getView().showInvalidIssueType(issueType.getName(), issue.getIssueFields().getIssuetype().getName());
                     } else {
-                        getView().showSuccess(issue);
-                        workflowDiscoveryManager.scheduleDiscoveryTask(issue, uiProject, issueType);
+                        getView().showSuccess(issue, issueType, uiProject);
                     }
                 }
 
@@ -129,5 +128,9 @@ public class IssueTypesScreenPresenter extends AbstractPresenter<IssueTypesView>
 
                 }
             });
+    }
+
+    public void onDiscoveryConfirmed(Issue issue, UIIssueType issueType, UIProject uiProject) {
+        workflowDiscoveryManager.scheduleDiscoveryTask(issue, uiProject, issueType);
     }
 }

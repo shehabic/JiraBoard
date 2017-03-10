@@ -10,6 +10,7 @@ import com.fullmob.jiraboard.managers.issues.IssuesManager;
 import com.fullmob.jiraboard.managers.jobs.JobsHandler;
 import com.fullmob.jiraboard.managers.jobs.handlers.WorkflowJobHandler;
 import com.fullmob.jiraboard.managers.jobs.job.WorkflowDiscoveryJob;
+import com.fullmob.jiraboard.managers.notifications.NotificationsManager;
 import com.fullmob.jiraboard.managers.projects.ProjectsManager;
 import com.fullmob.jiraboard.managers.queue.QueueManager;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
@@ -60,9 +61,9 @@ public class ManagersModule {
     }
 
     @Provides
-    public JobsHandler jobsHandler(WorkflowDiscoveryManager discoveryManager) {
+    public JobsHandler jobsHandler(WorkflowDiscoveryManager discoveryManager, NotificationsManager notifManager) {
         JobsHandler handler = new JobsHandler();
-        handler.addJobHandler(WorkflowDiscoveryJob.JOB_TYPE, new WorkflowJobHandler(discoveryManager));
+        handler.addJobHandler(WorkflowDiscoveryJob.JOB_TYPE, new WorkflowJobHandler(discoveryManager, notifManager));
 
         return handler;
     }

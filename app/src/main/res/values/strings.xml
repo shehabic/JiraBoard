@@ -39,4 +39,9 @@
     <string name="invalid_issue_type" formatted="false"><![CDATA[
         Invalid issue type, expected <b>%s</b> but found <b>%s</b>
     ]]></string>
+    <string name="discovery_ticket_confirmation" formatted="false"><![CDATA[
+        Are you sure you want to start discovering the Workflow for the ticket <font color="#303F9F"><b>%s</b></font> in project <font color="#303F9F"><b>%s</b></font>.<br>
+        Given that this will lead to continuously changing the state of the ticket for the next 5 minutes?
+    ]]></string>
+    <string name="confirm_discovery">Confirm workflow-discovery ticket</string>
 </resources>

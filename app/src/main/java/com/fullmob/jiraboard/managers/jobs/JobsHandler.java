@@ -14,9 +14,9 @@ public class JobsHandler {
         jobHandlers.put(jobType, jobHandler);
     }
 
-    public void handleJob(String jobType, String queueJob) {
+    public void handleJob(String jobType, String queueJobKey) {
         if (jobHandlers.containsKey(jobType)) {
-            jobHandlers.get(jobType).handleJob(queueJob);
+            jobHandlers.get(jobType).handleJob(queueJobKey);
         } else {
             // @TODO: log error
         }

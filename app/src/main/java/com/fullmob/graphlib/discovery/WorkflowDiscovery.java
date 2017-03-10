@@ -87,7 +87,7 @@ public class WorkflowDiscovery {
 
     private HashSet<String> getListOfPossibleStatusesForTicket(Issue issue, String projectId) throws IOException {
         HashSet<String> statuses = new HashSet<>();
-        List<ProjectIssueTypeStatus> issueTypeStatuses = projectsApiClient.getProjectIssueStatus(projectId);
+        List<ProjectIssueTypeStatus> issueTypeStatuses = projectsApiClient.getProjectIssueStatusesSync(projectId);
         for (ProjectIssueTypeStatus type : issueTypeStatuses) {
             if (issue.getIssueFields().getIssuetype().getName().equals(type.getName())) {
                 for (Status status : type.getStatuses()) {

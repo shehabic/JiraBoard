@@ -60,7 +60,7 @@ public class ProjectsManager {
                     List<UIProject> projects = jiraProjects;
                     if (jiraProjects.size() == 0) {
                         try {
-                            List<Project> apiProjects = projectsApi.getProjectsAsync();
+                            List<Project> apiProjects = projectsApi.getProjectsSync();
                             completeAllStatusesForProjects(apiProjects);
 
                             return saveProjects(subDomain, apiProjects);
@@ -83,7 +83,7 @@ public class ProjectsManager {
         Map<String, Issuetype> cachedIssueTypes = new HashMap<>();
         for (Project project : apiProjects) {
             try {
-                project.setIssueTypeStatuses(projectsApi.getProjectIssueStatus(project.getId()));
+                project.setIssueTypeStatuses(projectsApi.getProjectIssueStatusesSync(project.getId()));
                 fetchUniqueIssueTypes(project, cachedIssueTypes);
             } catch (Exception e) {
                 e.printStackTrace();

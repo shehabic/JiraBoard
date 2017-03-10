@@ -8,11 +8,9 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
-import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.managers.jobs.job.WorkflowDiscoveryJob;
 import com.fullmob.jiraboard.services.JobsRunnerService;
-import com.fullmob.jiraboard.ui.models.UIIssueType;
-import com.google.gson.Gson;
+import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
 
 public class QueueManager {
 
@@ -22,14 +20,11 @@ public class QueueManager {
         this.dispatcher = dispatcher;
     }
 
-    public void enqueueWorkflowDiscoveryJob(Issue issue, UIIssueType issueType) {
-        String key = createWorkflowJobKey(issue, issueType);
-
+    public void enqueueWorkflowDiscoveryJob(UIWorkflowQueueJob queueJob) {
         Bundle extras = new Bundle();
-        WorkflowDiscoveryJob job = new WorkflowDiscoveryJob(key, issue.getKey(), issueType.getWorkflowKey(), issueType.getProjectId(), issueType.getId());
 
-        extras.putString(JobsRunnerService.EXTRA_JOB_PAYLOAD, new Gson().toJson(job));
-        extras.putString(JobsRunnerService.EXTRA_JOB_TYPE, job.getType());
+        extras.putString(JobsRunnerService.EXTRA_QUEUE_JOB_KEY, queueJob.getJobKey());
+        extras.putString(JobsRunnerService.EXTRA_JOB_TYPE, WorkflowDiscoveryJob.JOB_TYPE);
 
         extras.setClassLoader(WorkflowDiscoveryJob.class.getClassLoader());
         Job myJob = dispatcher.newJobBuilder()
@@ -38,15 +33,11 @@ public class QueueManager {
             .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
             .setTrigger(Trigger.executionWindow(0, 20))
             .setReplaceCurrent(true)
-            .setTag(key)
+            .setTag(queueJob.getJobKey())
             .setConstraints(Constraint.ON_ANY_NETWORK)
             .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
             .setExtras(extras)
             .build();
         dispatcher.mustSchedule(myJob);
-    }
-
-    private String createWorkflowJobKey(Issue issue, UIIssueType type) {
-        return String.format("%s_%s_%s", type.getWorkflowKey(), issue.getKey(), type.getProjectId());
     }
 }

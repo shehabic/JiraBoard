@@ -8,6 +8,7 @@ import com.fullmob.jiraboard.managers.db.DBManager;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.images.GlideSecuredImagesLoader;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
+import com.fullmob.jiraboard.managers.notifications.NotificationsManager;
 import com.fullmob.jiraboard.managers.queue.QueueManager;
 import com.fullmob.jiraboard.managers.security.EncrypterInterface;
 import com.fullmob.jiraboard.managers.security.EncryptionManager;
@@ -87,5 +88,10 @@ public class MainModule {
                 new GooglePlayDriver(app.getContext())
             )
         );
+    }
+
+    @Provides
+    public NotificationsManager providesNotificationsManager(FullmobAppInterface app) {
+        return new NotificationsManager(app.getContext());
     }
 }

@@ -21,11 +21,11 @@ public class ProjectsApiClient extends AbstractApiManager<ProjectsApi> {
         return api.getProjects().subscribeOn(Schedulers.io());
     }
 
-    public List<ProjectIssueTypeStatus> getProjectIssueStatus(String projectId) throws IOException {
+    public List<ProjectIssueTypeStatus> getProjectIssueStatusesSync(String projectId) throws IOException {
         return api.getProjectIssueStatusesSync(projectId).execute().body();
     }
 
-    public List<Project> getProjectsAsync() throws IOException {
+    public List<Project> getProjectsSync() throws IOException {
         return api.getProjectsSync().execute().body();
     }
 }
