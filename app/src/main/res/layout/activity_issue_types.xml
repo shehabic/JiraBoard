@@ -58,21 +58,23 @@
         android:id="@+id/issue_types_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="64dp"
         android:layout_marginTop="64dp"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="64dp"
         android:layout_marginBottom="0dp"
         android:background="@color/colorPrimaryDark"
         android:gravity="start|center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:paddingLeft="16dp">
 
         <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/issue_types_txt"
+            android:layout_alignParentLeft="true"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,15 +84,20 @@
             android:textAlignment="viewStart"/>
 
         <TextView
+            android:layout_centerVertical="true"
             android:textColor="@color/yellow"
             android:id="@+id/total_issue_types"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start|center_vertical"
             android:text="16"
+            android:layout_toRightOf="@+id/issue_types_txt"
             android:textAlignment="viewStart"/>
 
         <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/total_workflows_txt"
+            android:layout_toRightOf="@+id/total_issue_types"
             android:layout_marginLeft="32dp"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
@@ -101,6 +108,8 @@
             android:textAlignment="viewStart"/>
 
         <TextView
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/total_workflows_txt"
             android:textColor="@color/yellow"
             android:id="@+id/total_workflows"
             android:layout_width="wrap_content"
@@ -109,5 +118,18 @@
             android:text="2"
             android:textAlignment="viewStart"/>
 
-    </LinearLayout>
+        <ImageView
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_weight="0"
+            android:src="@drawable/ic_next"
+            android:id="@+id/nextBtn"
+            android:layout_gravity="end|center_vertical"
+            android:padding="16dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"/>
+
+    </RelativeLayout>
 </FrameLayout>
