@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "295119723517",
+    "firebase_url": "https://jiraboard-a5c36.firebaseio.com",
+    "project_id": "jiraboard-a5c36",
+    "storage_bucket": "jiraboard-a5c36.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295119723517:android:aa5740670267d6bf",
+        "android_client_info": {
+          "package_name": "com.fullmob.multiqr.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295119723517-61cgc7so5b1ddim5frg1jumc1ds64410.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fullmob.multiqr.dev",
+            "certificate_hash": "4e21628836a340179fc520e7b5268e31bf4f576d"
+          }
+        },
+        {
+          "client_id": "295119723517-bn362qib4ulfofvg0fi0ed656iugkcmi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaa5-8vBdmfw625r2VSpokyXuxCCMxqTg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "295119723517-bn362qib4ulfofvg0fi0ed656iugkcmi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

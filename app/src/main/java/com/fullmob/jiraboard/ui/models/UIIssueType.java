@@ -23,6 +23,8 @@ public class UIIssueType implements Parcelable {
 
     private String status;
 
+    private String discoveryStatus = "";
+
     public UIIssueType() {
     }
 
@@ -98,6 +100,14 @@ public class UIIssueType implements Parcelable {
         this.status = status;
     }
 
+    public String getDiscoveryStatus() {
+        return discoveryStatus;
+    }
+
+    public void setDiscoveryStatus(String discoveryStatus) {
+        this.discoveryStatus = discoveryStatus;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -114,6 +124,7 @@ public class UIIssueType implements Parcelable {
         dest.writeString(this.iconUrl);
         dest.writeString(this.avatarId);
         dest.writeString(this.status);
+        dest.writeString(this.discoveryStatus);
     }
 
     protected UIIssueType(Parcel in) {
@@ -126,9 +137,10 @@ public class UIIssueType implements Parcelable {
         this.iconUrl = in.readString();
         this.avatarId = in.readString();
         this.status = in.readString();
+        this.discoveryStatus = in.readString();
     }
 
-    public static final Parcelable.Creator<UIIssueType> CREATOR = new Parcelable.Creator<UIIssueType>() {
+    public static final Creator<UIIssueType> CREATOR = new Creator<UIIssueType>() {
         @Override
         public UIIssueType createFromParcel(Parcel source) {
             return new UIIssueType(source);

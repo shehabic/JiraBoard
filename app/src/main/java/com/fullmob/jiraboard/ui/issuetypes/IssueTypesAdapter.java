@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
+import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
     private SecuredImagesManagerInterface secureImageLoader;
     private Listener listener;
 
-    public IssueTypesAdapter(List<UIIssueType> issueTypes, Listener listener, SecuredImagesManagerInterface imageLoader) {
+    IssueTypesAdapter(List<UIIssueType> issueTypes, Listener listener, SecuredImagesManagerInterface imageLoader) {
         this.issueTypes = issueTypes;
         this.listener = listener;
         this.secureImageLoader = imageLoader;
@@ -38,11 +39,44 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
         holder.uiIssueType = issueTypes.get(position);
         holder.itemName.setText(holder.uiIssueType.getName());
         holder.actionView.setVisibility(TextUtils.isEmpty(holder.uiIssueType.getStatus()) ? View.VISIBLE : View.GONE);
-        holder.isDiscovered.setVisibility(TextUtils.isEmpty(holder.uiIssueType.getStatus()) ? View.GONE : View.VISIBLE);
-        try {
-            secureImageLoader.loadSVG(holder.uiIssueType.getIconUrl(), holder.issueTypeIcon.getContext(), holder.issueTypeIcon);
-        } catch (Exception e) {
+        String discoveryStatus = holder.uiIssueType.getDiscoveryStatus();
+        boolean isBusy = discoveryStatus.equals(UIWorkflowQueueJob.STATUS_PROCESSING)
+            || discoveryStatus.equals(UIWorkflowQueueJob.STATUS_PENDING);
 
+        holder.actionView.setVisibility(isBusy ? View.GONE : View.VISIBLE);
+        holder.actionIcon.setImageDrawable(
+            (
+                discoveryStatus.equals(UIWorkflowQueueJob.STATUS_PROCESSED)
+                    ? holder.isDiscovered.getContext().getResources().getDrawable(R.drawable.ic_rediscover)
+                    : holder.isDiscovered.getContext().getResources().getDrawable(R.drawable.ic_discover)
+            )
+        );
+
+        if (discoveryStatus.equals(UIWorkflowQueueJob.STATUS_PROCESSED)) {
+            holder.isDiscovered.setVisibility(View.VISIBLE);
+            holder.isDiscovered.setImageDrawable(
+                holder.isDiscovered.getContext().getResources().getDrawable(R.drawable.ic_discovered)
+            );
+        } else if (isBusy) {
+            holder.isDiscovered.setVisibility(View.VISIBLE);
+            holder.isDiscovered.setImageDrawable(
+                holder.isDiscovered.getContext().getResources().getDrawable(R.drawable.ic_pending)
+            );
+        } else if (discoveryStatus.equals(UIWorkflowQueueJob.STATUS_FAILED)) {
+            holder.isDiscovered.setVisibility(View.VISIBLE);
+            holder.isDiscovered.setImageDrawable(
+                holder.isDiscovered.getContext().getResources().getDrawable(R.drawable.ic_error)
+            );
+        } else {
+            holder.isDiscovered.setVisibility(View.GONE);
+        }
+        try {
+            secureImageLoader.loadSVG(
+                holder.uiIssueType.getIconUrl(),
+                holder.issueTypeIcon.getContext(),
+                holder.issueTypeIcon
+            );
+        } catch (Exception ignore) {
         }
         holder.bindEvents(listener);
     }
@@ -52,21 +86,21 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
         return issueTypes.size();
     }
 
-    public void setIssueTypes(List<UIIssueType> issueTypes) {
+    void setIssueTypes(List<UIIssueType> issueTypes) {
         this.issueTypes = issueTypes;
         notifyDataSetChanged();
     }
 
-    public class IssuesViewHolder extends RecyclerView.ViewHolder {
-        public View actionView;
-        public AppCompatImageView actionIcon;
-        public View itemView;
-        public TextView itemName;
-        public AppCompatImageView isDiscovered;
-        public AppCompatImageView issueTypeIcon;
-        public UIIssueType uiIssueType;
+    class IssuesViewHolder extends RecyclerView.ViewHolder {
+        View actionView;
+        AppCompatImageView actionIcon;
+        View itemView;
+        TextView itemName;
+        AppCompatImageView isDiscovered;
+        AppCompatImageView issueTypeIcon;
+        UIIssueType uiIssueType;
 
-        public IssuesViewHolder(View itemView) {
+        IssuesViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
             this.actionIcon = (AppCompatImageView) itemView.findViewById(R.id.icon_explore);
@@ -76,7 +110,7 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
             this.itemName = (TextView) itemView.findViewById(R.id.issue_type);
         }
 
-        public void bindEvents(final Listener listener) {
+        void bindEvents(final Listener listener) {
             actionView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -86,7 +120,7 @@ class IssueTypesAdapter extends RecyclerView.Adapter<IssueTypesAdapter.IssuesVie
         }
     }
 
-    public static interface Listener {
+    public interface Listener {
         void onDiscoverTicketClicked(UIIssueType issueType);
     }
 }

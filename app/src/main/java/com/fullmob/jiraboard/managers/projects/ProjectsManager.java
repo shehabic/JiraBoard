@@ -10,6 +10,7 @@ import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
+import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -145,5 +146,9 @@ public class ProjectsManager {
 
     public Observable<UIProject> getProject(String projectId) {
         return Observable.just(dbManager.getProject(projectId));
+    }
+
+    public Observable<List<UIWorkflowQueueJob>> findAllProcessedAndInProgressWorkflowsInCurrentProject() {
+        return Observable.just(dbManager.findProcessedAndInProgressWorkflows(encStorage.getDefaultProject()));
     }
 }

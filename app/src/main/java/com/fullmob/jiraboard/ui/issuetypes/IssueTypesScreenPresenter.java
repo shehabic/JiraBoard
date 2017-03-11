@@ -8,9 +8,12 @@ import com.fullmob.jiraboard.ui.AbstractPresenter;
 import com.fullmob.jiraboard.ui.models.IssueTypesAndWorkflows;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
+import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -19,7 +22,8 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func2;
+import rx.functions.Func1;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 public class IssueTypesScreenPresenter extends AbstractPresenter<IssueTypesView> {
@@ -49,28 +53,56 @@ public class IssueTypesScreenPresenter extends AbstractPresenter<IssueTypesView>
         Subscription subscription = Observable.zip(
             projectsManager.findAllIssueTypesInCurrentProject(),
             projectsManager.findUniqueWorkflowsInCurrentProject(),
-            new Func2<List<UIIssueType>, HashSet<String>, IssueTypesAndWorkflows>() {
+            projectsManager.findAllProcessedAndInProgressWorkflowsInCurrentProject().flatMap(
+                new Func1<List<UIWorkflowQueueJob>, Observable<Map<String, HashSet<String>>>>() {
+                    @Override
+                    public Observable<Map<String, HashSet<String>>> call(List<UIWorkflowQueueJob> uiWorkflowQueueJobs) {
+                        Map<String, HashSet<String>> workflows = new HashMap<>();
+                        workflows.put(UIWorkflowQueueJob.STATUS_PENDING, new HashSet<String>());
+                        workflows.put(UIWorkflowQueueJob.STATUS_PROCESSED, new HashSet<String>());
+                        workflows.put(UIWorkflowQueueJob.STATUS_PROCESSING, new HashSet<String>());
+                        workflows.put(UIWorkflowQueueJob.STATUS_FAILED, new HashSet<String>());
+                        for (UIWorkflowQueueJob job : uiWorkflowQueueJobs) {
+                            workflows.get(job.getDiscoveryStatus()).add(job.getWorkflowKey());
+                        }
+
+                        return Observable.just(workflows);
+                    }
+                }
+            ),
+            new Func3<List<UIIssueType>, HashSet<String>, Map<String, HashSet<String>>, IssueTypesAndWorkflows>() {
                 @Override
-                public IssueTypesAndWorkflows call(List<UIIssueType> uiIssueTypes, HashSet<String> uniqueWorkflows) {
+                public IssueTypesAndWorkflows call(List<UIIssueType> uiIssueTypes, HashSet<String> uniqueWorkflows, Map<String, HashSet<String>> uiWorkflowQueueJobs) {
+                    for (UIIssueType issueType : uiIssueTypes) {
+                        String workflowKey = issueType.getWorkflowKey();
+                        if (uiWorkflowQueueJobs.get(UIWorkflowQueueJob.STATUS_PROCESSED).contains(workflowKey)) {
+                            issueType.setDiscoveryStatus(UIWorkflowQueueJob.STATUS_PROCESSED);
+                        } else if (uiWorkflowQueueJobs.get(UIWorkflowQueueJob.STATUS_PENDING).contains(workflowKey)) {
+                            issueType.setDiscoveryStatus(UIWorkflowQueueJob.STATUS_PENDING);
+                        } else if (uiWorkflowQueueJobs.get(UIWorkflowQueueJob.STATUS_PROCESSING).contains(workflowKey)) {
+                            issueType.setDiscoveryStatus(UIWorkflowQueueJob.STATUS_PROCESSING);
+                        }
+                    }
+
                     return new IssueTypesAndWorkflows(uiIssueTypes, uniqueWorkflows);
                 }
             }
         )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Action1<IssueTypesAndWorkflows>() {
-                @Override
-                public void call(IssueTypesAndWorkflows issueTypesAndWorkflows) {
-                    getView().hideLoading();
-                    getView().renderWorkflowAndTypes(issueTypesAndWorkflows);
-                }
-            }, new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    getView().hideLoading();
-                    getView().showErrorOccurred();
-                }
-            });
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1<IssueTypesAndWorkflows>() {
+            @Override
+            public void call(IssueTypesAndWorkflows issueTypesAndWorkflows) {
+                getView().hideLoading();
+                getView().renderWorkflowAndTypes(issueTypesAndWorkflows);
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                getView().hideLoading();
+                getView().showErrorOccurred();
+            }
+        });
     }
 
     public void onViewPaused() {

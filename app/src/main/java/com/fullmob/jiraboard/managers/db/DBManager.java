@@ -41,7 +41,8 @@ public class DBManager implements DBManagerInterface {
     public static final String COL_WORKFLOW_KEY = "workflowKey";
     public static final String COL_JIRA_ID = "jiraId";
     private static final String COL_WORKFLOW_QUEUE_JOB_KEY = "jobKey";
-    private Mapper mapper;
+    private static final String COL_DISCOVERY_STATUS = "discoveryStatus";
+    private final Mapper mapper;
 
     public DBManager() {
         mapper = new Mapper();
@@ -368,5 +369,22 @@ public class DBManager implements DBManagerInterface {
         vertex.setTargetStatus(link.to);
         vertex.setWorkflowDiscoveryTicket(job);
         getRealm().commitTransaction();
+    }
+
+    @Override
+    public List<UIWorkflowQueueJob> findProcessedAndInProgressWorkflows(String projectId) {
+        RealmResults<WorkflowDiscoveryQueueJob> workflowJobs = getRealm().where(WorkflowDiscoveryQueueJob.class)
+            .beginGroup()
+            .equalTo(COL_DISCOVERY_STATUS, WorkflowDiscoveryQueueJob.STATUS_PROCESSED)
+            .or()
+            .equalTo(COL_DISCOVERY_STATUS, WorkflowDiscoveryQueueJob.STATUS_PROCESSING)
+            .or()
+            .equalTo(COL_DISCOVERY_STATUS, WorkflowDiscoveryQueueJob.STATUS_FAILED)
+            .endGroup()
+            .findAll()
+            .where()
+            .equalTo(COL_PROJECT_ID, projectId).findAll();
+
+        return mapper.convertWorkflowsToUIWorkflowJob(workflowJobs);
     }
 }

@@ -25,7 +25,7 @@ public class WorkflowDiscoveryQueueJob extends RealmObject {
 
     private String subDomain;
 
-    private String project;
+    private String projectId;
 
     private String typeId;
 
@@ -47,11 +47,11 @@ public class WorkflowDiscoveryQueueJob extends RealmObject {
     }
 
     public String getProject() {
-        return project;
+        return projectId;
     }
 
     public void setProject(String project) {
-        this.project = project;
+        this.projectId = project;
     }
 
     public String getKey() {

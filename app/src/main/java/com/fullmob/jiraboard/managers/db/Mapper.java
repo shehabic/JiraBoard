@@ -202,4 +202,13 @@ public class Mapper {
         queueJob.setWorkflowKey(uiJob.getWorkflowKey());
         queueJob.setTitle(uiJob.getTitle());
     }
+
+    public List<UIWorkflowQueueJob> convertWorkflowsToUIWorkflowJob(RealmResults<WorkflowDiscoveryQueueJob> workflowJobs) {
+        List<UIWorkflowQueueJob> jobs = new ArrayList<>();
+        for (WorkflowDiscoveryQueueJob workflowJob : workflowJobs) {
+            jobs.add(createUIWorkflowQueueJob(workflowJob));
+        }
+
+        return jobs;
+    }
 }

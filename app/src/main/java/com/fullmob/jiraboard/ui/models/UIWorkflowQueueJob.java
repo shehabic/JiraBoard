@@ -2,6 +2,7 @@ package com.fullmob.jiraboard.ui.models;
 
 public class UIWorkflowQueueJob {
 
+    public static final String STATUS_NONE = "";
     public static final String STATUS_PENDING = "pending";
     public static final String STATUS_PROCESSING = "processing";
     public static final String STATUS_PROCESSED = "processed";
@@ -23,7 +24,7 @@ public class UIWorkflowQueueJob {
 
     private String statusId;
 
-    private String discoveryStatus;
+    private String discoveryStatus = STATUS_NONE;
 
     public String getSubDomain() {
         return subDomain;

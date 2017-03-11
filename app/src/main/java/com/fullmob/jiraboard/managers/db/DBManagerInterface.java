@@ -22,8 +22,11 @@ public interface DBManagerInterface {
     List<UIProject> addProjectsToSubDomain(String subDomain, List<Project> projects);
 
     void saveProject(UIProject project);
+
     void saveDiscoveryJob(WorkflowDiscoveryQueueJob ticket);
+
     List<UIProject> getProjects(String subDomain);
+
     List<UIProject> getProjectsAsyc(String subDomain);
 
     List<UIIssueType> findProjectIssueTypes(String projectId);
@@ -41,4 +44,6 @@ public interface DBManagerInterface {
     void updateWorkflowQueueJob(UIWorkflowQueueJob uiJob);
 
     void addVertex(TransitionLink link, String jobKey);
+
+    List<UIWorkflowQueueJob> findProcessedAndInProgressWorkflows(String projectId);
 }

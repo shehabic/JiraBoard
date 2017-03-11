@@ -39,7 +39,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="left|center_vertical"
         android:layout_weight="1"
         android:orientation="horizontal">
 
@@ -49,7 +49,7 @@
             android:id="@+id/issue_explored"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_gravity="center"
+            android:layout_gravity="left|center_vertical"
             />
     </LinearLayout>
 
