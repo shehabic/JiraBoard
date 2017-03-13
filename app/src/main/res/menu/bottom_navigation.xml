@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottom_nav_camera"
+        android:title="@string/bottom_menu_camera"
+        android:icon="@drawable/ic_board"
+        />
+    <item
+        android:id="@+id/bottom_nav_tickets"
+        android:title="@string/bottom_menu_tickets"
+        android:icon="@drawable/ic_tickets"
+        />
+
+    <item
+        android:id="@+id/bottom_nav_settings"
+        android:title="@string/bottom_menu_settings"
+        android:icon="@drawable/ic_settings_white_24dp"
+        />
+</menu>

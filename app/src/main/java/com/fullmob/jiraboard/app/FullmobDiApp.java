@@ -6,6 +6,7 @@ import android.content.Context;
 import com.fullmob.jiraapi.HttpClientBuilder;
 import com.fullmob.jiraboard.DebugUtils;
 import com.fullmob.jiraboard.di.components.ApiComponent;
+import com.fullmob.jiraboard.di.components.CaptureBoardComponent;
 import com.fullmob.jiraboard.di.components.DaggerMainComponent;
 import com.fullmob.jiraboard.di.components.IssueTypesScreenComponent;
 import com.fullmob.jiraboard.di.components.LoginScreenComponent;
@@ -13,11 +14,13 @@ import com.fullmob.jiraboard.di.components.MainComponent;
 import com.fullmob.jiraboard.di.components.ManagersComponent;
 import com.fullmob.jiraboard.di.components.ProjectsScreenComponent;
 import com.fullmob.jiraboard.di.components.WorkflowDiscoveryComponent;
+import com.fullmob.jiraboard.di.modules.CaptureBoardModule;
 import com.fullmob.jiraboard.di.modules.IssueTypesModule;
 import com.fullmob.jiraboard.di.modules.LoginScreenModule;
 import com.fullmob.jiraboard.di.modules.MainModule;
 import com.fullmob.jiraboard.di.modules.ProjectsScreenModule;
 import com.fullmob.jiraboard.di.modules.WorkflowDiscoveryModule;
+import com.fullmob.jiraboard.ui.home.cameraboard.CaptureBoardView;
 import com.fullmob.jiraboard.ui.issuetypes.IssueTypesView;
 import com.fullmob.jiraboard.ui.login.LoginView;
 import com.fullmob.jiraboard.ui.projects.ProjectsView;
@@ -90,5 +93,10 @@ public class FullmobDiApp extends Application implements FullmobAppInterface {
     @Override
     public IssueTypesScreenComponent createIssueTypesComponent(IssueTypesView view) {
         return getManagersModule().plusIssueTypesScreenComponent(new IssueTypesModule(view));
+    }
+
+    @Override
+    public CaptureBoardComponent createCaptureBoardFragmentComponent(CaptureBoardView view) {
+        return getManagersModule().plusCaptureBoardComponent(new CaptureBoardModule(view));
     }
 }

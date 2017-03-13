@@ -24,4 +24,6 @@ public interface IssueTypesView extends BaseView {
     void hideDialogLoading();
 
     void clearDialogError();
+
+    void proceedToHomeScreen();
 }

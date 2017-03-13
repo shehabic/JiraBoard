@@ -32,14 +32,14 @@ import io.reactivex.Observable;
 import static com.fullmob.jiraboard.utils.QRPointUtils.maxX;
 import static com.fullmob.jiraboard.utils.QRPointUtils.minX;
 
-public class TicketsAnalyzer {
+public class BoardAnalyzer {
 
     private boolean debug;
-    public TicketsAnalyzer() {
+    public BoardAnalyzer() {
         this(false);
     }
 
-    public TicketsAnalyzer(boolean debug) {
+    public BoardAnalyzer(boolean debug) {
         this.debug = debug;
     }
 
@@ -52,7 +52,7 @@ public class TicketsAnalyzer {
         });
     }
 
-    private Board analyzeProjectFromImage(Board project) {
+    public Board analyzeProjectFromImage(Board project) {
         readQRImage(project.getBitmap(), project);
         return project;
     }

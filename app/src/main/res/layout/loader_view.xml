@@ -18,7 +18,7 @@
         app:squareColor="@color/colorPrimaryDark"
         app:squareCorner="2dp"
         app:squareSize="16dp"
-        app:xCount="6"
+        app:xCount="3"
         app:yCount="3"
         />
 

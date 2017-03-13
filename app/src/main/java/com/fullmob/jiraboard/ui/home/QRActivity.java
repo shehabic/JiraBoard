@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.fullmob.jiraboard.BuildConfig;
 import com.fullmob.jiraboard.R;
-import com.fullmob.jiraboard.analyzer.TicketsAnalyzer;
+import com.fullmob.jiraboard.analyzer.BoardAnalyzer;
 import com.fullmob.jiraboard.data.Column;
 import com.fullmob.jiraboard.data.Board;
 import com.fullmob.jiraboard.processors.ImageProcessor;
@@ -40,9 +40,8 @@ public class QRActivity extends AppCompatActivity {
     View pickImage;
     ImageView mImageView;
 
-
     Board project;
-    TicketsAnalyzer ticketsAnalyzer;
+    BoardAnalyzer boardAnalyzer;
     ImageProcessor imageProcessor;
 
     @Override
@@ -50,7 +49,7 @@ public class QRActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr);
         project = new Board(PROJECT_PREFIX);
-        ticketsAnalyzer = new TicketsAnalyzer(BuildConfig.DEBUG);
+        boardAnalyzer = new BoardAnalyzer(BuildConfig.DEBUG);
         imageProcessor = new ImageProcessor(this);
         mTextMessage = (TextView) findViewById(R.id.message);
         capture = findViewById(R.id.capture);
@@ -144,7 +143,7 @@ public class QRActivity extends AppCompatActivity {
                     bitmap = imageProcessor.autoAdjustImage(bitmap);
                     project.setBitmap(bitmap);
                     mTextMessage.setText("Loading...");
-                    ticketsAnalyzer.analyzeProject(project)
+                    boardAnalyzer.analyzeProject(project)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new DefaultObserver<Board>() {

@@ -2,6 +2,8 @@ package com.fullmob.jiraboard.di.modules;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.fullmob.jiraboard.BuildConfig;
+import com.fullmob.jiraboard.analyzer.BoardAnalyzer;
 import com.fullmob.jiraboard.app.FullmobAppInterface;
 import com.fullmob.jiraboard.app.FullmobDiApp;
 import com.fullmob.jiraboard.managers.db.DBManager;
@@ -18,6 +20,8 @@ import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorageManager;
 import com.fullmob.jiraboard.managers.storage.LocalStorageInterface;
 import com.fullmob.jiraboard.managers.storage.LocalStorageManager;
+import com.fullmob.jiraboard.processors.ImageProcessor;
+import com.fullmob.jiraboard.providers.BitmapsProvider;
 import com.google.gson.GsonBuilder;
 
 import javax.inject.Singleton;
@@ -93,5 +97,20 @@ public class MainModule {
     @Provides
     public NotificationsManager providesNotificationsManager(FullmobAppInterface app) {
         return new NotificationsManager(app.getContext());
+    }
+
+    @Provides
+    public BoardAnalyzer providesBoardAnalyzer() {
+        return new BoardAnalyzer(BuildConfig.DEBUG);
+    }
+
+    @Provides
+    public ImageProcessor providesImageProcessor(FullmobAppInterface app) {
+        return new ImageProcessor(app.getContext());
+    }
+
+    @Provides
+    public BitmapsProvider providesBitmapsProvider(FullmobAppInterface app) {
+        return new BitmapsProvider(app.getContext());
     }
 }

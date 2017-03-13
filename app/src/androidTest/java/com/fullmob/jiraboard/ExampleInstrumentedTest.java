@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.fullmob.multiqr", appContext.getPackageName());
+        assertEquals("com.fullmob.jiraboard", appContext.getPackageName());
     }
 }

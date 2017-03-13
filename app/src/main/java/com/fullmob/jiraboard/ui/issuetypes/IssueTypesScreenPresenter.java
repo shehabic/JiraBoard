@@ -31,6 +31,7 @@ public class IssueTypesScreenPresenter extends AbstractPresenter<IssueTypesView>
     private final ProjectsManager projectsManager;
     private final WorkflowDiscoveryManager workflowDiscoveryManager;
     private final IssuesManager issuesManager;
+    private IssueTypesAndWorkflows issueTypesAndWorkflows;
 
     public IssueTypesScreenPresenter(
         IssueTypesView view,
@@ -44,8 +45,16 @@ public class IssueTypesScreenPresenter extends AbstractPresenter<IssueTypesView>
         this.issuesManager = issuesManager;
     }
 
+    public void onViewCreated(IssueTypesAndWorkflows issueTypesAndWorkflows) {
+        this.issueTypesAndWorkflows = issueTypesAndWorkflows;
+    }
+
     public void onViewResumed() {
-        loadProjectIssueTypes();
+        if (issueTypesAndWorkflows == null) {
+            loadProjectIssueTypes();
+        } else {
+            getView().renderWorkflowAndTypes(issueTypesAndWorkflows);
+        }
     }
 
     private void loadProjectIssueTypes() {
@@ -92,9 +101,10 @@ public class IssueTypesScreenPresenter extends AbstractPresenter<IssueTypesView>
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Action1<IssueTypesAndWorkflows>() {
             @Override
-            public void call(IssueTypesAndWorkflows issueTypesAndWorkflows) {
+            public void call(IssueTypesAndWorkflows typesAndWorkflows) {
+                issueTypesAndWorkflows = typesAndWorkflows;
                 getView().hideLoading();
-                getView().renderWorkflowAndTypes(issueTypesAndWorkflows);
+                getView().renderWorkflowAndTypes(typesAndWorkflows);
             }
         }, new Action1<Throwable>() {
             @Override
@@ -164,5 +174,13 @@ public class IssueTypesScreenPresenter extends AbstractPresenter<IssueTypesView>
 
     public void onDiscoveryConfirmed(Issue issue, UIIssueType issueType, UIProject uiProject) {
         workflowDiscoveryManager.scheduleDiscoveryTask(issue, uiProject, issueType);
+    }
+
+    public IssueTypesAndWorkflows getIssueTypesAndWorkflows() {
+        return issueTypesAndWorkflows;
+    }
+
+    public void onNextClicked() {
+        getView().proceedToHomeScreen();
     }
 }

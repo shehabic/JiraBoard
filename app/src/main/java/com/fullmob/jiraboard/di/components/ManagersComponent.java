@@ -1,6 +1,7 @@
 package com.fullmob.jiraboard.di.components;
 
 
+import com.fullmob.jiraboard.di.modules.CaptureBoardModule;
 import com.fullmob.jiraboard.di.modules.IssueTypesModule;
 import com.fullmob.jiraboard.di.modules.LoginScreenModule;
 import com.fullmob.jiraboard.di.modules.ManagersModule;
@@ -19,4 +20,5 @@ public interface ManagersComponent {
     ProjectsScreenComponent plusProjects(ProjectsScreenModule module);
     WorkflowDiscoveryComponent plusWorkflowDiscovery(WorkflowDiscoveryModule module);
     IssueTypesScreenComponent plusIssueTypesScreenComponent(IssueTypesModule module);
+    CaptureBoardComponent plusCaptureBoardComponent(CaptureBoardModule module);
 }

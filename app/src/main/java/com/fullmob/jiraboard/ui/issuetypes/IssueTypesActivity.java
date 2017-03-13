@@ -1,6 +1,7 @@
 package com.fullmob.jiraboard.ui.issuetypes;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
 import com.fullmob.jiraboard.ui.BaseActivity;
+import com.fullmob.jiraboard.ui.home.HomeActivity;
 import com.fullmob.jiraboard.ui.models.IssueTypesAndWorkflows;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
@@ -27,12 +29,18 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class IssueTypesActivity extends BaseActivity implements IssueTypesView, IssueTypesAdapter.Listener {
 
+    private static final String EXTRA_ISSUE_TYPES_AND_WORKFLOWS = "issue_types_and_workflows";
     @BindView(R.id.issue_types_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.total_issue_types) TextView totalIssueTypes;
     @BindView(R.id.total_workflows) TextView totalWorkFlows;
+    @BindView(R.id.nextBtn) View nextButton;
+    @OnClick(R.id.nextBtn) void onClick() {
+        presenter.onNextClicked();
+    }
 
     @Inject IssueTypesScreenPresenter presenter;
     @Inject SecuredImagesManagerInterface securedImagesManagerInterface;
@@ -51,6 +59,11 @@ public class IssueTypesActivity extends BaseActivity implements IssueTypesView, 
         recyclerView.setHasFixedSize(true);
         adapter = new IssueTypesAdapter(new ArrayList<UIIssueType>(), this, securedImagesManagerInterface);
         recyclerView.setAdapter(adapter);
+        IssueTypesAndWorkflows issueTypesAndWorkflows = null;
+        if (savedInstanceState != null) {
+            issueTypesAndWorkflows = savedInstanceState.getParcelable(EXTRA_ISSUE_TYPES_AND_WORKFLOWS);
+        }
+        presenter.onViewCreated(issueTypesAndWorkflows);
     }
 
     @Override
@@ -114,6 +127,12 @@ public class IssueTypesActivity extends BaseActivity implements IssueTypesView, 
     public void clearDialogError() {
         dialogVHolder.dialogErrorText.setText("");
         dialogVHolder.dialogErrorText.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void proceedToHomeScreen() {
+        startActivity(new Intent(this, HomeActivity.class));
+        finish();
     }
 
     @Override
@@ -213,6 +232,12 @@ public class IssueTypesActivity extends BaseActivity implements IssueTypesView, 
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_ISSUE_TYPES_AND_WORKFLOWS, presenter.getIssueTypesAndWorkflows());
     }
 
     static class DialogViewHolder {

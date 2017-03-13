@@ -51,4 +51,6 @@ public abstract class AbstractPresenter<T extends BaseView> {
     protected void addCancellable(Cancellable cancellable) {
         cancellables.add(cancellable);
     }
+
+
 }

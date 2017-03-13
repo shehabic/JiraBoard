@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/jiraapi/jiraapi.iml" filepath="$PROJECT_DIR$/jiraapi/jiraapi.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mutliqr.iml" filepath="$PROJECT_DIR$/mutliqr.iml" />
     </modules>
   </component>
 </project>

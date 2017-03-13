@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="nav_exit" type="id"/>
+    <item name="nav_logout" type="id"/>
+    <item name="nav_projects" type="id"/>
+    <item name="nav_printing" type="id"/>
+    <item name="nav_profile" type="id"/>
 </resources>

@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:295119723517:android:aa5740670267d6bf",
         "android_client_info": {
-          "package_name": "com.fullmob.multiqr.dev"
+          "package_name": "com.fullmob.jiraboard.dev"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "295119723517-61cgc7so5b1ddim5frg1jumc1ds64410.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.fullmob.multiqr.dev",
+            "package_name": "com.fullmob.jiraboard.dev",
             "certificate_hash": "4e21628836a340179fc520e7b5268e31bf4f576d"
           }
         },
