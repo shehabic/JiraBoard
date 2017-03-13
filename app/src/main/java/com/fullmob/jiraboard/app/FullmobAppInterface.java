@@ -11,7 +11,7 @@ import com.fullmob.jiraboard.di.components.MainComponent;
 import com.fullmob.jiraboard.di.components.ManagersComponent;
 import com.fullmob.jiraboard.di.components.ProjectsScreenComponent;
 import com.fullmob.jiraboard.di.components.WorkflowDiscoveryComponent;
-import com.fullmob.jiraboard.ui.home.cameraboard.CaptureBoardView;
+import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardView;
 import com.fullmob.jiraboard.ui.issuetypes.IssueTypesView;
 import com.fullmob.jiraboard.ui.login.LoginView;
 import com.fullmob.jiraboard.ui.projects.ProjectsView;

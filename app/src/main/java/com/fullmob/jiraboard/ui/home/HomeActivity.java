@@ -15,15 +15,19 @@ import android.view.View;
 
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.ui.BaseActivity;
-import com.fullmob.jiraboard.ui.home.cameraboard.CaptureBoardFragment;
+import com.fullmob.jiraboard.ui.BaseFragment;
+import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardFragment;
+import com.fullmob.jiraboard.ui.home.tickets.TicketsFragment;
 import com.fullmob.jiraboard.ui.login.LoginActivity;
 import com.fullmob.jiraboard.ui.projects.ProjectsActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends BaseActivity
-    implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends BaseActivity implements
+    NavigationView.OnNavigationItemSelectedListener,
+    CaptureBoardFragment.OnFragmentInteractionListener,
+    TicketsFragment.OnFragmentInteractionListener {
 
     private int currentSelection = 0;
 
@@ -36,6 +40,7 @@ public class HomeActivity extends BaseActivity
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         setupUI();
+        onCaptureBoardClicked();
     }
 
     private void setupUI() {
@@ -64,7 +69,7 @@ public class HomeActivity extends BaseActivity
                         break;
 
 
-                    case R.id.bottom_nav_settings:
+                    case R.id.bottom_nav_transitions:
                         break;
                 }
 
@@ -75,15 +80,20 @@ public class HomeActivity extends BaseActivity
 
     private void onCaptureBoardClicked() {
         if (currentSelection != R.id.bottom_nav_camera) {
-            CaptureBoardFragment captureBoardFragment = CaptureBoardFragment.newInstance();
-            getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, captureBoardFragment, CaptureBoardFragment.TAG)
-                .commit();
+            setCurrentFragment(CaptureBoardFragment.newInstance(), CaptureBoardFragment.TAG);
         }
     }
 
     private void onBottomNavTicketsClicked() {
+        if (currentSelection != R.id.bottom_nav_tickets) {
+            setCurrentFragment(TicketsFragment.newInstance(), TicketsFragment.TAG);
+        }
+    }
 
+    private void setCurrentFragment(BaseFragment captureBoardFragment, String tag) {
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.fragment_container, captureBoardFragment, tag)
+            .commit();
     }
 
     @Override
@@ -156,9 +166,11 @@ public class HomeActivity extends BaseActivity
         return true;
     }
 
-    private CaptureBoardFragment getBoardFragment() {
-        CaptureBoardFragment fragment = (CaptureBoardFragment) getSupportFragmentManager().findFragmentByTag(CaptureBoardFragment.TAG);
+    @Override
+    public void onTicketsFragmentInteraction() {
+    }
 
-        return fragment;
+    @Override
+    public void onCaptureBoardFragmentInteraction() {
     }
 }

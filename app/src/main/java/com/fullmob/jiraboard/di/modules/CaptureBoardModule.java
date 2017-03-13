@@ -5,8 +5,8 @@ import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
 import com.fullmob.jiraboard.processors.ImageProcessor;
 import com.fullmob.jiraboard.providers.BitmapsProvider;
-import com.fullmob.jiraboard.ui.home.cameraboard.CaptureBoardPresenter;
-import com.fullmob.jiraboard.ui.home.cameraboard.CaptureBoardView;
+import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardPresenter;
+import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardView;
 
 import java.lang.ref.WeakReference;
 

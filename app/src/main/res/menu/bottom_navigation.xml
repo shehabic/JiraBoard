@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/bottom_nav_camera"
-        android:title="@string/bottom_menu_camera"
+        android:title="@string/bottom_menu_board"
         android:icon="@drawable/ic_board"
         />
     <item
@@ -12,8 +12,14 @@
         />
 
     <item
-        android:id="@+id/bottom_nav_settings"
-        android:title="@string/bottom_menu_settings"
-        android:icon="@drawable/ic_settings_white_24dp"
+        android:id="@+id/bottom_nav_transitions"
+        android:title="@string/bottom_menu_transitions"
+        android:icon="@drawable/ic_transition"
+        />
+
+    <item
+        android:id="@+id/bottom_nav_workflow"
+        android:title="@string/bottom_menu_workflow"
+        android:icon="@drawable/ic_workflow"
         />
 </menu>

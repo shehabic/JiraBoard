@@ -1,4 +1,4 @@
-package com.fullmob.jiraboard.ui.home.cameraboard;
+package com.fullmob.jiraboard.ui.home.captureboard;
 
 import android.net.Uri;
 

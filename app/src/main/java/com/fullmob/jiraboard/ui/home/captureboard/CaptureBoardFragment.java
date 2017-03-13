@@ -1,4 +1,4 @@
-package com.fullmob.jiraboard.ui.home.cameraboard;
+package com.fullmob.jiraboard.ui.home.captureboard;
 
 import android.Manifest;
 import android.content.Context;
@@ -102,11 +102,9 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        }
     }
 
     @Override
@@ -148,10 +146,6 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
         getBaseActivity().hideLoading();
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
     private void startPickingFile() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             if (!getBaseActivity().permissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -165,7 +159,6 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
-
 
     private void dispatchTakePictureIntent() {
 
@@ -305,5 +298,9 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
         } else if (requestCode == STORAGE_PERMISSIONS_REQUESTED_FOR_PICKER) {
 
         }
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onCaptureBoardFragmentInteraction();
     }
 }

@@ -20,7 +20,7 @@ import com.fullmob.jiraboard.di.modules.LoginScreenModule;
 import com.fullmob.jiraboard.di.modules.MainModule;
 import com.fullmob.jiraboard.di.modules.ProjectsScreenModule;
 import com.fullmob.jiraboard.di.modules.WorkflowDiscoveryModule;
-import com.fullmob.jiraboard.ui.home.cameraboard.CaptureBoardView;
+import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardView;
 import com.fullmob.jiraboard.ui.issuetypes.IssueTypesView;
 import com.fullmob.jiraboard.ui.login.LoginView;
 import com.fullmob.jiraboard.ui.projects.ProjectsView;

@@ -35,14 +35,17 @@
     </FrameLayout>
 
     <android.support.design.widget.BottomNavigationView
+        android:background="@color/colorPrimaryDark"
         android:gravity="center_vertical"
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
+        android:layout_marginBottom="0dp"
         android:layout_height="64dp"
         android:layout_gravity="bottom|start"
-        app:itemBackground="@color/white"
+        app:itemBackground="@color/colorPrimaryDark"
+        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/white"
         app:layout_anchorGravity="center_vertical"
         app:menu="@menu/bottom_navigation" />
-
     <include layout="@layout/loader_view" android:layout_height="match_parent" android:layout_width="match_parent" />
 </android.support.design.widget.CoordinatorLayout>

@@ -26,7 +26,7 @@ public class ImageProcessor {
 
         GPUImage mGPUImage = new GPUImage(context);
         mGPUImage.setFilter(new GPUImageContrastFilter(contrast));
-//
+
 //        GPUImage mGPUImage2 = new GPUImage(context);
 //        mGPUImage2.setFilter(new GPUImageSaturationFilter(saturation));
 
