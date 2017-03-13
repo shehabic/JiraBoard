@@ -4,11 +4,14 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
@@ -39,6 +42,7 @@ import butterknife.OnClick;
 public class CaptureBoardFragment extends BaseFragment implements CaptureBoardView {
 
     public static final String TAG = CaptureBoardFragment.class.getSimpleName();
+    private static final int STORAGE_PERMISSIONS_REQUESTED_FOR_PICKER = 999;
     private String fileName;
     public static final int CAPTURE_IMAGE_REQUEST = 1002;
     public static final int PICK_IMAGE_REQUEST = 1001;
@@ -110,12 +114,18 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
         super.onDetach();
         mListener = null;
     }
-
     public void onCameraImageReceived(int requestCode) {
+        onCameraImageReceived(
+            requestCode,
+            fileName,
+            FileProvider.getUriForFile(getBaseActivity(), BuildConfig.APPLICATION_ID, new File(fileName))
+        );
+    }
+
+    public void onCameraImageReceived(int requestCode, String fileName, Uri photoUri) {
         boardPreview.setImageBitmap(null);
-        Uri photoURI = FileProvider.getUriForFile(getBaseActivity(), BuildConfig.APPLICATION_ID, new File(fileName));
-        int rotation = calculateCurrentRotation(photoURI, requestCode, fileName);
-        presenter.onImageReceived(photoURI, rotation);
+        int rotation = calculateCurrentRotation(photoUri, requestCode, fileName);
+        presenter.onImageReceived(photoUri, rotation);
     }
 
     public int calculateCurrentRotation(Uri imageUri, int requestCode, String filePath) {
@@ -143,6 +153,13 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
     }
 
     private void startPickingFile() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            if (!getBaseActivity().permissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSIONS_REQUESTED);
+
+                return;
+            }
+        }
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -159,8 +176,8 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
             ) {
             requestPermissions(
                 new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.CAMERA
                 },
                 STORAGE_PERMISSIONS_REQUESTED
@@ -267,9 +284,26 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
                 onCameraImageReceived(requestCode);
             } else if (requestCode == CaptureBoardFragment.PICK_IMAGE_REQUEST) {
                 if (data != null && data.getData() != null) {
-                    presenter.onImageReceived(data.getData(), 0);
+
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getActivity().getContentResolver().query(data.getData(), filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String filePath = cursor.getString(columnIndex);
+                    cursor.close();
+                    onCameraImageReceived(requestCode, filePath, data.getData());
                 }
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == STORAGE_PERMISSIONS_REQUESTED) {
+            dispatchTakePictureIntent();
+        } else if (requestCode == STORAGE_PERMISSIONS_REQUESTED_FOR_PICKER) {
+
         }
     }
 }

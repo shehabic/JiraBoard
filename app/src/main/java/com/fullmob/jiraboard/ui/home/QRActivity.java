@@ -140,8 +140,11 @@ public class QRActivity extends AppCompatActivity {
                     if (rotate != 0) {
                         bitmap = imageProcessor.rotateImage(bitmap, rotate);
                     }
-                    bitmap = imageProcessor.autoAdjustImage(bitmap);
-                    project.setBitmap(bitmap);
+                    try {
+                        imageProcessor.autoAdjustImage(project);
+                    } catch (OutOfMemoryError error) {
+                        error.printStackTrace();
+                    }
                     mTextMessage.setText("Loading...");
                     boardAnalyzer.analyzeProject(project)
                         .subscribeOn(Schedulers.io())

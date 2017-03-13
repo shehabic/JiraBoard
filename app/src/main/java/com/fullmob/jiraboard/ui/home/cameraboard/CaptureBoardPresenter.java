@@ -81,7 +81,7 @@ public class CaptureBoardPresenter extends AbstractPresenter<CaptureBoardView> {
         return Observable.create(new ObservableOnSubscribe<Board>() {
             @Override
             public void subscribe(ObservableEmitter<Board> e) throws Exception {
-                board.setBitmap(imageProcessor.autoAdjustImage(board.getBitmap()));
+                imageProcessor.autoAdjustImage(board);
                 boardAnalyzer.analyzeProjectFromImage(board);
                 e.onNext(board);
             }
