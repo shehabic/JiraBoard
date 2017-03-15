@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.ui.BaseActivity;
+import com.fullmob.jiraboard.ui.home.HomeActivity;
+import com.fullmob.jiraboard.ui.issuetypes.IssueTypesActivity;
 import com.fullmob.jiraboard.ui.projects.ProjectsActivity;
 
 import javax.inject.Inject;
@@ -119,7 +121,20 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     @Override
-    public void proceedToNextScreen() {
+    public void proceedToIssueHomeScreen() {
+        startActivity(new Intent(this, HomeActivity.class));
+        finish();
+    }
+
+
+    @Override
+    public void proceedToIssueTypesScreen() {
+        startActivity(new Intent(this, IssueTypesActivity.class));
+        finish();
+    }
+
+    @Override
+    public void proceedToProjectsScreen() {
         startActivity(new Intent(this, ProjectsActivity.class));
         finish();
     }

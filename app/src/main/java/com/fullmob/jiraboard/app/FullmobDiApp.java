@@ -13,14 +13,17 @@ import com.fullmob.jiraboard.di.components.LoginScreenComponent;
 import com.fullmob.jiraboard.di.components.MainComponent;
 import com.fullmob.jiraboard.di.components.ManagersComponent;
 import com.fullmob.jiraboard.di.components.ProjectsScreenComponent;
+import com.fullmob.jiraboard.di.components.TicketsScreenComponent;
 import com.fullmob.jiraboard.di.components.WorkflowDiscoveryComponent;
 import com.fullmob.jiraboard.di.modules.CaptureBoardModule;
 import com.fullmob.jiraboard.di.modules.IssueTypesModule;
 import com.fullmob.jiraboard.di.modules.LoginScreenModule;
 import com.fullmob.jiraboard.di.modules.MainModule;
 import com.fullmob.jiraboard.di.modules.ProjectsScreenModule;
+import com.fullmob.jiraboard.di.modules.TicketsScreenModule;
 import com.fullmob.jiraboard.di.modules.WorkflowDiscoveryModule;
 import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardView;
+import com.fullmob.jiraboard.ui.home.tickets.TicketsScreenView;
 import com.fullmob.jiraboard.ui.issuetypes.IssueTypesView;
 import com.fullmob.jiraboard.ui.login.LoginView;
 import com.fullmob.jiraboard.ui.projects.ProjectsView;
@@ -98,5 +101,10 @@ public class FullmobDiApp extends Application implements FullmobAppInterface {
     @Override
     public CaptureBoardComponent createCaptureBoardFragmentComponent(CaptureBoardView view) {
         return getManagersModule().plusCaptureBoardComponent(new CaptureBoardModule(view));
+    }
+
+    @Override
+    public TicketsScreenComponent createTicketsScreenComponent(TicketsScreenView view) {
+        return getManagersModule().plusTicketsScreenComponent(new TicketsScreenModule(view));
     }
 }

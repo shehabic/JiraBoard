@@ -16,10 +16,4 @@
         android:title="@string/bottom_menu_transitions"
         android:icon="@drawable/ic_transition"
         />
-
-    <item
-        android:id="@+id/bottom_nav_workflow"
-        android:title="@string/bottom_menu_workflow"
-        android:icon="@drawable/ic_workflow"
-        />
 </menu>

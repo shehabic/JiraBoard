@@ -3,7 +3,11 @@ package com.fullmob.jiraboard.ui.login;
 import com.fullmob.jiraboard.ui.BaseView;
 
 public interface LoginView extends BaseView {
-    void proceedToNextScreen();
+    void proceedToIssueHomeScreen();
+
+    void proceedToIssueTypesScreen();
+
+    void proceedToProjectsScreen();
 
     void showInvalidCredentials();
 

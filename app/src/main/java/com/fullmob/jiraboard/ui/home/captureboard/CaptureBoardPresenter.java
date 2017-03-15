@@ -87,8 +87,4 @@ public class CaptureBoardPresenter extends AbstractPresenter<CaptureBoardView> {
             }
         });
     }
-
-    private void showOutput(Board board) {
-        getView().showOutput(board);
-    }
 }

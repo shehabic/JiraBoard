@@ -7,6 +7,7 @@ import com.fullmob.jiraapi.requests.CommentRequest;
 import com.fullmob.jiraapi.requests.TransitionRequest;
 import com.fullmob.jiraapi.requests.issue.UpdateIssueRequest;
 import com.fullmob.jiraapi.responses.IssueTransitionsResponse;
+import com.fullmob.jiraapi.responses.SearchResults;
 
 import java.util.List;
 
@@ -59,4 +60,12 @@ public interface IssuesApi {
 
     @GET("issuetype/{id}")
     Call<Issuetype> getIssueTypeAsync(@Path("id") String id);
+
+    @GET("search")
+    Observable<Response<SearchResults>> search(
+        @Query("jql") String jql,
+        @Query("maxResults") int maxResult,
+        @Query("startAt") int offset,
+        @Query("fields") String fields
+    );
 }

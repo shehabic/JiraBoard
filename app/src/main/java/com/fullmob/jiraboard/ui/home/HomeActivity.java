@@ -1,5 +1,6 @@
 package com.fullmob.jiraboard.ui.home;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
+import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.BaseFragment;
@@ -40,7 +43,14 @@ public class HomeActivity extends BaseActivity implements
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         setupUI();
-        onCaptureBoardClicked();
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            onBottomNavTicketsClicked();
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            getTicketsFragment().onSearchRequested(query);
+        } else {
+            onCaptureBoardClicked();
+        }
     }
 
     private void setupUI() {
@@ -72,6 +82,7 @@ public class HomeActivity extends BaseActivity implements
                     case R.id.bottom_nav_transitions:
                         break;
                 }
+                currentSelection = item.getItemId();
 
                 return true;
             }
@@ -91,6 +102,11 @@ public class HomeActivity extends BaseActivity implements
     }
 
     private void setCurrentFragment(BaseFragment captureBoardFragment, String tag) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.fragment_container, captureBoardFragment, tag)
             .commit();
@@ -108,19 +124,14 @@ public class HomeActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -157,9 +168,7 @@ public class HomeActivity extends BaseActivity implements
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 break;
-
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
@@ -171,6 +180,15 @@ public class HomeActivity extends BaseActivity implements
     }
 
     @Override
+    public void onSearchItemClicked(Issue issue) {
+        
+    }
+
+    @Override
     public void onCaptureBoardFragmentInteraction() {
+    }
+
+    public TicketsFragment getTicketsFragment() {
+        return (TicketsFragment) getSupportFragmentManager().findFragmentByTag(TicketsFragment.TAG);
     }
 }

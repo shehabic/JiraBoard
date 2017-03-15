@@ -6,6 +6,7 @@ import com.fullmob.jiraapi.models.issue.Issuetype;
 import com.fullmob.jiraapi.requests.TransitionRequest;
 import com.fullmob.jiraapi.requests.issue.Transition;
 import com.fullmob.jiraapi.responses.IssueTransitionsResponse;
+import com.fullmob.jiraapi.responses.SearchResults;
 
 import java.io.IOException;
 
@@ -69,5 +70,21 @@ public class IssuesApiClient extends AbstractApiManager<IssuesApi> {
 
     public Response<Issuetype> getIssueTypeAsync(String issueTypeId) throws IOException {
         return api.getIssueTypeAsync(issueTypeId).execute();
+    }
+
+    public Observable<Response<SearchResults>> search(String projectKey, String searchText, int limit, int offset, String fields) {
+        searchText = searchText.replaceAll("\"", "");
+        String conditions = String.format("summary~\"%s\"", searchText);
+        if (isIssueKey(projectKey, searchText)) {
+            conditions = "key=" + projectKey + "-" + searchText.trim().replaceAll("\\D", "");
+        }
+        String jql = String.format("project=%s AND (%s)", projectKey, conditions);
+
+        return api.search(jql, limit, offset, fields);
+    }
+
+    private boolean isIssueKey(String projectKey, String searchText) {
+        return searchText.trim().toUpperCase().startsWith(projectKey.toUpperCase() + "-")
+            || !searchText.matches("\\D+");
     }
 }

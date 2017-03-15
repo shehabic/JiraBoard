@@ -1,6 +1,7 @@
 package com.fullmob.jiraboard.ui.login;
 
 import com.fullmob.jiraapi.responses.AuthResponse;
+import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
 import com.fullmob.jiraboard.managers.user.AuthenticationManager;
 import com.fullmob.jiraboard.schedulers.FullmobSchedulers;
 import com.fullmob.jiraboard.ui.AbstractPresenter;
@@ -11,15 +12,25 @@ import retrofit2.Response;
 
 public class LoginPresenter extends AbstractPresenter<LoginView> {
     private final AuthenticationManager authManager;
+    private final EncryptedStorage encryptedStorage;
 
-    public LoginPresenter(LoginView view, AuthenticationManager authManager) {
+    public LoginPresenter(
+        LoginView view,
+        AuthenticationManager authManager,
+        EncryptedStorage encryptedStorage
+    ) {
         super(view);
         this.authManager = authManager;
+        this.encryptedStorage = encryptedStorage;
     }
 
     void onViewCreated() {
         if (authManager.isAlreadyAuthorized()) {
-            getView().proceedToNextScreen();
+            if (encryptedStorage.getDefaultProject() != null) {
+                getView().proceedToIssueTypesScreen();
+            } else {
+                getView().proceedToProjectsScreen();
+            }
         }
     }
 
@@ -37,7 +48,7 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
                 public void onNext(Response<AuthResponse> response) {
                     getView().hideLoading();
                     if (authManager.isSuccess(response.body()) && getView() != null) {
-                        getView().proceedToNextScreen();
+                        getView().proceedToIssueTypesScreen();
                     } else {
                         getView().showInvalidCredentials();
                     }

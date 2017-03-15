@@ -51,4 +51,5 @@
     <string name="bottom_menu_tickets">Tickets</string>
     <string name="bottom_menu_transitions">Transitions</string>
     <string name="bottom_menu_workflow">Workflow</string>
+    <string name="search_hit">Type ticket number or search text</string>
 </resources>
