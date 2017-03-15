@@ -3,7 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Jira Board</string>
 
     <!-- Strings related to onLoginRequested -->
     <string name="prompt_email">Email/Username</string>

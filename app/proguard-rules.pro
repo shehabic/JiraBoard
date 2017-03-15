@@ -23,7 +23,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-
+-dontwarn okio.**
+-dontwarn retrofit2.Platform$Java8
 -keep class com.facebook.stetho.** {
   *;
 }

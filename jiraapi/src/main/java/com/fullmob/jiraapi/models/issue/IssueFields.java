@@ -17,24 +17,12 @@ public class IssueFields implements Parcelable {
     @SerializedName("issuetype")
     @Expose
     private Issuetype issuetype;
-    @SerializedName("timespent")
-    @Expose
-    private CustomField timespent;
     @SerializedName("project")
     @Expose
     private Project project;
     @SerializedName("fixVersions")
     @Expose
     private List<FixVersion> fixVersions = null;
-    @SerializedName("customfield_11200")
-    @Expose
-    private String customfield11200;
-    @SerializedName("customfield_11002")
-    @Expose
-    private CustomField customfield;
-    @SerializedName("aggregatetimespent")
-    @Expose
-    private CustomField aggregatetimespent;
     @SerializedName("resolution")
     @Expose
     private Resolution resolution;
@@ -53,48 +41,12 @@ public class IssueFields implements Parcelable {
     @SerializedName("created")
     @Expose
     private String created;
-    @SerializedName("customfield_10020")
-    @Expose
-    private CustomField customfield10020;
-    @SerializedName("customfield_10021")
-    @Expose
-    private String customfield10021;
     @SerializedName("priority")
     @Expose
     private Priority priority;
-    @SerializedName("customfield_10100")
-    @Expose
-    private String customfield10100;
-    @SerializedName("customfield_10024")
-    @Expose
-    private CustomField customfield10024;
-    @SerializedName("customfield_10300")
-    @Expose
-    private CustomField customfield10300;
     @SerializedName("labels")
     @Expose
     private List<String> labels = null;
-    @SerializedName("customfield_10301")
-    @Expose
-    private CustomField customfield10301;
-    @SerializedName("customfield_10016")
-    @Expose
-    private CustomField customfield10016;
-    @SerializedName("customfield_11502")
-    @Expose
-    private CustomField customfield11502;
-    @SerializedName("customfield_10017")
-    @Expose
-    private CustomField customfield10017;
-    @SerializedName("customfield_11501")
-    @Expose
-    private CustomField customfield11501;
-    @SerializedName("customfield_10018")
-    @Expose
-    private CustomField customfield10018;
-    @SerializedName("customfield_10019")
-    @Expose
-    private CustomField customfield10019;
     @SerializedName("timeestimate")
     @Expose
     private Integer timeestimate;
@@ -146,18 +98,9 @@ public class IssueFields implements Parcelable {
     @SerializedName("reporter")
     @Expose
     private Reporter reporter;
-    @SerializedName("customfield_10000")
-    @Expose
-    private String customfield10000;
     @SerializedName("aggregateprogress")
     @Expose
     private Aggregateprogress aggregateprogress;
-    @SerializedName("environment")
-    @Expose
-    private CustomField environment;
-    @SerializedName("duedate")
-    @Expose
-    private CustomField duedate;
     @SerializedName("progress")
     @Expose
     private Progress progress;
@@ -176,14 +119,6 @@ public class IssueFields implements Parcelable {
         this.issuetype = issuetype;
     }
 
-    public Object getTimespent() {
-        return timespent;
-    }
-
-    public void setTimespent(CustomField timespent) {
-        this.timespent = timespent;
-    }
-
     public Project getProject() {
         return project;
     }
@@ -198,30 +133,6 @@ public class IssueFields implements Parcelable {
 
     public void setFixVersions(List<FixVersion> fixVersions) {
         this.fixVersions = fixVersions;
-    }
-
-    public String getCustomfield11200() {
-        return customfield11200;
-    }
-
-    public void setCustomfield11200(String customfield11200) {
-        this.customfield11200 = customfield11200;
-    }
-
-    public CustomField getCustomfield() {
-        return customfield;
-    }
-
-    public void setCustomfield(CustomField customfield) {
-        this.customfield = customfield;
-    }
-
-    public Object getAggregatetimespent() {
-        return aggregatetimespent;
-    }
-
-    public void setAggregatetimespent(CustomField aggregatetimespent) {
-        this.aggregatetimespent = aggregatetimespent;
     }
 
     public Resolution getResolution() {
@@ -272,22 +183,6 @@ public class IssueFields implements Parcelable {
         this.created = created;
     }
 
-    public Object getCustomfield10020() {
-        return customfield10020;
-    }
-
-    public void setCustomfield10020(CustomField customfield10020) {
-        this.customfield10020 = customfield10020;
-    }
-
-    public String getCustomfield10021() {
-        return customfield10021;
-    }
-
-    public void setCustomfield10021(String customfield10021) {
-        this.customfield10021 = customfield10021;
-    }
-
     public Priority getPriority() {
         return priority;
     }
@@ -296,29 +191,6 @@ public class IssueFields implements Parcelable {
         this.priority = priority;
     }
 
-    public String getCustomfield10100() {
-        return customfield10100;
-    }
-
-    public void setCustomfield10100(String customfield10100) {
-        this.customfield10100 = customfield10100;
-    }
-
-    public Object getCustomfield10024() {
-        return customfield10024;
-    }
-
-    public void setCustomfield10024(CustomField customfield10024) {
-        this.customfield10024 = customfield10024;
-    }
-
-    public Object getCustomfield10300() {
-        return customfield10300;
-    }
-
-    public void setCustomfield10300(CustomField customfield10300) {
-        this.customfield10300 = customfield10300;
-    }
 
     public List<String> getLabels() {
         return labels;
@@ -326,62 +198,6 @@ public class IssueFields implements Parcelable {
 
     public void setLabels(List<String> labels) {
         this.labels = labels;
-    }
-
-    public Object getCustomfield10301() {
-        return customfield10301;
-    }
-
-    public void setCustomfield10301(CustomField customfield10301) {
-        this.customfield10301 = customfield10301;
-    }
-
-    public Object getCustomfield10016() {
-        return customfield10016;
-    }
-
-    public void setCustomfield10016(CustomField customfield10016) {
-        this.customfield10016 = customfield10016;
-    }
-
-    public Object getCustomfield11502() {
-        return customfield11502;
-    }
-
-    public void setCustomfield11502(CustomField customfield11502) {
-        this.customfield11502 = customfield11502;
-    }
-
-    public Object getCustomfield10017() {
-        return customfield10017;
-    }
-
-    public void setCustomfield10017(CustomField customfield10017) {
-        this.customfield10017 = customfield10017;
-    }
-
-    public Object getCustomfield11501() {
-        return customfield11501;
-    }
-
-    public void setCustomfield11501(CustomField customfield11501) {
-        this.customfield11501 = customfield11501;
-    }
-
-    public Object getCustomfield10018() {
-        return customfield10018;
-    }
-
-    public void setCustomfield10018(CustomField customfield10018) {
-        this.customfield10018 = customfield10018;
-    }
-
-    public Object getCustomfield10019() {
-        return customfield10019;
-    }
-
-    public void setCustomfield10019(CustomField customfield10019) {
-        this.customfield10019 = customfield10019;
     }
 
     public Integer getTimeestimate() {
@@ -521,36 +337,12 @@ public class IssueFields implements Parcelable {
         this.reporter = reporter;
     }
 
-    public String getCustomfield10000() {
-        return customfield10000;
-    }
-
-    public void setCustomfield10000(String customfield10000) {
-        this.customfield10000 = customfield10000;
-    }
-
     public Aggregateprogress getAggregateprogress() {
         return aggregateprogress;
     }
 
     public void setAggregateprogress(Aggregateprogress aggregateprogress) {
         this.aggregateprogress = aggregateprogress;
-    }
-
-    public Object getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(CustomField environment) {
-        this.environment = environment;
-    }
-
-    public Object getDuedate() {
-        return duedate;
-    }
-
-    public void setDuedate(CustomField duedate) {
-        this.duedate = duedate;
     }
 
     public Progress getProgress() {
@@ -588,32 +380,16 @@ public class IssueFields implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.issuetype, flags);
-        dest.writeParcelable(this.timespent, flags);
         dest.writeParcelable(this.project, flags);
         dest.writeTypedList(this.fixVersions);
-        dest.writeString(this.customfield11200);
-        dest.writeParcelable(this.customfield, flags);
-        dest.writeParcelable(this.aggregatetimespent, flags);
         dest.writeParcelable(this.resolution, flags);
         dest.writeString(this.resolutiondate);
         dest.writeValue(this.workratio);
         dest.writeString(this.lastViewed);
         dest.writeParcelable(this.watches, flags);
         dest.writeString(this.created);
-        dest.writeParcelable(this.customfield10020, flags);
-        dest.writeString(this.customfield10021);
         dest.writeParcelable(this.priority, flags);
-        dest.writeString(this.customfield10100);
-        dest.writeParcelable(this.customfield10024, flags);
-        dest.writeParcelable(this.customfield10300, flags);
         dest.writeStringList(this.labels);
-        dest.writeParcelable(this.customfield10301, flags);
-        dest.writeParcelable(this.customfield10016, flags);
-        dest.writeParcelable(this.customfield11502, flags);
-        dest.writeParcelable(this.customfield10017, flags);
-        dest.writeParcelable(this.customfield11501, flags);
-        dest.writeParcelable(this.customfield10018, flags);
-        dest.writeParcelable(this.customfield10019, flags);
         dest.writeValue(this.timeestimate);
         dest.writeValue(this.aggregatetimeoriginalestimate);
         dest.writeTypedList(this.versions);
@@ -631,10 +407,7 @@ public class IssueFields implements Parcelable {
         dest.writeParcelable(this.creator, flags);
         dest.writeList(this.subtasks);
         dest.writeParcelable(this.reporter, flags);
-        dest.writeString(this.customfield10000);
         dest.writeParcelable(this.aggregateprogress, flags);
-        dest.writeParcelable(this.environment, flags);
-        dest.writeParcelable(this.duedate, flags);
         dest.writeParcelable(this.progress, flags);
         dest.writeParcelable(this.issueCommentField, flags);
         dest.writeParcelable(this.worklog, flags);
@@ -642,32 +415,16 @@ public class IssueFields implements Parcelable {
 
     protected IssueFields(Parcel in) {
         this.issuetype = in.readParcelable(Issuetype.class.getClassLoader());
-        this.timespent = in.readParcelable(CustomField.class.getClassLoader());
         this.project = in.readParcelable(Project.class.getClassLoader());
         this.fixVersions = in.createTypedArrayList(FixVersion.CREATOR);
-        this.customfield11200 = in.readString();
-        this.customfield = in.readParcelable(CustomField.class.getClassLoader());
-        this.aggregatetimespent = in.readParcelable(CustomField.class.getClassLoader());
         this.resolution = in.readParcelable(Resolution.class.getClassLoader());
         this.resolutiondate = in.readString();
         this.workratio = (Integer) in.readValue(Integer.class.getClassLoader());
         this.lastViewed = in.readString();
         this.watches = in.readParcelable(Watches.class.getClassLoader());
         this.created = in.readString();
-        this.customfield10020 = in.readParcelable(CustomField.class.getClassLoader());
-        this.customfield10021 = in.readString();
         this.priority = in.readParcelable(Priority.class.getClassLoader());
-        this.customfield10100 = in.readString();
-        this.customfield10024 = in.readParcelable(CustomField.class.getClassLoader());
-        this.customfield10300 = in.readParcelable(CustomField.class.getClassLoader());
         this.labels = in.createStringArrayList();
-        this.customfield10301 = in.readParcelable(CustomField.class.getClassLoader());
-        this.customfield10016 = in.readParcelable(CustomField.class.getClassLoader());
-        this.customfield11502 = in.readParcelable(CustomField.class.getClassLoader());
-        this.customfield10017 = in.readParcelable(CustomField.class.getClassLoader());
-        this.customfield11501 = in.readParcelable(CustomField.class.getClassLoader());
-        this.customfield10018 = in.readParcelable(CustomField.class.getClassLoader());
-        this.customfield10019 = in.readParcelable(CustomField.class.getClassLoader());
         this.timeestimate = (Integer) in.readValue(Integer.class.getClassLoader());
         this.aggregatetimeoriginalestimate = (Integer) in.readValue(Integer.class.getClassLoader());
         this.versions = in.createTypedArrayList(Version.CREATOR);
@@ -687,10 +444,7 @@ public class IssueFields implements Parcelable {
         this.subtasks = new ArrayList<Object>();
         in.readList(this.subtasks, Object.class.getClassLoader());
         this.reporter = in.readParcelable(Reporter.class.getClassLoader());
-        this.customfield10000 = in.readString();
         this.aggregateprogress = in.readParcelable(Aggregateprogress.class.getClassLoader());
-        this.environment = in.readParcelable(CustomField.class.getClassLoader());
-        this.duedate = in.readParcelable(CustomField.class.getClassLoader());
         this.progress = in.readParcelable(Progress.class.getClassLoader());
         this.issueCommentField = in.readParcelable(IssueCommentField.class.getClassLoader());
         this.worklog = in.readParcelable(Worklog.class.getClassLoader());
