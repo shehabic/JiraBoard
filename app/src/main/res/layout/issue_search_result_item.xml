@@ -1,32 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:background="?android:attr/selectableItemBackground"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:minHeight="48dp"
-              android:gravity="center"
-              android:orientation="horizontal"
-              android:paddingBottom="0dp"
-              android:paddingLeft="16dp"
-              android:paddingRight="16dp"
-              android:paddingTop="0dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp"
+    >
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/issue_type_icon"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_gravity="center_vertical"
-        android:layout_weight="0"
+        android:paddingTop="2dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
+        android:adjustViewBounds="false"
         />
 
-    <TextView
-        android:layout_margin="8dp"
-        android:id="@+id/issue_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="start|center_vertical"
-        android:textSize="14sp"
-        />
+    <LinearLayout
+        android:paddingBottom="8dp"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/issue_type_icon"
+        android:layout_margin="0dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/issue_name"
+            android:text="MOB-123456: Issue title should go here"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/ticket_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/status_color_grey"
+            android:gravity="center"
+            android:paddingBottom="1dp"
+            android:layout_gravity="start"
+            android:paddingStart="6dp"
+            android:text="Backlog"
+            android:paddingEnd="6dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            />
+    </LinearLayout>
+
+    <View
+        android:background="@color/separator_color"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp" />
+
+</RelativeLayout>

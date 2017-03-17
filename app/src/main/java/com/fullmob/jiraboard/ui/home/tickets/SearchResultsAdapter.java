@@ -1,11 +1,12 @@
 package com.fullmob.jiraboard.ui.home.tickets;
 
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fullmob.jiraapi.models.Issue;
@@ -27,15 +28,18 @@ class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.Sea
 
     @Override
     public SearchResultsAdapter.SearchResultsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LinearLayout view
-            = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.issue_search_result_item, parent, false);
-        return new SearchResultsAdapter.SearchResultsViewHolder(view);
+        return new SearchResultsAdapter.SearchResultsViewHolder(
+            LayoutInflater.from(parent.getContext()).inflate(R.layout.issue_search_result_item, parent, false)
+        );
     }
 
     @Override
     public void onBindViewHolder(SearchResultsAdapter.SearchResultsViewHolder holder, int position) {
         holder.issue = issues.get(position);
         holder.itemName.setText(holder.issue.getKey() + ": " + holder.issue.getIssueFields().getSummary());
+        holder.itemStatusText.setText(holder.issue.getIssueFields().getStatus().getName());
+        String colorName = holder.issue.getIssueFields().getStatus().getStatusCategory().getColorName();
+        adjustStatusColor(colorName, holder);
         try {
             secureImageLoader.loadSVG(
                 holder.issue.getIssueFields().getIssuetype().getIconUrl(),
@@ -45,6 +49,28 @@ class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.Sea
         } catch (Exception ignore) {
         }
         holder.bindEvents(listener);
+    }
+
+    private void adjustStatusColor(String colorName, SearchResultsViewHolder holder) {
+        Drawable background;
+        @ColorInt int color = holder.itemView.getContext().getResources().getColor(R.color.white);
+        switch (colorName.toLowerCase()) {
+            case "yellow":
+                background = holder.itemView.getContext().getResources().getDrawable(R.drawable.status_color_yellow);
+                color = holder.itemView.getContext().getResources().getColor(R.color.black);
+                break;
+
+            case "green":
+                background = holder.itemView.getContext().getResources().getDrawable(R.drawable.status_color_green);
+                break;
+
+            default:
+                background = holder.itemView.getContext().getResources().getDrawable(R.drawable.status_color_grey);
+                break;
+        }
+
+        holder.itemStatusText.setBackgroundDrawable(background);
+        holder.itemStatusText.setTextColor(color);
     }
 
     @Override
@@ -60,6 +86,7 @@ class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.Sea
     class SearchResultsViewHolder extends RecyclerView.ViewHolder {
         View itemView;
         TextView itemName;
+        TextView itemStatusText;
         AppCompatImageView issueTypeIcon;
         Issue issue;
 
@@ -68,6 +95,7 @@ class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.Sea
             this.itemView = itemView;
             this.issueTypeIcon = (AppCompatImageView) itemView.findViewById(R.id.issue_type_icon);
             this.itemName = (TextView) itemView.findViewById(R.id.issue_name);
+            this.itemStatusText = (TextView) itemView.findViewById(R.id.ticket_status);
         }
 
         void bindEvents(final SearchResultsAdapter.Listener listener) {

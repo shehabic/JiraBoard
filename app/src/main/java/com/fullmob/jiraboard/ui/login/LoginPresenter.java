@@ -48,7 +48,7 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
                 public void onNext(Response<AuthResponse> response) {
                     getView().hideLoading();
                     if (authManager.isSuccess(response.body()) && getView() != null) {
-                        getView().proceedToIssueTypesScreen();
+                        getView().proceedToProjectsScreen();
                     } else {
                         getView().showInvalidCredentials();
                     }

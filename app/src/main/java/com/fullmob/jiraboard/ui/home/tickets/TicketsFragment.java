@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.R;
@@ -27,11 +28,12 @@ import butterknife.ButterKnife;
 public class TicketsFragment extends BaseFragment implements TicketsScreenView, SearchResultsAdapter.Listener {
 
     public static final String TAG = TicketsFragment.class.getSimpleName();
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener listener;
     private SearchResultsAdapter resultsAdapter;
 
     @BindView(R.id.search_view) MaterialSearchView searchView;
     @BindView(R.id.search_results) RecyclerView searchResultsRecyclerView;
+    @BindView(R.id.error) TextView errorTextField;
 
     @Inject TicketsScreenPresenter presenter;
     @Inject SecuredImagesManagerInterface imagesLoader;
@@ -78,7 +80,7 @@ public class TicketsFragment extends BaseFragment implements TicketsScreenView, 
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+            listener = (OnFragmentInteractionListener) context;
         } else {
 
         }
@@ -88,7 +90,7 @@ public class TicketsFragment extends BaseFragment implements TicketsScreenView, 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     @Override
@@ -103,17 +105,47 @@ public class TicketsFragment extends BaseFragment implements TicketsScreenView, 
 
     @Override
     public void renderResultTicket(List<Issue> issues) {
-        resultsAdapter.setIssues(issues);
+        if (issues.size() > 0) {
+            hideError();
+            showSearchResults();
+            resultsAdapter.setIssues(issues);
+        } else {
+            showError();
+            hideSearchResults();
+            errorTextField.setText(R.string.no_results_found);
+        }
     }
 
     @Override
     public void showSearchError(Throwable throwable) {
+        errorTextField.setText(getString(R.string.err_msg_unknown_error));
+        showError();
+        hideSearchResults();
+    }
 
+    @Override
+    public void showSearchResults() {
+        searchResultsRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSearchResults() {
+        searchResultsRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError() {
+        errorTextField.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideError() {
+        errorTextField.setVisibility(View.GONE);
     }
 
     @Override
     public void openIssueItem(Issue issue) {
-
+        listener.onSearchItemClicked(issue);
     }
 
     public void onSearchRequested(String searchQuery) {

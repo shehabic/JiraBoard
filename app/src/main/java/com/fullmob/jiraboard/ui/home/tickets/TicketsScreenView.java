@@ -8,5 +8,14 @@ import java.util.List;
 public interface TicketsScreenView extends BaseView {
     void renderResultTicket(List<Issue> issues);
     void showSearchError(Throwable throwable);
+
+    void showSearchResults();
+
+    void hideSearchResults();
+
+    void showError();
+
+    void hideError();
+
     void openIssueItem(Issue issue);
 }

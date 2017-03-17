@@ -52,4 +52,6 @@
     <string name="bottom_menu_transitions">Transitions</string>
     <string name="bottom_menu_workflow">Workflow</string>
     <string name="search_hit">Type ticket number or search text</string>
+    <string name="err_msg_unknown_error">Unknown error occurred, please try again</string>
+    <string name="no_results_found">No results found</string>
 </resources>
