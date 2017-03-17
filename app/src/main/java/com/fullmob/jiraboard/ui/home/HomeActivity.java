@@ -163,8 +163,9 @@ public class HomeActivity extends BaseActivity implements
                 finish();
                 break;
 
-            case R.id.nav_logout:
+            case R.id.nav_exit:
                 getApp().getMainComponent().getEncryptedStorage().deletePassword();
+                getApp().getMainComponent().getEncryptedStorage().getDefaultProject();
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 break;

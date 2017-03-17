@@ -68,6 +68,11 @@ public class EncryptedStorageManager implements EncryptedStorage {
     }
 
     @Override
+    public void deleteDefaultProjecT() {
+        localStorage.delete(JIRA_DEFAULT_PROJECT);
+    }
+
+    @Override
     public void saveDefaultProject(UIProject project) {
         localStorage.putString(JIRA_DEFAULT_PROJECT, project.getId());
     }

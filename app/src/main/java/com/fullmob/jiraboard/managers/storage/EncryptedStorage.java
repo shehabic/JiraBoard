@@ -11,6 +11,7 @@ public interface EncryptedStorage {
     void saveUsername(String user);
     void savePassword(String password);
     void deletePassword();
+    void deleteDefaultProjecT();
     void saveDefaultProject(UIProject jiraProject);
 
 }
