@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:dividerSize="3dp"
-        app:squareColor="@color/colorPrimaryDark"
+        app:squareColor="@color/colorPrimary"
         app:squareCorner="2dp"
         app:squareSize="16dp"
         app:xCount="3"

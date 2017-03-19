@@ -6,4 +6,12 @@ public class BaseFragment extends Fragment {
     protected BaseActivity getBaseActivity() {
         return (BaseActivity) getActivity();
     }
+
+    public void showLoading() {
+        getBaseActivity().showLoading();
+    }
+
+    public void hideLoading() {
+        getBaseActivity().hideLoading();
+    }
 }

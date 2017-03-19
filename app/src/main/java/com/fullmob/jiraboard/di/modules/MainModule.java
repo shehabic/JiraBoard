@@ -9,6 +9,7 @@ import com.fullmob.jiraboard.app.FullmobDiApp;
 import com.fullmob.jiraboard.managers.db.DBManager;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.images.GlideSecuredImagesLoader;
+import com.fullmob.jiraboard.printing.ImageTicketGenerator;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
 import com.fullmob.jiraboard.managers.notifications.NotificationsManager;
 import com.fullmob.jiraboard.managers.queue.QueueManager;
@@ -74,7 +75,7 @@ public class MainModule {
 
         RealmConfiguration.Builder builder = new RealmConfiguration.Builder();
         builder.schemaVersion(DBManager.DB_VERSION)
-        .deleteRealmIfMigrationNeeded();
+            .deleteRealmIfMigrationNeeded();
         Realm.setDefaultConfiguration(builder.build());
 
         return new DBManager();
@@ -112,5 +113,10 @@ public class MainModule {
     @Provides
     public BitmapsProvider providesBitmapsProvider(FullmobAppInterface app) {
         return new BitmapsProvider(app.getContext());
+    }
+
+    @Provides
+    public ImageTicketGenerator providesQRBitmapGenerator() {
+        return new ImageTicketGenerator();
     }
 }

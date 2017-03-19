@@ -35,6 +35,7 @@ import static com.fullmob.jiraboard.utils.QRPointUtils.minX;
 public class BoardAnalyzer {
 
     private boolean debug;
+
     public BoardAnalyzer() {
         this(false);
     }

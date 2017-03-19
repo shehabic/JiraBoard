@@ -8,6 +8,7 @@ import com.fullmob.jiraapi.models.issue.Issuetype;
 import com.fullmob.jiraboard.exceptions.SubDomainNotStoredException;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
+import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
 import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
@@ -144,11 +145,19 @@ public class ProjectsManager {
         return Observable.just(dbManager.findProjectWorkflows(encStorage.getDefaultProject()));
     }
 
+    public Observable<UIProject> getCurrentProject() {
+        return Observable.just(dbManager.getProject(encStorage.getDefaultProject()));
+    }
+
     public Observable<UIProject> getProject(String projectId) {
         return Observable.just(dbManager.getProject(projectId));
     }
 
     public Observable<List<UIWorkflowQueueJob>> findAllProcessedAndInProgressWorkflowsInCurrentProject() {
         return Observable.just(dbManager.findProcessedAndInProgressWorkflows(encStorage.getDefaultProject()));
+    }
+
+    public Observable<HashSet<UIIssueStatus>> findAllStatusesInCurrentProject() {
+        return Observable.just(dbManager.findProjectIssueStatuses(encStorage.getDefaultProject()));
     }
 }

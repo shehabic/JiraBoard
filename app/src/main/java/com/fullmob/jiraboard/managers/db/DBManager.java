@@ -15,6 +15,7 @@ import com.fullmob.jiraboard.db.data.JiraSubDomain;
 import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
 import com.fullmob.jiraboard.db.data.workflow.Vertices;
 import com.fullmob.jiraboard.ui.models.SubDomain;
+import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
 import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
@@ -29,6 +30,7 @@ import java.util.Map;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -42,6 +44,7 @@ public class DBManager implements DBManagerInterface {
     public static final String COL_JIRA_ID = "jiraId";
     private static final String COL_WORKFLOW_QUEUE_JOB_KEY = "jobKey";
     private static final String COL_DISCOVERY_STATUS = "discoveryStatus";
+    private static final String COL_NAME = "name";
     private final Mapper mapper;
 
     public DBManager() {
@@ -288,6 +291,15 @@ public class DBManager implements DBManagerInterface {
             .findAll();
     }
 
+    private RealmResults<JiraIssueType> fetchDistinctProjectIssueTypes(String projectId) {
+        return getRealm().where(JiraIssueType.class)
+            .equalTo(COL_PROJECT_ID, projectId)
+            .findAll()
+            .where()
+            .distinct(COL_WORKFLOW_KEY)
+            .sort(COL_NAME, Sort.ASCENDING);
+    }
+
     @Override
     public List<UIIssueType> findProjectIssueTypes(String projectId) {
         RealmResults<JiraIssueType> issueTypes = fetchProjectIssueTypes(projectId);
@@ -386,5 +398,10 @@ public class DBManager implements DBManagerInterface {
             .equalTo(COL_PROJECT_ID, projectId).findAll();
 
         return mapper.convertWorkflowsToUIWorkflowJob(workflowJobs);
+    }
+
+    @Override
+    public HashSet<UIIssueStatus> findProjectIssueStatuses(String projectId) {
+        return mapper.createDistinctUIIssueStatuses(fetchDistinctProjectIssueTypes(projectId));
     }
 }

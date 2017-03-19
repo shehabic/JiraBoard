@@ -1,8 +1,7 @@
 package com.fullmob.jiraboard.di.modules;
 
 import com.fullmob.jiraboard.analyzer.BoardAnalyzer;
-import com.fullmob.jiraboard.managers.db.DBManagerInterface;
-import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
+import com.fullmob.jiraboard.managers.projects.ProjectsManager;
 import com.fullmob.jiraboard.processors.ImageProcessor;
 import com.fullmob.jiraboard.providers.BitmapsProvider;
 import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardPresenter;
@@ -24,18 +23,16 @@ public class CaptureBoardModule {
 
     @Provides
     public CaptureBoardPresenter providesCaptureBoardPresenter(
-        DBManagerInterface dbManager,
         ImageProcessor processor,
         BoardAnalyzer boardAnalyzer,
-        EncryptedStorage encryptedStorage,
+        ProjectsManager projectsManager,
         BitmapsProvider bitmapsProvider
     ) {
         return new CaptureBoardPresenter(
             view.get(),
             processor,
             boardAnalyzer,
-            dbManager,
-            encryptedStorage,
+            projectsManager,
             bitmapsProvider
         );
     }

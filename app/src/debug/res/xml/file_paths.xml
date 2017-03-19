@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <external-path
-        name="my_images"
-        path="Android/data/com.fullmob.jiraboard.dev/files/Pictures" />
+        name="jira_images"
+        path="Android/data/com.fullmob.jiraboard.debug/files/Pictures" />
 </paths>

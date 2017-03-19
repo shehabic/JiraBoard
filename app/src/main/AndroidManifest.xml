@@ -35,10 +35,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}"
@@ -46,9 +44,8 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths"/>
         </provider>
-
 
         <activity
             android:name=".ui.home.QRActivity"
@@ -91,6 +88,11 @@
         <activity android:name=".ui.projects.ProjectsActivity">
         </activity>
         <activity android:name=".ui.issuetypes.IssueTypesActivity">
+        </activity>
+        <activity
+            android:name=".ui.printing.PrintingActivity"
+            android:label="@string/title_activity_printing"
+            android:theme="@style/AppTheme">
         </activity>
     </application>
 

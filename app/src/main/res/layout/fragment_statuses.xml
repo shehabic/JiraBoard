@@ -1,0 +1,23 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.fullmob.jiraboard.ui.home.statuses.StatusesFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/issue_statuses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:minHeight="200dp"
+        android:textColor="@color/errorRed"
+        android:visibility="gone"/>
+</FrameLayout>

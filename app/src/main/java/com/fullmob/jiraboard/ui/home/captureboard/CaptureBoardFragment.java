@@ -47,10 +47,13 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
     public static final int CAPTURE_IMAGE_REQUEST = 1002;
     public static final int PICK_IMAGE_REQUEST = 1001;
     private static final int STORAGE_PERMISSIONS_REQUESTED = 998;
+
     @Inject
     CaptureBoardPresenter presenter;
 
     private OnFragmentInteractionListener mListener;
+
+    private String currentPhotoPath;
 
     @BindView(R.id.board_preview)
     ImageView boardPreview;
@@ -112,6 +115,7 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
         super.onDetach();
         mListener = null;
     }
+
     public void onCameraImageReceived(int requestCode) {
         onCameraImageReceived(
             requestCode,
@@ -255,8 +259,6 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
         return (BaseActivity) getActivity();
     }
 
-    String mCurrentPhotoPath;
-
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -265,7 +267,7 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
+        currentPhotoPath = image.getAbsolutePath();
 
         return image;
     }

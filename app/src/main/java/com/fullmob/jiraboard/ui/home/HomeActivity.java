@@ -20,8 +20,10 @@ import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.BaseFragment;
 import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardFragment;
+import com.fullmob.jiraboard.ui.home.statuses.StatusesFragment;
 import com.fullmob.jiraboard.ui.home.tickets.TicketsFragment;
 import com.fullmob.jiraboard.ui.login.LoginActivity;
+import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.projects.ProjectsActivity;
 
 import butterknife.BindView;
@@ -30,7 +32,9 @@ import butterknife.ButterKnife;
 public class HomeActivity extends BaseActivity implements
     NavigationView.OnNavigationItemSelectedListener,
     CaptureBoardFragment.OnFragmentInteractionListener,
-    TicketsFragment.OnFragmentInteractionListener {
+    TicketsFragment.OnFragmentInteractionListener,
+    StatusesFragment.OnIssueStatusesInteractor
+{
 
     private int currentSelection = 0;
 
@@ -80,6 +84,7 @@ public class HomeActivity extends BaseActivity implements
 
 
                     case R.id.bottom_nav_transitions:
+                        onStatusesClicked();
                         break;
                 }
                 currentSelection = item.getItemId();
@@ -87,6 +92,12 @@ public class HomeActivity extends BaseActivity implements
                 return true;
             }
         });
+    }
+
+    private void onStatusesClicked() {
+        if (currentSelection != R.id.bottom_nav_transitions) {
+            setCurrentFragment(StatusesFragment.newInstance(), StatusesFragment.TAG);
+        }
     }
 
     private void onCaptureBoardClicked() {
@@ -182,7 +193,7 @@ public class HomeActivity extends BaseActivity implements
 
     @Override
     public void onSearchItemClicked(Issue issue) {
-        
+        printIssue(issue);
     }
 
     @Override
@@ -191,5 +202,10 @@ public class HomeActivity extends BaseActivity implements
 
     public TicketsFragment getTicketsFragment() {
         return (TicketsFragment) getSupportFragmentManager().findFragmentByTag(TicketsFragment.TAG);
+    }
+
+    @Override
+    public void onPrintStatusRequested(UIIssueStatus issueStatus) {
+        printStatus(issueStatus);
     }
 }

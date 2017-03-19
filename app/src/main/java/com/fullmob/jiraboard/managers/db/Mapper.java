@@ -15,11 +15,14 @@ import com.fullmob.jiraboard.db.data.JiraProject;
 import com.fullmob.jiraboard.db.data.JiraStatusCategory;
 import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
 import com.fullmob.jiraboard.ui.models.UIAvatarUrls;
+import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
+import com.fullmob.jiraboard.ui.models.UIStatusCategory;
 import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -210,5 +213,39 @@ public class Mapper {
         }
 
         return jobs;
+    }
+
+    public HashSet<UIIssueStatus> createDistinctUIIssueStatuses(RealmResults<JiraIssueType> jiraIssueTypes) {
+        HashSet<UIIssueStatus> issueStatuses = new HashSet<>();
+        for (JiraIssueType jiraIssueType : jiraIssueTypes) {
+            for (JiraIssueStatus status : jiraIssueType.getStatuses()) {
+                issueStatuses.add(createIssueStatusFromJiraIssueStatus(status));
+            }
+        }
+
+        return issueStatuses;
+    }
+
+    private UIIssueStatus createIssueStatusFromJiraIssueStatus(JiraIssueStatus status) {
+        UIIssueStatus issueStatus = new UIIssueStatus();
+        issueStatus.setName(status.getName());
+        issueStatus.setId(status.getId());
+        issueStatus.setIconUrl(status.getIconUrl());
+        issueStatus.setSelf(status.getSelf());
+        issueStatus.setDescription(status.getDescription());
+        issueStatus.setStatusCategory(createUIStatusCategoryFromJiraStatusCategory(status.getStatusCategory()));
+
+        return issueStatus;
+    }
+
+    private UIStatusCategory createUIStatusCategoryFromJiraStatusCategory(JiraStatusCategory statusCategory) {
+        UIStatusCategory uiStatusCategory = new UIStatusCategory();
+        uiStatusCategory.setSelf(statusCategory.getSelf());
+        uiStatusCategory.setName(statusCategory.getName());
+        uiStatusCategory.setId(statusCategory.getId());
+        uiStatusCategory.setColorName(statusCategory.getColorName());
+        uiStatusCategory.setKey(statusCategory.getKey());
+
+        return uiStatusCategory;
     }
 }
