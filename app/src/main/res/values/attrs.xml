@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="printable">
+        <attr name="id" format="string"/>
+        <attr name="alignRight" format="reference"/>
+        <attr name="alignTop" format="reference"/>
+        <attr name="alignBottom" format="reference"/>
+        <attr name="alignLeft" format="reference"/>
+        <attr name="below" format="reference"/>
+        <attr name="above" format="reference"/>
+        <attr name="toLeftOf" format="reference"/>
+        <attr name="toRightOf" format="reference"/>
+        <attr name="centerVertical" format="reference"/>
+        <attr name="centerHorizontal" format="reference"/>
+        <attr name="width" format="dimension"/>
+        <attr name="height" format="dimension"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
+    </declare-styleable>
+</resources>

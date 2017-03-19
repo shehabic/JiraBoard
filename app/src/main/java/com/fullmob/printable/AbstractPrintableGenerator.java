@@ -1,4 +1,4 @@
-package com.fullmob.jiraboard.printing;
+package com.fullmob.printable;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,15 +15,43 @@ import com.google.zxing.common.BitMatrix;
 
 import java.util.HashSet;
 
-abstract class AbstractPrintableGenerator<T> implements PrintableTicketGenerator<T> {
+abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
 
     float scale = 1f;
 
-    HashSet<Printable.Element> drawn = new HashSet<>();
+    private HashSet<Element> drawn = new HashSet<>();
+    private HashSet<Element> measured = new HashSet<>();
 
     public T createPrintable(Printable printable, PaperSize paperSize) {
+        int[] size = findSize(paperSize, true);
+
+        return createPrintable(printable, size[0] / 2, size[1] / 2);
+    }
+
+    public static int[] findSize(String sizeString, boolean landscape) {
+        switch (sizeString.toUpperCase()) {
+            case "A5":
+                return findSize(PaperSize.A5, landscape);
+            case "A6":
+                return findSize(PaperSize.A6, landscape);
+            case "A7":
+                return findSize(PaperSize.A7, landscape);
+            case "A8":
+                return findSize(PaperSize.A8, landscape);
+            case "A9":
+                return findSize(PaperSize.A9, landscape);
+            case "A10":
+                return findSize(PaperSize.A10, landscape);
+            default:
+                throw new RuntimeException("Unsupported paper size: " + sizeString);
+        }
+    }
+
+    public static int[] findSize(PaperSize paperSize, boolean landscape) {
         int h = 0, w = 0;
         switch (paperSize) {
+            // TODO: add the missing sizes
+
             case A6:
                 h = 4130;
                 w = 5830;
@@ -49,56 +77,55 @@ abstract class AbstractPrintableGenerator<T> implements PrintableTicketGenerator
                 w = 1460;
                 break;
         }
-
-        return createPrintable(printable, w / 2, h / 2);
+        return landscape ? new int[]{w, h} : new int[]{h, w};
     }
 
-    public void prepareSectionDimension(Printable.Element section) {
+    public void prepareSectionDimension(Element section) {
         if (section.toLeftOf != null) {
-            if (section.toLeftOf.isMeasured) {
+            if (measured.contains(section.toLeftOf)) {
                 section.right = section.toLeftOf.left - section.marginRight;
             }
         }
         if (section.toRightOf != null) {
-            if (section.toRightOf.isMeasured) {
+            if (measured.contains(section.toRightOf)) {
                 section.left = section.toRightOf.right + section.marginLeft;
             }
         }
         if (section.below != null) {
-            if (section.below.isMeasured) {
+            if (measured.contains(section.below)) {
                 section.top = section.below.bottom + section.marginTop;
             }
         }
         if (section.above != null) {
-            if (section.above.isMeasured) {
+            if (measured.contains(section.above)) {
                 section.bottom = section.above.top;
             }
         }
         if (section.alignBottom != null) {
-            if (section.alignBottom.isMeasured) {
+            if (measured.contains(section.alignBottom)) {
                 section.bottom = section.alignBottom.bottom - section.marginBottom;
             }
         }
         if (section.alignTop != null) {
-            if (section.alignTop.isMeasured) {
+            if (measured.contains(section.alignTop)) {
                 section.top = section.alignTop.top + section.marginTop;
             }
         }
         if (section.alignLeft != null) {
-            if (section.alignLeft.isMeasured) {
+            if (measured.contains(section.alignLeft)) {
                 section.left = section.alignLeft.left + section.marginLeft;
             }
         }
         if (section.alignRight != null) {
-            if (section.alignRight.isMeasured) {
+            if (measured.contains(section.alignRight)) {
                 section.right = section.alignRight.right - section.marginRight;
             }
         }
 
-        if (section.centerHorizontalOf != null) {
-            if (section.centerHorizontalOf.isMeasured) {
+        if (section.centerHorizontalIn != null) {
+            if (measured.contains(section.centerHorizontalIn)) {
                 if (section.width > -1) {
-                    section.left = ((section.centerHorizontalOf.left + section.centerHorizontalOf.right) / 2);
+                    section.left = ((section.centerHorizontalIn.left + section.centerHorizontalIn.right) / 2);
                     section.left -= (section.width / 2);
                     section.left += (section.marginLeft - section.marginRight);
                 } else {
@@ -106,10 +133,10 @@ abstract class AbstractPrintableGenerator<T> implements PrintableTicketGenerator
                 }
             }
         }
-        if (section.centerVerticalOf != null) {
-            if (section.centerVerticalOf.isMeasured) {
+        if (section.centerVerticalIn != null) {
+            if (measured.contains(section.centerVerticalIn)) {
                 if (section.height > -1) {
-                    section.top = ((section.centerVerticalOf.top + section.centerVerticalOf.bottom) / 2);
+                    section.top = ((section.centerVerticalIn.top + section.centerVerticalIn.bottom) / 2);
                     section.top -= (section.height / 2);
                     section.top += (section.marginTop - section.marginBottom);
                 } else {
@@ -136,7 +163,7 @@ abstract class AbstractPrintableGenerator<T> implements PrintableTicketGenerator
             section.height = section.bottom - section.top;
         }
         if (section.height > -1 && section.width > -1) {
-            section.isMeasured = true;
+            measured.add(section);
         }
     }
 
@@ -148,25 +175,25 @@ abstract class AbstractPrintableGenerator<T> implements PrintableTicketGenerator
         printable.PARENT.height = height;
         printable.PARENT.right = width;
         printable.PARENT.bottom = height;
-        printable.PARENT.isMeasured = true;
+        measured.add(printable.PARENT);
     }
 
-    private void prepareQRSection(Printable.Element qr, Printable.Element parent) {
+    private void prepareQRSection(Element qr, Element parent) {
         qr.height = qr.width = (int) (parent.height * 0.7f);
     }
 
-    private void drawTextSection(Canvas canvas, Printable.Element section) {
+    private void drawTextSection(Canvas canvas, Element section) {
         TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setColor(section.textColor);
         textPaint.setTextSize(
             section.textSize * (section.textSizeMultiplier != null ? section.textSizeMultiplier.width : 1.f)
         );
         textPaint.setTextAlign(
-            section.textHAlign == Printable.TextHAlign.CENTER
+            section.textHAlign == Element.TextHAlign.CENTER
                 ? Paint.Align.CENTER
-                : section.textHAlign == Printable.TextHAlign.LEFT
-                    ? Paint.Align.LEFT
-                    : Paint.Align.RIGHT
+                : section.textHAlign == Element.TextHAlign.LEFT
+                ? Paint.Align.LEFT
+                : Paint.Align.RIGHT
         );
         textPaint.setAntiAlias(true);
         StaticLayout textLayout = new StaticLayout(
@@ -180,16 +207,16 @@ abstract class AbstractPrintableGenerator<T> implements PrintableTicketGenerator
         );
         int actualTop = section.top;
         float actualTextHeight = textLayout.getHeight();
-        if (section.textVAlign.equals(Printable.TextVAlign.MIDDLE)) {
+        if (section.textVAlign.equals(Element.TextVAlign.MIDDLE)) {
             actualTop = ((section.top + section.bottom) / 2) - (int) (actualTextHeight / 2);
-        } else if (section.textVAlign.equals(Printable.TextVAlign.BOTTOM)) {
+        } else if (section.textVAlign.equals(Element.TextVAlign.BOTTOM)) {
             actualTop = section.bottom - (int) actualTextHeight;
         }
 
         int actualLeft = section.left;
-        if (section.textHAlign.equals(Printable.TextHAlign.CENTER)) {
+        if (section.textHAlign.equals(Element.TextHAlign.CENTER)) {
             actualLeft = (section.left + section.right) / 2;
-        } else if (section.textHAlign.equals(Printable.TextHAlign.RIGHT)) {
+        } else if (section.textHAlign.equals(Element.TextHAlign.RIGHT)) {
             actualLeft = section.right;
         }
 
@@ -200,7 +227,7 @@ abstract class AbstractPrintableGenerator<T> implements PrintableTicketGenerator
     }
 
 
-    void drawSection(Canvas canvas, Printable.Element section) {
+    private void drawSection(Canvas canvas, Element section) {
         if (section.isQr()) {
             drawQR(canvas, section);
             drawn.add(section);
@@ -210,13 +237,13 @@ abstract class AbstractPrintableGenerator<T> implements PrintableTicketGenerator
         }
     }
 
-    private void drawQR(Canvas canvas, Printable.Element section) {
+    private void drawQR(Canvas canvas, Element section) {
         try {
             Bitmap qrBmp = encodeAsBitmap(section.content, section.width);
             Paint paintOverlay = new Paint(Paint.FILTER_BITMAP_FLAG);
             canvas.drawBitmap(qrBmp, section.left, section.top, paintOverlay);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -252,40 +279,22 @@ abstract class AbstractPrintableGenerator<T> implements PrintableTicketGenerator
         boolean allDrawn = false;
         while (!allDrawn) {
             allDrawn = true;
-            for (Printable.Element section : printable.elements) {
+            for (Element section : printable.elements) {
                 allDrawn &= drawn.contains(section);
                 if (!drawn.contains(section)) {
                     if (section.isQr()) {
                         prepareQRSection(section, printable.PARENT);
                     }
-                    if (!section.isMeasured) {
+                    if (!measured.contains(section)) {
                         prepareSectionDimension(section);
                     }
-                    if (section.isMeasured) {
+                    if (measured.contains(section)) {
                         drawSection(canvas, section);
                     }
                 }
             }
         }
         drawn.clear();
-    }
-
-    public void resetMeasures(Printable printable) {
-        for (Printable.Element element : printable.elements) {
-            if (!element.isParent()) {
-                if (!element.hasFixedHeight()) {
-                    element.height = -1;
-                    element.isMeasured = false;
-                }
-                if (!element.hasFixedWidth()) {
-                    element.width = -1;
-                    element.isMeasured = false;
-                }
-                element.left = -1;
-                element.right = -1;
-                element.top = -1;
-                element.bottom = -1;
-            }
-        }
+        measured.clear();
     }
 }

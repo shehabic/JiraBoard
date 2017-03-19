@@ -1,4 +1,4 @@
-package com.fullmob.jiraboard.printing;
+package com.fullmob.printable;
 
 import android.content.Context;
 import android.graphics.pdf.PdfDocument;
@@ -9,12 +9,12 @@ import android.support.annotation.RequiresApi;
 
 import java.lang.ref.WeakReference;
 
-public class PdfTicketGenerator extends AbstractPrintableGenerator<PrintedPdfDocument> {
+public class PrintablePDFGenerator extends AbstractPrintableGenerator<PrintedPdfDocument> {
 
     private final PrintAttributes printAttributes;
     private WeakReference<Context> activityContext;
 
-    public PdfTicketGenerator(Context activityContext, PrintAttributes printAttributes) {
+    public PrintablePDFGenerator(Context activityContext, PrintAttributes printAttributes) {
         this.activityContext = new WeakReference<>(activityContext);
         this.printAttributes = printAttributes;
         scale = 0.1f;

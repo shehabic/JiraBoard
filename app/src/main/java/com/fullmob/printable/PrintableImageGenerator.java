@@ -1,9 +1,9 @@
-package com.fullmob.jiraboard.printing;
+package com.fullmob.printable;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-public class ImageTicketGenerator extends AbstractPrintableGenerator<Bitmap> {
+public class PrintableImageGenerator extends AbstractPrintableGenerator<Bitmap> {
 
     public Bitmap createPrintable(Printable printable, int width, int height) {
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);

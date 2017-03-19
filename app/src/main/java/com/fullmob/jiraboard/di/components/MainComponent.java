@@ -5,7 +5,7 @@ import com.fullmob.jiraboard.analyzer.BoardAnalyzer;
 import com.fullmob.jiraboard.app.FullmobAppInterface;
 import com.fullmob.jiraboard.di.modules.MainModule;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
-import com.fullmob.jiraboard.printing.ImageTicketGenerator;
+import com.fullmob.printable.PrintableImageGenerator;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
 import com.fullmob.jiraboard.managers.notifications.NotificationsManager;
 import com.fullmob.jiraboard.managers.queue.QueueManager;
@@ -29,7 +29,7 @@ public interface MainComponent {
 
     QueueManager getQueueManager();
 
-    ImageTicketGenerator getQRBitmapGenerator();
+    PrintableImageGenerator getQRBitmapGenerator();
 
     NotificationsManager getNotificationsManager();
 

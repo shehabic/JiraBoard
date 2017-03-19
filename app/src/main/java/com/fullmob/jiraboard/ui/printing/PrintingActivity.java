@@ -18,10 +18,10 @@ import android.widget.ImageView;
 
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.R;
-import com.fullmob.jiraboard.printing.ImageTicketGenerator;
-import com.fullmob.jiraboard.printing.PdfTicketGenerator;
-import com.fullmob.jiraboard.printing.Printable;
-import com.fullmob.jiraboard.printing.PrintableTicketGenerator;
+import com.fullmob.printable.PrintableImageGenerator;
+import com.fullmob.printable.PrintablePDFGenerator;
+import com.fullmob.printable.Printable;
+import com.fullmob.printable.PrintableGenerator;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 
@@ -41,9 +41,9 @@ public class PrintingActivity extends BaseActivity {
     @BindView(R.id.qr_preview)
     ImageView qrPreview;
 
-    PrintableGenerator printableGenerator;
-    ImageTicketGenerator qrBitmapGenerator;
-    PdfTicketGenerator pdfTicketGenerator;
+    com.fullmob.jiraboard.ui.printing.PrintableGenerator printableGenerator;
+    PrintableImageGenerator qrBitmapGenerator;
+    PrintablePDFGenerator pdfTicketGenerator;
     private PrintedPdfDocument document;
 
     @Override
@@ -53,8 +53,8 @@ public class PrintingActivity extends BaseActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        printableGenerator = new PrintableGenerator();
-        qrBitmapGenerator = new ImageTicketGenerator();
+        printableGenerator = new com.fullmob.jiraboard.ui.printing.PrintableGenerator();
+        qrBitmapGenerator = new PrintableImageGenerator();
         Printable printable = null;
         if (savedInstanceState == null) {
             Intent intent = getIntent();
@@ -63,7 +63,7 @@ public class PrintingActivity extends BaseActivity {
             printable = createPrintable(savedInstanceState);
         }
         if (printable != null) {
-            qrPreview.setImageBitmap(qrBitmapGenerator.createPrintable(printable, ImageTicketGenerator.PaperSize.A8));
+            qrPreview.setImageBitmap(qrBitmapGenerator.createPrintable(printable, PrintableImageGenerator.PaperSize.A8));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && printable != null) {
             generatePrintableGraphics(printable);
@@ -124,9 +124,8 @@ public class PrintingActivity extends BaseActivity {
         builder.setColorMode(PrintAttributes.COLOR_MODE_MONOCHROME);
         builder.setMinMargins(new PrintAttributes.Margins(0, 0, 0, 0));
         PrintAttributes attributes = builder.build();
-        pdfTicketGenerator = new PdfTicketGenerator(this, attributes);
-        pdfTicketGenerator.resetMeasures(printable);
-        document = pdfTicketGenerator.createPrintable(printable, PrintableTicketGenerator.PaperSize.A6);
+        pdfTicketGenerator = new PrintablePDFGenerator(this, attributes);
+        document = pdfTicketGenerator.createPrintable(printable, PrintableGenerator.PaperSize.A6);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fullmob.printable.PrintableGroup>
+    <com.fullmob.printable.Printable id="template_1" size="A6">
+        <com.fullmob.printable.Element
+            alignTop="@+id/parent"
+            centerHorizontalIn="@+id/parent"
+            id="qr"
+            content="Nice QR Content"
+            type="qr"
+            />
+
+        <com.fullmob.printable.Element
+            alignBottom="@+id/parent"
+            alignLeft="@+id/parent"
+            alignRight="@+id/parent"
+            below="@+id/qr"
+            id="summary"
+            textHAlign="center"
+            textSize="200"
+            textVAlign="middle"
+            type="text"
+            />
+    </com.fullmob.printable.Printable>
+</com.fullmob.printable.PrintableGroup>
