@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
 public class TicketsFragment extends BaseFragment implements TicketsScreenView, SearchResultsAdapter.Listener {
 
     public static final String TAG = TicketsFragment.class.getSimpleName();

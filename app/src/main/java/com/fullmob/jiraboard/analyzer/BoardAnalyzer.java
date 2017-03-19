@@ -6,9 +6,9 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
+import com.fullmob.jiraboard.data.Board;
 import com.fullmob.jiraboard.data.Column;
 import com.fullmob.jiraboard.data.Point;
-import com.fullmob.jiraboard.data.Board;
 import com.fullmob.jiraboard.data.Ticket;
 import com.fullmob.jiraboard.utils.Identifier;
 import com.google.zxing.BinaryBitmap;
@@ -44,11 +44,11 @@ public class BoardAnalyzer {
         this.debug = debug;
     }
 
-    public Observable<Board> analyzeProject(final Board project) {
+    public Observable<Board> analyzeProject(final Board board) {
         return Observable.fromCallable(new Callable<Board>() {
             @Override
             public Board call() throws Exception {
-                return analyzeProjectFromImage(project);
+                return analyzeProjectFromImage(board);
             }
         });
     }
@@ -58,7 +58,7 @@ public class BoardAnalyzer {
         return project;
     }
 
-    public void readQRImage(Bitmap bMap, Board project) {
+    public void readQRImage(Bitmap bMap, Board board) {
 
         Bitmap mutableBitmap = bMap.copy(Bitmap.Config.ARGB_8888, true);
 
@@ -75,22 +75,23 @@ public class BoardAnalyzer {
             hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
             Result[] results = qrCodeMultiReader.decodeMultiple(bitmap, hints);
             for (Result r : results) {
-                String text = r.getText();
+                String text = r.getText().split("\\|\\|")[0];
+                System.out.println(r.getText() + "---->" + text);
                 Ticket t = new Ticket();
                 t.text = text;
                 t.points = new Point[3];
                 for (int i = 0; i < 3; i++) {
                     t.points[i] = new Point(r.getResultPoints()[i].getX(), r.getResultPoints()[i].getY());
                 }
-                Identifier identifier = new Identifier(project);
+                Identifier identifier = new Identifier(board);
                 if (identifier.isColumn(text)) {
                     columns.add(t);
                 } else {
                     ticketList.add(t);
                 }
             }
-            project.setColumns(columns);
-            orderColumnsAndTickets(project, ticketList, mutableBitmap);
+            board.setColumns(columns);
+            orderColumnsAndTickets(board, ticketList, mutableBitmap);
         } catch (NotFoundException e) {
             e.printStackTrace();
         }

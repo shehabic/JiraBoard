@@ -7,7 +7,6 @@ import android.graphics.Matrix;
 import com.fullmob.jiraboard.data.Board;
 
 import jp.co.cyberagent.android.gpuimage.GPUImage;
-import jp.co.cyberagent.android.gpuimage.GPUImageBrightnessFilter;
 import jp.co.cyberagent.android.gpuimage.GPUImageContrastFilter;
 
 public class ImageProcessor {
@@ -30,10 +29,10 @@ public class ImageProcessor {
 //        GPUImage mGPUImage2 = new GPUImage(context);
 //        mGPUImage2.setFilter(new GPUImageSaturationFilter(saturation));
 
-        GPUImage mGPUImage3 = new GPUImage(context);
-        mGPUImage3.setFilter(new GPUImageBrightnessFilter(brightness));
+//        GPUImage mGPUImage3 = new GPUImage(context);
+//        mGPUImage3.setFilter(new GPUImageBrightnessFilter(brightness));
 
-        board.setBitmap(mGPUImage3.getBitmapWithFilterApplied(board.getBitmap()));
+//        board.setBitmap(mGPUImage3.getBitmapWithFilterApplied(board.getBitmap()));
 //        bitmap = mGPUImage2.getBitmapWithFilterApplied(bitmap);
         board.setBitmap(mGPUImage.getBitmapWithFilterApplied(board.getBitmap()));
     }

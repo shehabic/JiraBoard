@@ -39,7 +39,7 @@ public class PrintableGenerator {
     public Printable buildPrintableTicket(Issue issue) {
         Printable printable = new Printable();
 
-        Printable.Element qr = new Printable.Element(Printable.SecType.QR, issue.getKey());
+        Printable.Element qr = new Printable.Element(Printable.SecType.QR, issue.getKey() + "||" + issue.getId());
         qr.alignTop = printable.PARENT;
         qr.centerHorizontalOf = printable.PARENT;
         printable.addSection(qr);
