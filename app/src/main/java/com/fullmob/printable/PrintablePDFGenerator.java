@@ -9,6 +9,9 @@ import android.support.annotation.RequiresApi;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * Created by shehabic on 19/03/2017.
+ */
 public class PrintablePDFGenerator extends AbstractPrintableGenerator<PrintedPdfDocument> {
 
     private final PrintAttributes printAttributes;

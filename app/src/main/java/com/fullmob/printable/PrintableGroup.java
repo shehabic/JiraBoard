@@ -3,6 +3,9 @@ package com.fullmob.printable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by shehabic on 19/03/2017.
+ */
 public class PrintableGroup {
 
     public PrintableGroup() {}

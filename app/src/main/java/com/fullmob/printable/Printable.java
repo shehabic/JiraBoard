@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Created by shehabic on 19/03/2017.
+ */
 public class Printable {
 
     public final Element PARENT;
@@ -18,7 +21,7 @@ public class Printable {
     public Printable(String id) {
         this.id = id;
         elements = new ArrayList<>();
-        PARENT = new Element(Element.Type.PARENT, "");
+        PARENT = new Element(Element.TYPE_PARENT, "");
     }
 
     public Printable() {
@@ -45,7 +48,7 @@ public class Printable {
             throw new RuntimeException("`id` cannot be null");
         }
 
-        return id.toUpperCase().equals("PARENT") ? PARENT : elementsById.get(id);
+        return id.toLowerCase().equals(Element.TYPE_PARENT) ? PARENT : elementsById.get(id);
     }
 
     public void setAttribute(String attribute, Object val) {

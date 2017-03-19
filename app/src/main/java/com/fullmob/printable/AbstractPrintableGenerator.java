@@ -1,27 +1,41 @@
 package com.fullmob.printable;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
+import com.fullmob.printable.drawers.ElementDrawer;
+import com.fullmob.printable.drawers.ImageElementDrawer;
+import com.fullmob.printable.drawers.QRElementDrawer;
+import com.fullmob.printable.drawers.TextElementDrawer;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
+/**
+ * Created by shehabic on 19/03/2017.
+ */
 abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
 
     float scale = 1f;
 
-    private HashSet<Element> drawn = new HashSet<>();
-    private HashSet<Element> measured = new HashSet<>();
+    private final HashSet<Element> drawn = new HashSet<>();
+    private final HashSet<Element> measured = new HashSet<>();
+    private final Map<String, ElementDrawer> elementDrawers = new HashMap<>();
 
+    public AbstractPrintableGenerator() {
+        elementDrawers.put("qr", new QRElementDrawer());
+        elementDrawers.put("text", new TextElementDrawer());
+        elementDrawers.put("image", new ImageElementDrawer());
+    }
+
+    @Override
+    public void addDrawer(String type, ElementDrawer drawer) {
+        elementDrawers.put(type, drawer);
+    }
+
+    @Override
     public T createPrintable(Printable printable, PaperSize paperSize) {
         int[] size = findSize(paperSize, true);
 
@@ -80,90 +94,91 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
         return landscape ? new int[]{w, h} : new int[]{h, w};
     }
 
-    public void prepareSectionDimension(Element section) {
-        if (section.toLeftOf != null) {
-            if (measured.contains(section.toLeftOf)) {
-                section.right = section.toLeftOf.left - section.marginRight;
+    @Override
+    public void measureElement(Element element) {
+        if (element.toLeftOf != null) {
+            if (measured.contains(element.toLeftOf)) {
+                element.right = element.toLeftOf.left - element.marginRight;
             }
         }
-        if (section.toRightOf != null) {
-            if (measured.contains(section.toRightOf)) {
-                section.left = section.toRightOf.right + section.marginLeft;
+        if (element.toRightOf != null) {
+            if (measured.contains(element.toRightOf)) {
+                element.left = element.toRightOf.right + element.marginLeft;
             }
         }
-        if (section.below != null) {
-            if (measured.contains(section.below)) {
-                section.top = section.below.bottom + section.marginTop;
+        if (element.below != null) {
+            if (measured.contains(element.below)) {
+                element.top = element.below.bottom + element.marginTop;
             }
         }
-        if (section.above != null) {
-            if (measured.contains(section.above)) {
-                section.bottom = section.above.top;
+        if (element.above != null) {
+            if (measured.contains(element.above)) {
+                element.bottom = element.above.top;
             }
         }
-        if (section.alignBottom != null) {
-            if (measured.contains(section.alignBottom)) {
-                section.bottom = section.alignBottom.bottom - section.marginBottom;
+        if (element.alignBottom != null) {
+            if (measured.contains(element.alignBottom)) {
+                element.bottom = element.alignBottom.bottom - element.marginBottom;
             }
         }
-        if (section.alignTop != null) {
-            if (measured.contains(section.alignTop)) {
-                section.top = section.alignTop.top + section.marginTop;
+        if (element.alignTop != null) {
+            if (measured.contains(element.alignTop)) {
+                element.top = element.alignTop.top + element.marginTop;
             }
         }
-        if (section.alignLeft != null) {
-            if (measured.contains(section.alignLeft)) {
-                section.left = section.alignLeft.left + section.marginLeft;
+        if (element.alignLeft != null) {
+            if (measured.contains(element.alignLeft)) {
+                element.left = element.alignLeft.left + element.marginLeft;
             }
         }
-        if (section.alignRight != null) {
-            if (measured.contains(section.alignRight)) {
-                section.right = section.alignRight.right - section.marginRight;
+        if (element.alignRight != null) {
+            if (measured.contains(element.alignRight)) {
+                element.right = element.alignRight.right - element.marginRight;
             }
         }
 
-        if (section.centerHorizontalIn != null) {
-            if (measured.contains(section.centerHorizontalIn)) {
-                if (section.width > -1) {
-                    section.left = ((section.centerHorizontalIn.left + section.centerHorizontalIn.right) / 2);
-                    section.left -= (section.width / 2);
-                    section.left += (section.marginLeft - section.marginRight);
+        if (element.centerHorizontalIn != null) {
+            if (measured.contains(element.centerHorizontalIn)) {
+                if (element.width > -1) {
+                    element.left = ((element.centerHorizontalIn.left + element.centerHorizontalIn.right) / 2);
+                    element.left -= (element.width / 2);
+                    element.left += (element.marginLeft - element.marginRight);
                 } else {
                     // TODO: determine how to measure width and get left
                 }
             }
         }
-        if (section.centerVerticalIn != null) {
-            if (measured.contains(section.centerVerticalIn)) {
-                if (section.height > -1) {
-                    section.top = ((section.centerVerticalIn.top + section.centerVerticalIn.bottom) / 2);
-                    section.top -= (section.height / 2);
-                    section.top += (section.marginTop - section.marginBottom);
+        if (element.centerVerticalIn != null) {
+            if (measured.contains(element.centerVerticalIn)) {
+                if (element.height > -1) {
+                    element.top = ((element.centerVerticalIn.top + element.centerVerticalIn.bottom) / 2);
+                    element.top -= (element.height / 2);
+                    element.top += (element.marginTop - element.marginBottom);
                 } else {
                     // TODO: determine how to measure width and get left
                 }
             }
         }
-        if (section.width != -1) {
-            if (section.right == -1) {
-                section.right = section.left + section.width;
-            } else if (section.left == -1) {
-                section.left = section.right - section.width;
+        if (element.width != -1) {
+            if (element.right == -1) {
+                element.right = element.left + element.width;
+            } else if (element.left == -1) {
+                element.left = element.right - element.width;
             }
-        } else if (section.right != -1 && section.left != -1) {
-            section.width = section.right - section.left;
+        } else if (element.right != -1 && element.left != -1) {
+            element.width = element.right - element.left;
         }
-        if (section.height != -1) {
-            if (section.bottom == -1) {
-                section.bottom = section.top + section.height;
-            } else if (section.top == -1) {
-                section.top = section.bottom - section.height;
+        if (element.height != -1) {
+            if (element.bottom == -1) {
+                element.bottom = element.top + element.height;
+            } else if (element.top == -1) {
+                element.top = element.bottom - element.height;
             }
-        } else if (section.top != -1 && section.bottom != -1) {
-            section.height = section.bottom - section.top;
+        } else if (element.top != -1 && element.bottom != -1) {
+            element.height = element.bottom - element.top;
         }
-        if (section.height > -1 && section.width > -1) {
-            measured.add(section);
+        if (element.height > -1 && element.width > -1) {
+            measured.add(element);
         }
     }
 
@@ -178,118 +193,27 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
         measured.add(printable.PARENT);
     }
 
-    private void prepareQRSection(Element qr, Element parent) {
-        qr.height = qr.width = (int) (parent.height * 0.7f);
-    }
-
-    private void drawTextSection(Canvas canvas, Element section) {
-        TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setColor(section.textColor);
-        textPaint.setTextSize(
-            section.textSize * (section.textSizeMultiplier != null ? section.textSizeMultiplier.width : 1.f)
-        );
-        textPaint.setTextAlign(
-            section.textHAlign == Element.TextHAlign.CENTER
-                ? Paint.Align.CENTER
-                : section.textHAlign == Element.TextHAlign.LEFT
-                ? Paint.Align.LEFT
-                : Paint.Align.RIGHT
-        );
-        textPaint.setAntiAlias(true);
-        StaticLayout textLayout = new StaticLayout(
-            section.content,
-            textPaint,
-            section.width,
-            Layout.Alignment.ALIGN_NORMAL,
-            1,
-            0,
-            false
-        );
-        int actualTop = section.top;
-        float actualTextHeight = textLayout.getHeight();
-        if (section.textVAlign.equals(Element.TextVAlign.MIDDLE)) {
-            actualTop = ((section.top + section.bottom) / 2) - (int) (actualTextHeight / 2);
-        } else if (section.textVAlign.equals(Element.TextVAlign.BOTTOM)) {
-            actualTop = section.bottom - (int) actualTextHeight;
-        }
-
-        int actualLeft = section.left;
-        if (section.textHAlign.equals(Element.TextHAlign.CENTER)) {
-            actualLeft = (section.left + section.right) / 2;
-        } else if (section.textHAlign.equals(Element.TextHAlign.RIGHT)) {
-            actualLeft = section.right;
-        }
-
-        canvas.save();
-        canvas.translate(actualLeft, actualTop);
-        textLayout.draw(canvas);
-        canvas.restore();
-    }
-
-
-    private void drawSection(Canvas canvas, Element section) {
-        if (section.isQr()) {
-            drawQR(canvas, section);
-            drawn.add(section);
-        } else if (section.isText()) {
-            drawTextSection(canvas, section);
-            drawn.add(section);
-        }
-    }
-
-    private void drawQR(Canvas canvas, Element section) {
-        try {
-            Bitmap qrBmp = encodeAsBitmap(section.content, section.width);
-            Paint paintOverlay = new Paint(Paint.FILTER_BITMAP_FLAG);
-            canvas.drawBitmap(qrBmp, section.left, section.top, paintOverlay);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Bitmap encodeAsBitmap(String str, int side) throws WriterException {
-        BitMatrix result;
-        Bitmap bitmap = null;
-        try {
-            result = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, side, side, null);
-            int w = result.getWidth();
-            int h = result.getHeight();
-            int[] pixels = new int[1 + (w * h)];
-            for (int y = 0; y < h; y++) {
-                int offset = y * w;
-                for (int x = 0; x < w; x++) {
-                    pixels[offset + x] = result.get(x, y) ? Color.BLACK : Color.WHITE;
-                }
-            }
-            bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-            bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
-
-        } catch (Exception iae) {
-            iae.printStackTrace();
-        }
-
-        return bitmap;
-    }
-
     void drawPrintableInCanvas(Printable printable, int width, int height, Canvas canvas) {
+        boolean allDrawn = false;
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         canvas.drawRect(0, 0, width, height, paint);
         prepareParent(printable, width, height);
-        boolean allDrawn = false;
         while (!allDrawn) {
             allDrawn = true;
-            for (Element section : printable.elements) {
-                allDrawn &= drawn.contains(section);
-                if (!drawn.contains(section)) {
-                    if (section.isQr()) {
-                        prepareQRSection(section, printable.PARENT);
+            for (Element element : printable.elements) {
+                allDrawn &= drawn.contains(element);
+                if (!drawn.contains(element)) {
+                    if (!elementDrawers.containsKey(element.type)) {
+                        throw new RuntimeException("Cannot draw element " + element.type);
                     }
-                    if (!measured.contains(section)) {
-                        prepareSectionDimension(section);
+                    elementDrawers.get(element.type).layout(element);
+                    if (!measured.contains(element)) {
+                        measureElement(element);
                     }
-                    if (measured.contains(section)) {
-                        drawSection(canvas, section);
+                    if (measured.contains(element)) {
+                        elementDrawers.get(element.type).draw(canvas, element);
+                        drawn.add(element);
                     }
                 }
             }

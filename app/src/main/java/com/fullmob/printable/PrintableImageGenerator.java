@@ -3,6 +3,9 @@ package com.fullmob.printable;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+/**
+ * Created by shehabic on 19/03/2017.
+ */
 public class PrintableImageGenerator extends AbstractPrintableGenerator<Bitmap> {
 
     public Bitmap createPrintable(Printable printable, int width, int height) {

@@ -5,6 +5,9 @@ import android.content.res.XmlResourceParser;
 import android.support.annotation.NonNull;
 import android.support.annotation.XmlRes;
 
+/**
+ * Created by shehabic on 19/03/2017.
+ */
 public class PrintableInflator {
 
     private Context context;

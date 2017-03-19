@@ -2,13 +2,38 @@ package com.fullmob.printable;
 
 
 import android.graphics.Color;
+import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+/**
+ * Created by shehabic on 19/03/2017.
+ */
 public class Element {
-    public enum TextHAlign {LEFT, CENTER, RIGHT}
 
-    public enum TextVAlign {TOP, MIDDLE, BOTTOM}
+    public static final String LEFT = "left";
+    public static final String RIGHT = "right";
+    public static final String CENTER = "center";
+    @StringDef({LEFT, CENTER, RIGHT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface TextHAlign {}
 
-    public enum Type {QR, IMAGE, TEXT, PARENT}
+    public static final String TOP = "top";
+    public static final String MIDDLE = "middle";
+    public static final String BOTTOM = "bottom";
+    @StringDef({TOP, MIDDLE, BOTTOM})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface TextVAlign {}
+
+    public static final String TYPE_QR = "qr";
+    public static final String TYPE_IMAGE = "image";
+    public static final String TYPE_TEXT = "text";
+    public static final String TYPE_PARENT = "parent";
+    public static final String TYPE_CUSTOM = "custom";
+    @StringDef({TYPE_QR, TYPE_IMAGE, TYPE_TEXT, TYPE_PARENT, TYPE_CUSTOM})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ElementType {}
 
     public Element below = null;
     public Element above = null;
@@ -33,49 +58,22 @@ public class Element {
     public int marginRight = 0;
     public int marginTop = 0;
     public int marginBottom = 0;
-    public TextHAlign textHAlign = TextHAlign.CENTER;
-    public TextVAlign textVAlign = TextVAlign.MIDDLE;
+    public @TextHAlign String textHAlign = CENTER;
+    public @TextVAlign String textVAlign = MIDDLE;
     public float textSize = 20;
     public int textColor = Color.BLACK;
-    public final Type type;
+    public final @ElementType String type;
     public String content;
     public String id;
     private Element parent;
 
-    public Element(String type) {
-        this(extractSecType(type), null);
-    }
-
-    public Element(Type type) {
+    public Element(@ElementType String type) {
         this(type, null);
     }
 
-    public Element(Type type, String content) {
+    public Element(@ElementType String type, String content) {
         this.type = type;
         this.content = content;
-    }
-
-    public Element(String type, String content) {
-        this(extractSecType(type), content);
-    }
-
-    private static Type extractSecType(String type) {
-        switch (type.toUpperCase()) {
-            case "QR":
-                return Type.QR;
-
-            case "IMAGE":
-                return Type.IMAGE;
-
-            case "TEXT":
-                return Type.TEXT;
-
-            case "PARENT":
-                return Type.PARENT;
-
-            default:
-                throw new RuntimeException(String.format("Unsupported type '%f' ", (type != null ? type : "empty")));
-        }
     }
 
     public void setFixedWith(int width) {
@@ -101,19 +99,19 @@ public class Element {
     }
 
     public boolean isImage() {
-        return type.equals(Type.IMAGE);
+        return type.equals(TYPE_IMAGE);
     }
 
     public boolean isQr() {
-        return type.equals(Type.QR);
+        return type.equals(TYPE_QR);
     }
 
     public boolean isText() {
-        return type.equals(Type.TEXT);
+        return type.equals(TYPE_TEXT);
     }
 
     public boolean isParent() {
-        return type.equals(Type.PARENT);
+        return type.equals(TYPE_PARENT);
     }
 
     public void setParent(Element parent) {
@@ -207,11 +205,11 @@ public class Element {
                 break;
 
             case "textHAlign":
-                textHAlign = getTextHAlign(val);
+                textHAlign = (String) val;
                 break;
 
             case "textVAlign":
-                textVAlign = getTextVAlign(val);
+                textVAlign = (String) val;
                 break;
 
             case "type":
@@ -221,32 +219,6 @@ public class Element {
             default:
                 throw new RuntimeException("Unsupported Printable Element attribute: " + attribute);
 
-        }
-    }
-
-    private TextHAlign getTextHAlign(Object val) {
-        switch (((String) val).toUpperCase()) {
-            case "CENTER":
-                return TextHAlign.CENTER;
-            case "LEFT":
-                return TextHAlign.LEFT;
-            case "RIGHT":
-                return TextHAlign.RIGHT;
-            default:
-                throw new RuntimeException("Unsupported TextHAlign value: " + val);
-        }
-    }
-
-    private TextVAlign getTextVAlign(Object val) {
-        switch (((String) val).toUpperCase()) {
-            case "MIDDLE":
-                return TextVAlign.MIDDLE;
-            case "BOTTOM":
-                return TextVAlign.BOTTOM;
-            case "TOP":
-                return TextVAlign.TOP;
-            default:
-                throw new RuntimeException("Unsupported TextVAlign value: " + val);
         }
     }
 

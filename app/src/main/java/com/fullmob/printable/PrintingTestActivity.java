@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import com.fullmob.jiraboard.R;
 import com.google.gson.Gson;
 
+/**
+ * Created by shehabic on 19/03/2017.
+ */
 public class PrintingTestActivity extends AppCompatActivity {
 
     ImageView preview;
