@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.fullmob.printable.PrintableGroup>
-    <com.fullmob.printable.Printable id="template_1" size="A6">
+    <com.fullmob.printable.Printable id="template_1" size="A9">
         <com.fullmob.printable.Element
             alignTop="@+id/parent"
             centerHorizontalIn="@+id/parent"

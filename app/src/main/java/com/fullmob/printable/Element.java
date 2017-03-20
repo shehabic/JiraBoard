@@ -1,6 +1,7 @@
 package com.fullmob.printable;
 
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.StringDef;
 
@@ -15,26 +16,30 @@ public class Element {
     public static final String LEFT = "left";
     public static final String RIGHT = "right";
     public static final String CENTER = "center";
+
     @StringDef({LEFT, CENTER, RIGHT})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface TextHAlign {}
+    public @interface TextHAlign { }
 
     public static final String TOP = "top";
     public static final String MIDDLE = "middle";
     public static final String BOTTOM = "bottom";
+
     @StringDef({TOP, MIDDLE, BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface TextVAlign {}
+    public @interface TextVAlign { }
 
     public static final String TYPE_QR = "qr";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_TEXT = "text";
     public static final String TYPE_PARENT = "parent";
     public static final String TYPE_CUSTOM = "custom";
+
     @StringDef({TYPE_QR, TYPE_IMAGE, TYPE_TEXT, TYPE_PARENT, TYPE_CUSTOM})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface ElementType {}
+    public @interface ElementType { }
 
+    public String subType = null;
     public Element below = null;
     public Element above = null;
     public Element toLeftOf = null;
@@ -46,6 +51,7 @@ public class Element {
     public Element alignLeft = null;
     public Element alignTop = null;
     public Element textSizeMultiplier = null;
+    public Bitmap imageBitmap = null;
     private boolean fixedHeight = false;
     private boolean fixedWidth = false;
     public int left = -1;
@@ -68,12 +74,22 @@ public class Element {
     private Element parent;
 
     public Element(@ElementType String type) {
-        this(type, null);
+        this(type, null, null);
     }
 
     public Element(@ElementType String type, String content) {
+        this(type, null, content);
+    }
+
+    public Element(@ElementType String type, String customType, String content) {
+        if (type.equals(TYPE_CUSTOM) && null == customType) {
+            throw new RuntimeException(
+                "When using element type 'custom' type, you must supply customType='YourCustomType' "
+            );
+        }
         this.type = type;
         this.content = content;
+        this.subType = customType;
     }
 
     public void setFixedWith(int width) {
@@ -112,6 +128,10 @@ public class Element {
 
     public boolean isParent() {
         return type.equals(TYPE_PARENT);
+    }
+
+    public boolean isCustom() {
+        return type.equals(TYPE_CUSTOM);
     }
 
     public void setParent(Element parent) {
@@ -212,8 +232,17 @@ public class Element {
                 textVAlign = (String) val;
                 break;
 
+            case "textSizeMultiplier":
+                textSizeMultiplier = (Element) val;
+                break;
+
             case "type":
                 //ignore here
+                break;
+
+            //FixMe: This is memory inefficient, change to uri
+            case "imageBitmap":
+                imageBitmap = (Bitmap) val;
                 break;
 
             default:

@@ -24,6 +24,8 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
     private final HashSet<Element> measured = new HashSet<>();
     private final Map<String, ElementDrawer> elementDrawers = new HashMap<>();
 
+    private String drawerType;
+
     public AbstractPrintableGenerator() {
         elementDrawers.put("qr", new QRElementDrawer());
         elementDrawers.put("text", new TextElementDrawer());
@@ -204,10 +206,11 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
             for (Element element : printable.elements) {
                 allDrawn &= drawn.contains(element);
                 if (!drawn.contains(element)) {
-                    if (!elementDrawers.containsKey(element.type)) {
+                    drawerType = element.isCustom() ? element.subType : element.type;
+                    if (drawerType == null || !elementDrawers.containsKey(element.type)) {
                         throw new RuntimeException("Cannot draw element " + element.type);
                     }
-                    elementDrawers.get(element.type).layout(element);
+                    elementDrawers.get(drawerType).layout(element);
                     if (!measured.contains(element)) {
                         measureElement(element);
                     }
