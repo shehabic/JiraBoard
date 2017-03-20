@@ -16,5 +16,11 @@
         <attr name="height" format="dimension"/>
         <attr name="textSize" format="dimension"/>
         <attr name="textColor" format="color"/>
+        <attr name="type">
+            <flag name="QRCode" value="qr" />
+            <flag name="Image" value="image" />
+            <flag name="Text" value="text" />
+            <flag name="Parent" value="parent" />
+        </attr>
     </declare-styleable>
 </resources>
