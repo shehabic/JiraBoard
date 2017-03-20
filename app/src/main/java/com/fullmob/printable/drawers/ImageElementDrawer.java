@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.fullmob.printable.Element;
+import com.fullmob.printable.PrintableException;
 
 /**
  * Created by shehabic on 19/03/2017.

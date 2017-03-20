@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/bottom_nav_transitions"
-        android:title="@string/bottom_menu_transitions"
+        android:title="@string/bottom_menu_statuses"
         android:icon="@drawable/ic_transition"
         />
 </menu>

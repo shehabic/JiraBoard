@@ -33,4 +33,6 @@
         app:srcCompat="@drawable/ic_print_status"
         />
 
+    <include layout="@layout/loader_view" />
+
 </android.support.design.widget.CoordinatorLayout>

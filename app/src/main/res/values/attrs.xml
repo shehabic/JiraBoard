@@ -17,10 +17,10 @@
         <attr name="textSize" format="dimension"/>
         <attr name="textColor" format="color"/>
         <attr name="type">
-            <flag name="QRCode" value="qr" />
-            <flag name="Image" value="image" />
-            <flag name="Text" value="text" />
-            <flag name="Parent" value="parent" />
+            <flag name="QRCode" value="0" />
+            <flag name="Image" value="1" />
+            <flag name="Text" value="2" />
+            <flag name="Parent" value="3" />
         </attr>
     </declare-styleable>
 </resources>

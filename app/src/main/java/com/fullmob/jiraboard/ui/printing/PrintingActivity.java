@@ -1,6 +1,7 @@
 package com.fullmob.jiraboard.ui.printing;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,15 +19,19 @@ import android.widget.ImageView;
 
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.R;
-import com.fullmob.printable.PrintableImageGenerator;
-import com.fullmob.printable.PrintablePDFGenerator;
-import com.fullmob.printable.Printable;
-import com.fullmob.printable.PrintableGenerator;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
+import com.fullmob.printable.Printable;
+import com.fullmob.printable.PrintableGenerator;
+import com.fullmob.printable.PrintableImageGenerator;
+import com.fullmob.printable.PrintablePDFGenerator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class PrintingActivity extends BaseActivity {
 
@@ -41,7 +46,7 @@ public class PrintingActivity extends BaseActivity {
     @BindView(R.id.qr_preview)
     ImageView qrPreview;
 
-    com.fullmob.jiraboard.ui.printing.PrintableGenerator printableGenerator;
+    TicketsPrintableGenerator printableGenerator;
     PrintableImageGenerator qrBitmapGenerator;
     PrintablePDFGenerator pdfTicketGenerator;
     private PrintedPdfDocument document;
@@ -53,7 +58,7 @@ public class PrintingActivity extends BaseActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        printableGenerator = new com.fullmob.jiraboard.ui.printing.PrintableGenerator();
+        printableGenerator = new TicketsPrintableGenerator();
         qrBitmapGenerator = new PrintableImageGenerator();
         Printable printable = null;
         if (savedInstanceState == null) {
@@ -63,12 +68,31 @@ public class PrintingActivity extends BaseActivity {
             printable = createPrintable(savedInstanceState);
         }
         if (printable != null) {
-            qrPreview.setImageBitmap(qrBitmapGenerator.createPrintable(printable, PrintableImageGenerator.PaperSize.A8));
+            generatePrintableImage(printable);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && printable != null) {
             generatePrintableGraphics(printable);
         }
         initUI();
+    }
+
+    private void generatePrintableImage(Printable printable) {
+        showLoading();
+        Observable.just(qrBitmapGenerator.createPrintable(printable, PrintableImageGenerator.PaperSize.A8))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Consumer<Bitmap>() {
+                @Override
+                public void accept(Bitmap bitmap) throws Exception {
+                    qrPreview.setImageBitmap(bitmap);
+                    hideLoading();
+                }
+            }, new Consumer<Throwable>() {
+                @Override
+                public void accept(Throwable throwable) throws Exception {
+                    hideLoading();
+                }
+            });
     }
 
     @Nullable
@@ -125,7 +149,15 @@ public class PrintingActivity extends BaseActivity {
         builder.setMinMargins(new PrintAttributes.Margins(0, 0, 0, 0));
         PrintAttributes attributes = builder.build();
         pdfTicketGenerator = new PrintablePDFGenerator(this, attributes);
-        document = pdfTicketGenerator.createPrintable(printable, PrintableGenerator.PaperSize.A6);
+        Observable.just(pdfTicketGenerator.createPrintable(printable, PrintableGenerator.PaperSize.A6))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Consumer<PrintedPdfDocument>() {
+                @Override
+                public void accept(PrintedPdfDocument printedPdfDocument) throws Exception {
+                    document = printedPdfDocument;
+                }
+            });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

@@ -5,7 +5,7 @@ import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.printable.Element;
 import com.fullmob.printable.Printable;
 
-public class PrintableGenerator {
+public class TicketsPrintableGenerator {
 
     private static final float TEXT_MULTIPLIER_SMALL = 0.04f;
     private static final float TEXT_MULTIPLIER_MEDIUM = 0.06f;
@@ -16,10 +16,12 @@ public class PrintableGenerator {
 
         Element qr = new Element(Element.TYPE_QR, status.getName() + "||" + status.getId());
         qr.alignTop = printable.PARENT;
+        qr.id = "qr";
         qr.centerHorizontalIn = printable.PARENT;
         printable.addElement(qr);
 
         Element summary = new Element(Element.TYPE_TEXT, status.getName());
+        summary.id = "summary";
         summary.below = qr;
         summary.alignLeft = printable.PARENT;
         summary.alignRight = printable.PARENT;
@@ -40,10 +42,12 @@ public class PrintableGenerator {
         Element qr = new Element(Element.TYPE_QR, issue.getKey() + "||" + issue.getId());
         qr.alignTop = printable.PARENT;
         qr.centerHorizontalIn = printable.PARENT;
+        qr.id = "id";
         printable.addElement(qr);
 
         Element summary = new Element(Element.TYPE_TEXT, issue.getIssueFields().getSummary());
         summary.below = qr;
+        summary.id = "summary";
         summary.alignLeft = printable.PARENT;
         summary.alignRight = printable.PARENT;
         summary.marginBottom = 0;
@@ -56,6 +60,7 @@ public class PrintableGenerator {
 
         Element projKey = new Element(Element.TYPE_TEXT, issue.getKey().split("-")[0]);
         projKey.toLeftOf = qr;
+        projKey.id = "proj_key";
         projKey.alignLeft = printable.PARENT;
         projKey.alignTop = printable.PARENT;
         projKey.alignBottom = qr;
@@ -67,6 +72,7 @@ public class PrintableGenerator {
 
         Element issueNum = new Element(Element.TYPE_TEXT, issue.getKey().split("-")[1]);
         issueNum.toRightOf = qr;
+        issueNum.id = "issue_num";
         issueNum.alignRight = printable.PARENT;
         issueNum.alignBottom = qr;
         issueNum.alignTop = printable.PARENT;
