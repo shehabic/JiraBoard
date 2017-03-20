@@ -12,17 +12,17 @@ import com.fullmob.printable.Element;
 public class ImageElementDrawer implements ElementDrawer {
 
     @Override
-    public void draw(Canvas canvas, Element element) {
+    public void onDraw(Canvas canvas, Element element) {
         try {
             Paint paintOverlay = new Paint(Paint.FILTER_BITMAP_FLAG);
             Rect rect = new Rect(element.left, element.top, element.right, element.bottom);
             canvas.drawBitmap(element.imageBitmap, rect, rect, paintOverlay);
         } catch (Exception e) {
-            throw new RuntimeException("Could not draw QR Element");
+            throw new PrintableException("Could not onDraw QR Element");
         }
     }
 
     @Override
-    public void layout(Element element) {
+    public void requestLayout(Element element) {
     }
 }

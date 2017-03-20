@@ -30,14 +30,14 @@ public class PrintableInflator {
                 if (xrp.getName().equals("com.fullmob.printable.PrintableGroup")) {
                     printableGroup = new PrintableGroup();
                 } else {
-                    throw new RuntimeException("Invalid document");
+                    throw new PrintableException("Invalid document");
                 }
             } else {
-                throw new RuntimeException("Invalid document");
+                throw new PrintableException("Invalid document");
             }
             inflatePrintables(printableGroup, xrp);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new PrintableException(e);
         } finally {
             xrp.close();
         }

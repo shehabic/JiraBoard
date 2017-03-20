@@ -83,7 +83,7 @@ public class Element {
 
     public Element(@ElementType String type, String customType, String content) {
         if (type.equals(TYPE_CUSTOM) && null == customType) {
-            throw new RuntimeException(
+            throw new PrintableException(
                 "When using element type 'custom' type, you must supply customType='YourCustomType' "
             );
         }
@@ -246,7 +246,7 @@ public class Element {
                 break;
 
             default:
-                throw new RuntimeException("Unsupported Printable Element attribute: " + attribute);
+                throw new PrintableException("Unsupported Printable Element attribute: " + attribute);
 
         }
     }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.fullmob.printable.Element;
+import com.fullmob.printable.PrintableException;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -17,18 +18,18 @@ import com.google.zxing.common.BitMatrix;
 public class QRElementDrawer implements ElementDrawer {
 
     @Override
-    public void draw(Canvas canvas, Element element) {
+    public void onDraw(Canvas canvas, Element element) {
         try {
             Bitmap qrBmp = encodeAsBitmap(element.content, element.width);
             Paint paintOverlay = new Paint(Paint.FILTER_BITMAP_FLAG);
             canvas.drawBitmap(qrBmp, element.left, element.top, paintOverlay);
         } catch (Exception e) {
-            throw new RuntimeException("Could not draw QR Element");
+            throw new PrintableException("Could not onDraw QR Element");
         }
     }
 
     @Override
-    public void layout(Element element) {
+    public void requestLayout(Element element) {
         element.height = element.width = (int) (element.getParent().height * 0.7f);
     }
 

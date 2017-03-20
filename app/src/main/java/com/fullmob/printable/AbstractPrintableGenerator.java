@@ -59,7 +59,7 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
             case "A10":
                 return findSize(PaperSize.A10, landscape);
             default:
-                throw new RuntimeException("Unsupported paper size: " + sizeString);
+                throw new PrintableException("Unsupported paper size: " + sizeString);
         }
     }
 
@@ -201,6 +201,7 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
         paint.setColor(Color.WHITE);
         canvas.drawRect(0, 0, width, height, paint);
         prepareParent(printable, width, height);
+        int i = 0;
         while (!allDrawn) {
             allDrawn = true;
             for (Element element : printable.elements) {
@@ -208,17 +209,20 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
                 if (!drawn.contains(element)) {
                     drawerType = element.isCustom() ? element.subType : element.type;
                     if (drawerType == null || !elementDrawers.containsKey(element.type)) {
-                        throw new RuntimeException("Cannot draw element " + element.type);
+                        throw new PrintableException("Cannot onDraw element " + element.type);
                     }
-                    elementDrawers.get(drawerType).layout(element);
+                    elementDrawers.get(drawerType).requestLayout(element);
                     if (!measured.contains(element)) {
                         measureElement(element);
                     }
                     if (measured.contains(element)) {
-                        elementDrawers.get(element.type).draw(canvas, element);
+                        elementDrawers.get(element.type).onDraw(canvas, element);
                         drawn.add(element);
                     }
                 }
+            }
+            if (++i > printable.elements.size()) {
+                throw new PrintableException("Printable cannot be rendered as it failed to measure view properly");
             }
         }
         drawn.clear();

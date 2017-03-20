@@ -13,7 +13,7 @@ import com.fullmob.printable.Element;
  */
 public class TextElementDrawer implements ElementDrawer {
     @Override
-    public void draw(Canvas canvas, Element element) {
+    public void onDraw(Canvas canvas, Element element) {
         TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setColor(element.textColor);
         textPaint.setTextSize(
@@ -58,7 +58,6 @@ public class TextElementDrawer implements ElementDrawer {
     }
 
     @Override
-    public void layout(Element element) {
-
+    public void requestLayout(Element element) {
     }
 }

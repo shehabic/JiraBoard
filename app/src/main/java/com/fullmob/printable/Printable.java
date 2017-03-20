@@ -36,7 +36,7 @@ public class Printable {
 
     public void addElement(@NonNull Element element) {
         if (element.id == null) {
-            throw new RuntimeException("`id` of a printable element cannot be null");
+            throw new PrintableException("`id` of a printable element cannot be null");
         }
         element.setParent(PARENT);
         elements.add(element);
@@ -45,7 +45,7 @@ public class Printable {
 
     public Element findElementById(String id) {
         if (id == null) {
-            throw new RuntimeException("`id` cannot be null");
+            throw new PrintableException("`id` cannot be null");
         }
 
         return id.toLowerCase().equals(Element.TYPE_PARENT) ? PARENT : elementsById.get(id);
