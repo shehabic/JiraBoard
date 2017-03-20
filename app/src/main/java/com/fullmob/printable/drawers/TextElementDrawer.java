@@ -50,11 +50,11 @@ public class TextElementDrawer implements ElementDrawer {
         } else if (element.textHAlign.equals(Element.RIGHT)) {
             actualLeft = element.right;
         }
-
+        final int saveCount = canvas.getSaveCount();
         canvas.save();
         canvas.translate(actualLeft, actualTop);
         textLayout.draw(canvas);
-        canvas.restore();
+        canvas.restoreToCount(saveCount);
     }
 
     @Override
