@@ -11,6 +11,7 @@ import android.support.annotation.XmlRes;
 public class PrintableInflator {
 
     private Context context;
+    private static final String FLOAT_MATCHER = "^(\\d*\\.?\\d+f?)$";
 
     public static PrintableInflator from(Context context) {
         return new PrintableInflator(context);
@@ -71,7 +72,7 @@ public class PrintableInflator {
 
     private void inflateElement(XmlResourceParser xrp, Printable printable) {
         String id = xrp.getAttributeValue(null, "id");
-        String type = xrp.getAttributeValue(null, "type");
+        @Element.ElementType String type = xrp.getAttributeValue(null, "type");
         String content = xrp.getAttributeValue(null, "content");
         Element element = new Element(type, content);
         element.id = id;
@@ -83,17 +84,14 @@ public class PrintableInflator {
         for (int i = 0; i < xrp.getAttributeCount(); i++) {
             String attrib = xrp.getAttributeName(i);
             Object val = xrp.getAttributeValue(i);
-            if (val != null && ((String) val).startsWith("@")) {
-                val = getAttributeValue((String) val, printable);
-            }
-            element.setAttribute(attrib, val);
+            element.setAttribute(attrib, getAttributeValue((String) val, printable, element));
         }
     }
 
-    private Object getAttributeValue(String val, Printable printable) {
+    private Object getAttributeValue(String val, Printable printable, Element currentElement) {
         String resValue = val.contains("/") ? val.split("/")[1] : val;
         if (val.startsWith("@+id/")) {
-            return printable.findElementById(resValue);
+            return resValue.toLowerCase().equals("self") ? currentElement : printable.findElementById(resValue);
         } else if (val.startsWith("@dimen/")) {
             return context.getResources().getDimension(getResId(val));
         } else if (val.startsWith("@color/")) {
@@ -102,6 +100,8 @@ public class PrintableInflator {
             return context.getResources().getDrawable(getResId(val));
         } else if (val.startsWith("@string/")) {
             return context.getString(getResId(val));
+        } else if (val.matches(FLOAT_MATCHER)) {
+            return Float.valueOf(val);
         }
 
         return val;

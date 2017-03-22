@@ -35,12 +35,16 @@ public class Printable {
     }
 
     public void addElement(@NonNull Element element) {
+        System.out.println(element.toString());
         if (element.id == null) {
             throw new PrintableException("`id` of a printable element cannot be null");
         }
         element.setParent(PARENT);
-        elements.add(element);
+        if (elementsById.containsKey(element.id)) {
+            throw new PrintableException("Duplicate element `id`: " + element.id);
+        }
         elementsById.put(element.id, element);
+        elements.add(element);
     }
 
     public Element findElementById(String id) {

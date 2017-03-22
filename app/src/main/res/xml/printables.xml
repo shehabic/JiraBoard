@@ -22,4 +22,83 @@
             type="text"
             />
     </com.fullmob.printable.Printable>
+
+    <com.fullmob.printable.Printable id="template_2" size="A9">
+        <com.fullmob.printable.Element
+            alignLeft="@+id/parent"
+            alignTop="@+id/parent"
+
+            relativeWidthTarget="@+id/parent"
+            relativeWidthField="width"
+            relativeWidthValue="0.5f"
+
+            relativeHeightTarget="@+id/parent"
+            relativeHeightField="height"
+            relativeHeightValue="0.5f"
+
+            id="text1"
+            textHAlign="center"
+            textSize="200"
+            textVAlign="middle"
+            type="qr"
+            />
+
+        <com.fullmob.printable.Element
+            alignTop="@+id/parent"
+            alignRight="@+id/parent"
+
+            relativeWidthTarget="@+id/parent"
+            relativeWidthField="width"
+            relativeWidthValue="0.5f"
+
+            relativeHeightTarget="@+id/parent"
+            relativeHeightField="height"
+            relativeHeightValue="0.5f"
+
+            id="text2"
+            textHAlign="center"
+            textSize="200"
+            textVAlign="middle"
+            type="qr"
+            />
+
+        <com.fullmob.printable.Element
+            alignBottom="@+id/parent"
+            alignRight="@+id/parent"
+
+            relativeWidthTarget="@+id/parent"
+            relativeWidthField="width"
+            relativeWidthValue="0.5f"
+
+            relativeHeightTarget="@+id/parent"
+            relativeHeightField="height"
+            relativeHeightValue="0.5f"
+
+            id="text3"
+            textHAlign="center"
+            textSize="200"
+            textVAlign="middle"
+            type="qr"
+            />
+
+        <com.fullmob.printable.Element
+            alignBottom="@+id/parent"
+            alignLeft="@+id/parent"
+
+            relativeWidthTarget="@+id/parent"
+            relativeWidthField="width"
+            relativeWidthValue="0.5f"
+
+            relativeHeightTarget="@+id/parent"
+            relativeHeightField="height"
+            relativeHeightValue="0.5f"
+
+            id="text4"
+            textHAlign="center"
+            textSize="200"
+            textVAlign="middle"
+            type="qr"
+            />
+
+    </com.fullmob.printable.Printable>
 </com.fullmob.printable.PrintableGroup>

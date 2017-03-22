@@ -3,7 +3,9 @@ package com.fullmob.printable;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.StringDef;
+import android.support.v4.util.ArrayMap;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,32 +14,39 @@ import java.lang.annotation.RetentionPolicy;
  * Created by shehabic on 19/03/2017.
  */
 public class Element {
-
+    // Horizontal alignment
     public static final String LEFT = "left";
     public static final String RIGHT = "right";
     public static final String CENTER = "center";
-
     @StringDef({LEFT, CENTER, RIGHT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TextHAlign { }
 
+    // Vertical alignment
     public static final String TOP = "top";
     public static final String MIDDLE = "middle";
     public static final String BOTTOM = "bottom";
-
     @StringDef({TOP, MIDDLE, BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TextVAlign { }
 
+    // Element types
     public static final String TYPE_QR = "qr";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_TEXT = "text";
     public static final String TYPE_PARENT = "parent";
     public static final String TYPE_CUSTOM = "custom";
-
     @StringDef({TYPE_QR, TYPE_IMAGE, TYPE_TEXT, TYPE_PARENT, TYPE_CUSTOM})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ElementType { }
+
+    // Relative dimensions
+    public static final String RELATIVE_FIELD_WIDTH = "width";
+    public static final String RELATIVE_FIELD_HEIGHT = "height";
+    @StringDef({RELATIVE_FIELD_WIDTH, RELATIVE_FIELD_HEIGHT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface RelativeField { }
+
 
     public String subType = null;
     public Element below = null;
@@ -52,6 +61,9 @@ public class Element {
     public Element alignTop = null;
     public Element textSizeMultiplier = null;
     public Bitmap imageBitmap = null;
+    public Uri drawableUri;
+    ArrayMap<String, RelativeDimen> relativeDimenRules;
+
     private boolean fixedHeight = false;
     private boolean fixedWidth = false;
     public int left = -1;
@@ -90,6 +102,7 @@ public class Element {
         this.type = type;
         this.content = content;
         this.subType = customType;
+        this.relativeDimenRules = new ArrayMap<>();
     }
 
     public void setFixedWith(int width) {
@@ -182,34 +195,42 @@ public class Element {
 
             case "alignLeft":
                 alignLeft = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "alignRight":
                 alignRight = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "alignBottom":
                 alignBottom = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "alignTop":
                 alignTop = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "below":
                 below = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "above":
                 above = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "toLeftOf":
                 toLeftOf = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "toRightOf":
                 toRightOf = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "content":
@@ -218,10 +239,12 @@ public class Element {
 
             case "centerHorizontalIn":
                 centerHorizontalIn = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "centerVerticalIn":
                 centerVerticalIn = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "textHAlign":
@@ -245,9 +268,74 @@ public class Element {
                 imageBitmap = (Bitmap) val;
                 break;
 
+            case "relativeWidthTarget":
+                if (!relativeDimenRules.containsKey(RELATIVE_FIELD_WIDTH)) {
+                    relativeDimenRules.put(RELATIVE_FIELD_WIDTH, new RelativeDimen());
+                }
+                relativeDimenRules.get(RELATIVE_FIELD_WIDTH).target = (Element) val;
+                validateRelativity(relativeDimenRules.get(RELATIVE_FIELD_WIDTH), RELATIVE_FIELD_WIDTH);
+                break;
+
+            case "relativeWidthField":
+                if (!relativeDimenRules.containsKey(RELATIVE_FIELD_WIDTH)) {
+                    relativeDimenRules.put(RELATIVE_FIELD_WIDTH, new RelativeDimen());
+                }
+                relativeDimenRules.get(RELATIVE_FIELD_WIDTH).field = (String) val;
+                validateRelativity(relativeDimenRules.get(RELATIVE_FIELD_WIDTH), RELATIVE_FIELD_WIDTH);
+                break;
+
+            case "relativeWidthValue":
+                if (!relativeDimenRules.containsKey(RELATIVE_FIELD_WIDTH)) {
+                    relativeDimenRules.put(RELATIVE_FIELD_WIDTH, new RelativeDimen());
+                }
+                relativeDimenRules.get(RELATIVE_FIELD_WIDTH).value = (float) val;
+                validateRelativity(relativeDimenRules.get(RELATIVE_FIELD_WIDTH), RELATIVE_FIELD_WIDTH);
+                break;
+
+            case "relativeHeightTarget":
+                if (!relativeDimenRules.containsKey(RELATIVE_FIELD_HEIGHT)) {
+                    relativeDimenRules.put(RELATIVE_FIELD_HEIGHT, new RelativeDimen());
+                }
+                relativeDimenRules.get(RELATIVE_FIELD_HEIGHT).target = (Element) val;
+                validateRelativity(relativeDimenRules.get(RELATIVE_FIELD_HEIGHT), RELATIVE_FIELD_HEIGHT);
+                break;
+
+            case "relativeHeightField":
+                if (!relativeDimenRules.containsKey(RELATIVE_FIELD_HEIGHT)) {
+                    relativeDimenRules.put(RELATIVE_FIELD_HEIGHT, new RelativeDimen());
+                }
+                relativeDimenRules.get(RELATIVE_FIELD_HEIGHT).field = (String) val;
+                validateRelativity(relativeDimenRules.get(RELATIVE_FIELD_HEIGHT), RELATIVE_FIELD_HEIGHT);
+                break;
+
+            case "relativeHeightValue":
+                if (!relativeDimenRules.containsKey(RELATIVE_FIELD_HEIGHT)) {
+                    relativeDimenRules.put(RELATIVE_FIELD_HEIGHT, new RelativeDimen());
+                }
+                relativeDimenRules.get(RELATIVE_FIELD_HEIGHT).value = (float) val;
+                validateRelativity(relativeDimenRules.get(RELATIVE_FIELD_HEIGHT), RELATIVE_FIELD_HEIGHT);
+                break;
+
+
             default:
                 throw new PrintableException("Unsupported Printable Element attribute: " + attribute);
 
+        }
+    }
+
+    private void validateRelativity(Element relativeElement) {
+        if (alignLeft == this) {
+            throw new PrintableException(
+                String.format("Element with %s id cannot be measured relative to itself", id)
+            );
+        }
+    }
+
+    private void validateRelativity(RelativeDimen relativeDimen, @RelativeField  String field) {
+        if (relativeDimen.target == this && relativeDimen.field != null && relativeDimen.equals(field)) {
+            throw new PrintableException(
+                String.format("Element with %s id cannot be measured relative to itself", id)
+            );
         }
     }
 
@@ -257,5 +345,11 @@ public class Element {
 
     private float getFloatVal(Object val) {
         return Float.valueOf(String.valueOf(val));
+    }
+
+    public static class RelativeDimen {
+        public Element target;
+        public @RelativeField String field;
+        public float value;
     }
 }

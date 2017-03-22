@@ -99,48 +99,56 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
     @Override
     public void measureElement(Element element) {
         if (element.toLeftOf != null) {
-            if (measured.contains(element.toLeftOf)) {
+            if (element.toLeftOf.left > -1) {
                 element.right = element.toLeftOf.left - element.marginRight;
             }
         }
         if (element.toRightOf != null) {
-            if (measured.contains(element.toRightOf)) {
+            if (element.toRightOf.right > -1) {
                 element.left = element.toRightOf.right + element.marginLeft;
             }
         }
         if (element.below != null) {
-            if (measured.contains(element.below)) {
+            if (element.below.bottom > -1) {
                 element.top = element.below.bottom + element.marginTop;
             }
         }
         if (element.above != null) {
-            if (measured.contains(element.above)) {
+            if (element.above.top > -1) {
                 element.bottom = element.above.top;
             }
         }
         if (element.alignBottom != null) {
-            if (measured.contains(element.alignBottom)) {
+            if (element.alignBottom.bottom > -1) {
                 element.bottom = element.alignBottom.bottom - element.marginBottom;
             }
         }
         if (element.alignTop != null) {
-            if (measured.contains(element.alignTop)) {
+            if (element.alignTop.top > -1) {
                 element.top = element.alignTop.top + element.marginTop;
             }
         }
         if (element.alignLeft != null) {
-            if (measured.contains(element.alignLeft)) {
+            if (element.alignLeft.left > -1) {
                 element.left = element.alignLeft.left + element.marginLeft;
             }
         }
         if (element.alignRight != null) {
-            if (measured.contains(element.alignRight)) {
+            if (element.alignRight.right > -1) {
                 element.right = element.alignRight.right - element.marginRight;
             }
         }
+        if (element.relativeDimenRules.containsKey(Element.RELATIVE_FIELD_HEIGHT)
+            && isRelativeFieldMeasured(element.relativeDimenRules.get(Element.RELATIVE_FIELD_HEIGHT))) {
+            element.height = getRelativeFieldValue(element.relativeDimenRules.get(Element.RELATIVE_FIELD_HEIGHT));
 
+        }
+        if (element.relativeDimenRules.containsKey(Element.RELATIVE_FIELD_WIDTH)
+            && isRelativeFieldMeasured(element.relativeDimenRules.get(Element.RELATIVE_FIELD_WIDTH))) {
+            element.width = getRelativeFieldValue(element.relativeDimenRules.get(Element.RELATIVE_FIELD_WIDTH));
+        }
         if (element.centerHorizontalIn != null) {
-            if (measured.contains(element.centerHorizontalIn)) {
+            if (element.centerHorizontalIn.left > -1 && element.centerHorizontalIn.right > -1) {
                 if (element.width > -1) {
                     element.left = ((element.centerHorizontalIn.left + element.centerHorizontalIn.right) / 2);
                     element.left -= (element.width / 2);
@@ -151,7 +159,7 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
             }
         }
         if (element.centerVerticalIn != null) {
-            if (measured.contains(element.centerVerticalIn)) {
+            if (element.centerVerticalIn.top > -1 && element.centerVerticalIn.bottom > -1) {
                 if (element.height > -1) {
                     element.top = ((element.centerVerticalIn.top + element.centerVerticalIn.bottom) / 2);
                     element.top -= (element.height / 2);
@@ -182,6 +190,27 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
         if (element.height > -1 && element.width > -1) {
             measured.add(element);
         }
+    }
+
+    private boolean isRelativeFieldMeasured(Element.RelativeDimen relativeDimen) {
+        if (relativeDimen.field.equals(Element.RELATIVE_FIELD_HEIGHT)) {
+            return relativeDimen.target.height > -1;
+        } else if (relativeDimen.field.equals(Element.RELATIVE_FIELD_WIDTH)) {
+            return relativeDimen.target.width > -1;
+        }
+
+        return false;
+    }
+
+    private int getRelativeFieldValue(Element.RelativeDimen relativeDimen) {
+        float value = 0.f;
+        if (relativeDimen.field.equals(Element.RELATIVE_FIELD_HEIGHT)) {
+            value = (float) relativeDimen.target.height * relativeDimen.value;
+        } else if (relativeDimen.field.equals(Element.RELATIVE_FIELD_WIDTH)) {
+            value = (float) relativeDimen.target.width * relativeDimen.value;
+        }
+
+        return (int) value;
     }
 
     @Override
@@ -221,7 +250,7 @@ abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
                     }
                 }
             }
-            if (++i > printable.elements.size()) {
+            if (++i > printable.elements.size() * 2) {
                 throw new PrintableException("Printable cannot be rendered as it failed to measure view properly");
             }
         }
