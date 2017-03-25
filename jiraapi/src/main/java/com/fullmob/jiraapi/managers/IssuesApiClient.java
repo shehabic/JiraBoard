@@ -23,7 +23,11 @@ public class IssuesApiClient extends AbstractApiManager<IssuesApi> {
     }
 
     public Observable<Response<Issue>> getIssue(final String issueKey) {
-        return api.getIssue(issueKey).subscribeOn(Schedulers.io());
+        return getIssue(issueKey, null);
+    }
+
+    public Observable<Response<Issue>> getIssue(final String issueKey, String expandableFields) {
+        return api.getIssue(issueKey, expandableFields).subscribeOn(Schedulers.io());
     }
 
     public Observable<Response<Issue>> moveIssue(final String issueKey, final String toStateId) {
@@ -49,7 +53,7 @@ public class IssuesApiClient extends AbstractApiManager<IssuesApi> {
                         throw new Exception(issueResponse.errorBody().toString());
                     }
 
-                    return api.getIssue(issueKey);
+                    return api.getIssue(issueKey, "none");
                 }
             });
     }

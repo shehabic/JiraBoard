@@ -38,5 +38,14 @@
         <item name="android:hint">@string/search_hint</item>
     </style>
 
+    <style name="IssueSection">
+        <item name="android:textColor">@color/off_white</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="DatkText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 
 </resources>

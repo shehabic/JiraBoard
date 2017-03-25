@@ -1,5 +1,7 @@
-package com.fullmob.printable;
+package com.fullmob.printable.generators;
 
+import com.fullmob.printable.Element;
+import com.fullmob.printable.Printable;
 import com.fullmob.printable.drawers.ElementDrawer;
 
 /**

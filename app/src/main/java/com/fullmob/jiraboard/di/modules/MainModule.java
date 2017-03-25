@@ -9,7 +9,7 @@ import com.fullmob.jiraboard.app.FullmobDiApp;
 import com.fullmob.jiraboard.managers.db.DBManager;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.images.GlideSecuredImagesLoader;
-import com.fullmob.printable.PrintableImageGenerator;
+import com.fullmob.printable.generators.PrintableImageGenerator;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
 import com.fullmob.jiraboard.managers.notifications.NotificationsManager;
 import com.fullmob.jiraboard.managers.queue.QueueManager;
@@ -116,7 +116,7 @@ public class MainModule {
     }
 
     @Provides
-    public PrintableImageGenerator providesQRBitmapGenerator() {
-        return new PrintableImageGenerator();
+    public PrintableImageGenerator providesQRBitmapGenerator(FullmobAppInterface appInterface) {
+        return new PrintableImageGenerator(appInterface.getContext());
     }
 }

@@ -22,9 +22,9 @@ import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.printable.Printable;
-import com.fullmob.printable.PrintableGenerator;
-import com.fullmob.printable.PrintableImageGenerator;
-import com.fullmob.printable.PrintablePDFGenerator;
+import com.fullmob.printable.generators.PrintableGenerator;
+import com.fullmob.printable.generators.PrintableImageGenerator;
+import com.fullmob.printable.generators.PrintablePDFGenerator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +59,7 @@ public class PrintingActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         printableGenerator = new TicketsPrintableGenerator();
-        qrBitmapGenerator = new PrintableImageGenerator();
+        qrBitmapGenerator = new PrintableImageGenerator(this);
         Printable printable = null;
         if (savedInstanceState == null) {
             Intent intent = getIntent();

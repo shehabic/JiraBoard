@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.fullmob.jiraapi.models.issue.IssueFields;
+import com.fullmob.jiraapi.models.issue.RenderedFields;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -25,6 +26,10 @@ public class Issue implements Parcelable {
     @SerializedName("fields")
     @Expose
     private IssueFields issueFields;
+
+    @SerializedName("renderedFields")
+    @Expose
+    private RenderedFields renderedFields;
 
     public String getExpand() {
         return expand;
@@ -66,6 +71,17 @@ public class Issue implements Parcelable {
         this.issueFields = issueFields;
     }
 
+    public RenderedFields getRenderedFields() {
+        return renderedFields;
+    }
+
+    public void setRenderedFields(RenderedFields renderedFields) {
+        this.renderedFields = renderedFields;
+    }
+
+    public Issue() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -78,9 +94,7 @@ public class Issue implements Parcelable {
         dest.writeString(this.self);
         dest.writeString(this.key);
         dest.writeParcelable(this.issueFields, flags);
-    }
-
-    public Issue() {
+        dest.writeParcelable(this.renderedFields, flags);
     }
 
     protected Issue(Parcel in) {
@@ -89,9 +103,10 @@ public class Issue implements Parcelable {
         this.self = in.readString();
         this.key = in.readString();
         this.issueFields = in.readParcelable(IssueFields.class.getClassLoader());
+        this.renderedFields = in.readParcelable(RenderedFields.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Issue> CREATOR = new Parcelable.Creator<Issue>() {
+    public static final Creator<Issue> CREATOR = new Creator<Issue>() {
         @Override
         public Issue createFromParcel(Parcel source) {
             return new Issue(source);

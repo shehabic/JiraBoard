@@ -1,14 +1,20 @@
-package com.fullmob.printable;
+package com.fullmob.printable.generators;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.fullmob.printable.Element;
+import com.fullmob.printable.Printable;
+import com.fullmob.printable.drawers.DrawableDrawer;
 import com.fullmob.printable.drawers.ElementDrawer;
-import com.fullmob.printable.drawers.ImageElementDrawer;
-import com.fullmob.printable.drawers.QRElementDrawer;
+import com.fullmob.printable.drawers.BitmapDrawer;
+import com.fullmob.printable.drawers.QRDrawer;
 import com.fullmob.printable.drawers.TextElementDrawer;
+import com.fullmob.printable.exceptions.PrintableException;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,20 +22,23 @@ import java.util.Map;
 /**
  * Created by shehabic on 19/03/2017.
  */
-abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
+public abstract class AbstractPrintableGenerator<T> implements PrintableGenerator<T> {
 
     float scale = 1f;
 
+    protected WeakReference<Context> context;
     private final HashSet<Element> drawn = new HashSet<>();
     private final HashSet<Element> measured = new HashSet<>();
     private final Map<String, ElementDrawer> elementDrawers = new HashMap<>();
 
     private String drawerType;
 
-    public AbstractPrintableGenerator() {
-        elementDrawers.put("qr", new QRElementDrawer());
+    public AbstractPrintableGenerator(Context context) {
+        this.context = new WeakReference<>(context);
+        elementDrawers.put("qr", new QRDrawer());
         elementDrawers.put("text", new TextElementDrawer());
-        elementDrawers.put("image", new ImageElementDrawer());
+        elementDrawers.put("image", new BitmapDrawer());
+        elementDrawers.put("drawable", new DrawableDrawer(context));
     }
 
     @Override

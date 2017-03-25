@@ -5,6 +5,7 @@ import android.content.Context;
 import com.fullmob.jiraapi.HttpClientBuilder;
 import com.fullmob.jiraboard.di.components.ApiComponent;
 import com.fullmob.jiraboard.di.components.CaptureBoardComponent;
+import com.fullmob.jiraboard.di.components.IssueScreenComponent;
 import com.fullmob.jiraboard.di.components.IssueTypesScreenComponent;
 import com.fullmob.jiraboard.di.components.LoginScreenComponent;
 import com.fullmob.jiraboard.di.components.MainComponent;
@@ -16,6 +17,7 @@ import com.fullmob.jiraboard.di.components.WorkflowDiscoveryComponent;
 import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardView;
 import com.fullmob.jiraboard.ui.home.statuses.StatusesView;
 import com.fullmob.jiraboard.ui.home.tickets.TicketsScreenView;
+import com.fullmob.jiraboard.ui.issue.IssueScreenView;
 import com.fullmob.jiraboard.ui.issuetypes.IssueTypesView;
 import com.fullmob.jiraboard.ui.login.LoginView;
 import com.fullmob.jiraboard.ui.projects.ProjectsView;
@@ -44,4 +46,6 @@ public interface FullmobAppInterface {
     TicketsScreenComponent createTicketsScreenComponent(TicketsScreenView view);
 
     StatusesScreenComponent createStatusesScreenComponent(StatusesView view);
+
+    IssueScreenComponent createIssueScreenComponent(IssueScreenView view);
 }

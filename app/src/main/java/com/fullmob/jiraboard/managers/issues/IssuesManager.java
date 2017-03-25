@@ -15,7 +15,15 @@ public class IssuesManager {
     }
 
     public Observable<Response<Issue>> getIssue(String issueKey) {
-        return api.getIssue(issueKey);
+        return getIssue(issueKey, "none");
+    }
+
+    private Observable<Response<Issue>> getIssue(String issueKey, String expand) {
+        return api.getIssue(issueKey, expand);
+    }
+
+    public Observable<Response<Issue>> getIssueForRendering(String issueKey) {
+        return getIssue(issueKey, "renderedFields");
     }
 
     public Observable<Response<SearchResults>> search(String projectKey, String searchText) {

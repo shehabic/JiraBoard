@@ -33,7 +33,7 @@ public interface IssuesApi {
     Observable<Response<List<Status>>> getIssueStatuses();
 
     @GET("issue/{id}")
-    Observable<Response<Issue>> getIssue(@Path("id") String issueId);
+    Observable<Response<Issue>> getIssue(@Path("id") String issueId, @Query("expand") String expandableFields);
 
     @POST("issue/{id}/comment")
     Observable<Response<Issue>> addComment(@Path("id") String issueId, @Body CommentRequest commentRequest);

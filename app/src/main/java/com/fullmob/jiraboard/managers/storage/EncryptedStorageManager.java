@@ -10,6 +10,7 @@ public class EncryptedStorageManager implements EncryptedStorage {
     private static final String JIRA_KEY_PASSWORD = "jira_password";
     private static final String JIRA_KEY_SUBDOMAIN = "jira_subdomain";
     private static final String JIRA_DEFAULT_PROJECT = "jira_default_project";
+    private static final String JIRA_LAST_SEARCH_QUERY = "jist_last_search_";
 
     private final LocalStorageInterface localStorage;
     private final EncrypterInterface encrypter;
@@ -41,7 +42,11 @@ public class EncryptedStorageManager implements EncryptedStorage {
 
     @Override
     public String getDefaultProject() {
-        return localStorage.getString(JIRA_DEFAULT_PROJECT);
+        return getDefaultProject(null);
+    }
+
+    private String getDefaultProject(String defaultValue) {
+        return localStorage.getString(JIRA_DEFAULT_PROJECT, defaultValue);
     }
 
     @Override
@@ -75,5 +80,19 @@ public class EncryptedStorageManager implements EncryptedStorage {
     @Override
     public void saveDefaultProject(UIProject project) {
         localStorage.putString(JIRA_DEFAULT_PROJECT, project.getId());
+    }
+
+    @Override
+    public String getLastSavedSearch() {
+        return localStorage.getString(getSearchKey(), "");
+    }
+
+    private String getSearchKey() {
+        return JIRA_LAST_SEARCH_QUERY + getDefaultProject("_000000");
+    }
+
+    @Override
+    public void saveLastSearch(String searchText) {
+        localStorage.putString(getSearchKey(), searchText);
     }
 }

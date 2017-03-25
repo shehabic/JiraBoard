@@ -13,5 +13,6 @@ public interface EncryptedStorage {
     void deletePassword();
     void deleteDefaultProjecT();
     void saveDefaultProject(UIProject jiraProject);
-
+    String getLastSavedSearch();
+    void saveLastSearch(String searchText);
 }

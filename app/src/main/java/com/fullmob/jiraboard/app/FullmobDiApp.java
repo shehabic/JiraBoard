@@ -8,6 +8,7 @@ import com.fullmob.jiraboard.DebugUtils;
 import com.fullmob.jiraboard.di.components.ApiComponent;
 import com.fullmob.jiraboard.di.components.CaptureBoardComponent;
 import com.fullmob.jiraboard.di.components.DaggerMainComponent;
+import com.fullmob.jiraboard.di.components.IssueScreenComponent;
 import com.fullmob.jiraboard.di.components.IssueTypesScreenComponent;
 import com.fullmob.jiraboard.di.components.LoginScreenComponent;
 import com.fullmob.jiraboard.di.components.MainComponent;
@@ -17,6 +18,7 @@ import com.fullmob.jiraboard.di.components.StatusesScreenComponent;
 import com.fullmob.jiraboard.di.components.TicketsScreenComponent;
 import com.fullmob.jiraboard.di.components.WorkflowDiscoveryComponent;
 import com.fullmob.jiraboard.di.modules.CaptureBoardModule;
+import com.fullmob.jiraboard.di.modules.IssueScreenModule;
 import com.fullmob.jiraboard.di.modules.IssueTypesModule;
 import com.fullmob.jiraboard.di.modules.LoginScreenModule;
 import com.fullmob.jiraboard.di.modules.MainModule;
@@ -27,6 +29,7 @@ import com.fullmob.jiraboard.di.modules.WorkflowDiscoveryModule;
 import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardView;
 import com.fullmob.jiraboard.ui.home.statuses.StatusesView;
 import com.fullmob.jiraboard.ui.home.tickets.TicketsScreenView;
+import com.fullmob.jiraboard.ui.issue.IssueScreenView;
 import com.fullmob.jiraboard.ui.issuetypes.IssueTypesView;
 import com.fullmob.jiraboard.ui.login.LoginView;
 import com.fullmob.jiraboard.ui.projects.ProjectsView;
@@ -114,5 +117,10 @@ public class FullmobDiApp extends Application implements FullmobAppInterface {
     @Override
     public StatusesScreenComponent createStatusesScreenComponent(StatusesView view) {
         return getManagersModule().plusStatusesScreenComponent(new StatusesScreenModule(view));
+    }
+
+    @Override
+    public IssueScreenComponent createIssueScreenComponent(IssueScreenView view) {
+        return getManagersModule().plusIssueScreenComponent(new IssueScreenModule(view));
     }
 }

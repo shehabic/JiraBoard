@@ -24,9 +24,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TicketsFragment extends BaseFragment implements TicketsScreenView, SearchResultsAdapter.Listener {
+public class SearchFragment extends BaseFragment implements TicketsScreenView, SearchResultsAdapter.Listener {
 
-    public static final String TAG = TicketsFragment.class.getSimpleName();
+    public static final String TAG = SearchFragment.class.getSimpleName();
     private OnFragmentInteractionListener listener;
     private SearchResultsAdapter resultsAdapter;
 
@@ -37,11 +37,11 @@ public class TicketsFragment extends BaseFragment implements TicketsScreenView, 
     @Inject TicketsScreenPresenter presenter;
     @Inject SecuredImagesManagerInterface imagesLoader;
 
-    public TicketsFragment() {
+    public SearchFragment() {
     }
 
-    public static TicketsFragment newInstance() {
-        TicketsFragment fragment = new TicketsFragment();
+    public static SearchFragment newInstance() {
+        SearchFragment fragment = new SearchFragment();
 
         return fragment;
     }
@@ -68,6 +68,7 @@ public class TicketsFragment extends BaseFragment implements TicketsScreenView, 
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                presenter.onSearchQueryChanged(newText);
                 return false;
             }
         });
@@ -147,6 +148,11 @@ public class TicketsFragment extends BaseFragment implements TicketsScreenView, 
         listener.onSearchItemClicked(issue);
     }
 
+    @Override
+    public void setLastSearchText(String lastSavedSearch) {
+        searchView.setQuery(lastSavedSearch, false);
+    }
+
     public void onSearchRequested(String searchQuery) {
         presenter.onSearchRequested(searchQuery);
     }
@@ -157,8 +163,6 @@ public class TicketsFragment extends BaseFragment implements TicketsScreenView, 
     }
 
     public interface OnFragmentInteractionListener {
-        void onTicketsFragmentInteraction();
-
         void onSearchItemClicked(Issue issue);
     }
 

@@ -1,4 +1,4 @@
-package com.fullmob.printable;
+package com.fullmob.printable.generators;
 
 import android.content.Context;
 import android.graphics.pdf.PdfDocument;
@@ -7,7 +7,7 @@ import android.print.PrintAttributes;
 import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.RequiresApi;
 
-import java.lang.ref.WeakReference;
+import com.fullmob.printable.Printable;
 
 /**
  * Created by shehabic on 19/03/2017.
@@ -15,10 +15,9 @@ import java.lang.ref.WeakReference;
 public class PrintablePDFGenerator extends AbstractPrintableGenerator<PrintedPdfDocument> {
 
     private final PrintAttributes printAttributes;
-    private WeakReference<Context> activityContext;
 
-    public PrintablePDFGenerator(Context activityContext, PrintAttributes printAttributes) {
-        this.activityContext = new WeakReference<>(activityContext);
+    public PrintablePDFGenerator(Context context, PrintAttributes printAttributes) {
+        super(context);
         this.printAttributes = printAttributes;
         scale = 0.1f;
     }
@@ -26,7 +25,7 @@ public class PrintablePDFGenerator extends AbstractPrintableGenerator<PrintedPdf
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public PrintedPdfDocument createPrintable(Printable printable, int width, int height) {
-        PrintedPdfDocument pdfDocument = new PrintedPdfDocument(activityContext.get(), printAttributes);
+        PrintedPdfDocument pdfDocument = new PrintedPdfDocument(context.get(), printAttributes);
         int pageHeight = height;
         int pageWidth = width;
         if (printAttributes.getMediaSize() != null) {

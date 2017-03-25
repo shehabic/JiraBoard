@@ -35,6 +35,9 @@ public class TicketsScreenPresenter extends AbstractPresenter<TicketsScreenView>
         this.encryptedStorage = encryptedStorage;
     }
 
+    public void onViewResumed() {
+        getView().setLastSearchText(encryptedStorage.getLastSavedSearch());
+    }
 
     public void onSearchRequested(final String searchText) {
         getView().showLoading();
@@ -79,5 +82,9 @@ public class TicketsScreenPresenter extends AbstractPresenter<TicketsScreenView>
 
     public void onsSearchResultItemClicked(Issue issue) {
         getView().openIssueItem(issue);
+    }
+
+    public void onSearchQueryChanged(String searchText) {
+        encryptedStorage.saveLastSearch(searchText);
     }
 }

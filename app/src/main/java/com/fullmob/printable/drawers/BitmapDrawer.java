@@ -5,12 +5,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.fullmob.printable.Element;
-import com.fullmob.printable.PrintableException;
+import com.fullmob.printable.exceptions.PrintableException;
 
 /**
  * Created by shehabic on 19/03/2017.
  */
-public class ImageElementDrawer implements ElementDrawer {
+public class BitmapDrawer implements ElementDrawer {
 
     @Override
     public void onDraw(Canvas canvas, Element element) {

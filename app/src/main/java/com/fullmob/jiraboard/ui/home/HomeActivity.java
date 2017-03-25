@@ -21,7 +21,7 @@ import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.BaseFragment;
 import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardFragment;
 import com.fullmob.jiraboard.ui.home.statuses.StatusesFragment;
-import com.fullmob.jiraboard.ui.home.tickets.TicketsFragment;
+import com.fullmob.jiraboard.ui.home.tickets.SearchFragment;
 import com.fullmob.jiraboard.ui.login.LoginActivity;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.projects.ProjectsActivity;
@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 public class HomeActivity extends BaseActivity implements
     NavigationView.OnNavigationItemSelectedListener,
     CaptureBoardFragment.OnFragmentInteractionListener,
-    TicketsFragment.OnFragmentInteractionListener,
+    SearchFragment.OnFragmentInteractionListener,
     StatusesFragment.OnIssueStatusesInteractor
 {
 
@@ -108,7 +108,7 @@ public class HomeActivity extends BaseActivity implements
 
     private void onBottomNavTicketsClicked() {
         if (currentSelection != R.id.bottom_nav_tickets) {
-            setCurrentFragment(TicketsFragment.newInstance(), TicketsFragment.TAG);
+            setCurrentFragment(SearchFragment.newInstance(), SearchFragment.TAG);
         }
     }
 
@@ -188,20 +188,17 @@ public class HomeActivity extends BaseActivity implements
     }
 
     @Override
-    public void onTicketsFragmentInteraction() {
-    }
-
-    @Override
     public void onSearchItemClicked(Issue issue) {
-        printIssue(issue);
+//        printIssue(issue);
+        openIssue(issue);
     }
 
     @Override
     public void onCaptureBoardFragmentInteraction() {
     }
 
-    public TicketsFragment getTicketsFragment() {
-        return (TicketsFragment) getSupportFragmentManager().findFragmentByTag(TicketsFragment.TAG);
+    public SearchFragment getTicketsFragment() {
+        return (SearchFragment) getSupportFragmentManager().findFragmentByTag(SearchFragment.TAG);
     }
 
     @Override

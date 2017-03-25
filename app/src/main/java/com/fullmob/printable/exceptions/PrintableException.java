@@ -1,4 +1,4 @@
-package com.fullmob.printable;
+package com.fullmob.printable.exceptions;
 
 /**
  * Created by shehabic on 20/03/2017.

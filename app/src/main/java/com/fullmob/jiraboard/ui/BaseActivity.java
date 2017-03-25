@@ -9,6 +9,7 @@ import android.view.View;
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.app.FullmobAppInterface;
+import com.fullmob.jiraboard.ui.issue.IssueActivity;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.printing.PrintingActivity;
 
@@ -45,6 +46,12 @@ public class BaseActivity extends AppCompatActivity {
         Intent i = new Intent(this, PrintingActivity.class);
         i.putExtra(PrintingActivity.EXTRA_PAYLOAD_TYPE, PrintingActivity.EXTRA_TYPE_ISSUE);
         i.putExtra(PrintingActivity.EXTRA_PAYLOAD, issue);
+        startActivity(i);
+    }
+
+    public void openIssue(Issue issue) {
+        Intent i = new Intent(this, IssueActivity.class);
+        i.putExtra(IssueActivity.EXTRA_ISSUE, issue);
         startActivity(i);
     }
 }

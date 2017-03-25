@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.fullmob.printable.Element;
-import com.fullmob.printable.PrintableException;
+import com.fullmob.printable.exceptions.PrintableException;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -15,7 +15,7 @@ import com.google.zxing.common.BitMatrix;
 /**
  * Created by shehabic on 19/03/2017.
  */
-public class QRElementDrawer implements ElementDrawer {
+public class QRDrawer implements ElementDrawer {
 
     @Override
     public void onDraw(Canvas canvas, Element element) {

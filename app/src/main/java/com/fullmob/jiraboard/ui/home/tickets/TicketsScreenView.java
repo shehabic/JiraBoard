@@ -18,4 +18,6 @@ public interface TicketsScreenView extends BaseView {
     void hideError();
 
     void openIssueItem(Issue issue);
+
+    void setLastSearchText(String lastSavedSearch);
 }

@@ -1,11 +1,14 @@
 package com.fullmob.printable;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.StringDef;
 import android.support.v4.util.ArrayMap;
+
+import com.fullmob.printable.exceptions.PrintableException;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -62,7 +65,7 @@ public class Element {
     public Element textSizeMultiplier = null;
     public Bitmap imageBitmap = null;
     public Uri drawableUri;
-    ArrayMap<String, RelativeDimen> relativeDimenRules;
+    public ArrayMap<String, RelativeDimen> relativeDimenRules;
 
     private boolean fixedHeight = false;
     private boolean fixedWidth = false;
@@ -83,6 +86,7 @@ public class Element {
     public final @ElementType String type;
     public String content;
     public String id;
+    public String src = null;
     private Element parent;
 
     public Element(@ElementType String type) {
@@ -268,6 +272,10 @@ public class Element {
                 imageBitmap = (Bitmap) val;
                 break;
 
+            case "uri":case "src":
+                drawableUri = (Uri) val;
+                break;
+
             case "relativeWidthTarget":
                 if (!relativeDimenRules.containsKey(RELATIVE_FIELD_WIDTH)) {
                     relativeDimenRules.put(RELATIVE_FIELD_WIDTH, new RelativeDimen());
@@ -324,7 +332,7 @@ public class Element {
     }
 
     private void validateRelativity(Element relativeElement) {
-        if (alignLeft == this) {
+        if (relativeElement == this) {
             throw new PrintableException(
                 String.format("Element with %s id cannot be measured relative to itself", id)
             );
@@ -332,7 +340,7 @@ public class Element {
     }
 
     private void validateRelativity(RelativeDimen relativeDimen, @RelativeField  String field) {
-        if (relativeDimen.target == this && relativeDimen.field != null && relativeDimen.equals(field)) {
+        if (relativeDimen.target == this && relativeDimen.field != null && relativeDimen.field.equals(field)) {
             throw new PrintableException(
                 String.format("Element with %s id cannot be measured relative to itself", id)
             );

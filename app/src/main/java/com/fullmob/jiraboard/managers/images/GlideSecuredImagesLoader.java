@@ -3,8 +3,8 @@ package com.fullmob.jiraboard.managers.images;
 import android.content.Context;
 import android.graphics.drawable.PictureDrawable;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.Base64;
+import android.widget.ImageView;
 
 import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
@@ -29,7 +29,7 @@ public class GlideSecuredImagesLoader implements SecuredImagesManagerInterface {
     }
 
     @Override
-    public void loadSVG(final String url, final Context activityContext, final AppCompatImageView imageView) {
+    public void loadSVG(final String url, final Context activityContext, final ImageView imageView) {
         GlideUrl glideUrl = createSecuredGlideUrl(getBiggerUrl(url));
         GenericRequestBuilder<GlideUrl, InputStream, SVG, PictureDrawable> requestBuilder = Glide.with(activityContext)
             .using(Glide.buildStreamModelLoader(GlideUrl.class, activityContext), InputStream.class)
@@ -58,7 +58,7 @@ public class GlideSecuredImagesLoader implements SecuredImagesManagerInterface {
     }
 
     @Override
-    public void loadImage(String url, Context activityContext, final AppCompatImageView imageView) {
+    public void loadImage(String url, Context activityContext, final ImageView imageView) {
         GlideUrl glideUrl = createSecuredGlideUrl(getBiggerUrl(url));
         Glide.with(activityContext)
             .load(glideUrl)

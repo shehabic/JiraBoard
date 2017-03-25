@@ -7,6 +7,9 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.fullmob.jiraboard.R;
+import com.fullmob.printable.generators.PrintableGenerator;
+import com.fullmob.printable.generators.PrintableImageGenerator;
+import com.fullmob.printable.inflators.PrintableInflator;
 import com.google.gson.Gson;
 
 /**
@@ -22,7 +25,7 @@ public class PrintingTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_printing_test);
         preview = (ImageView) findViewById(R.id.preview);
-        printableImageGenerator = new PrintableImageGenerator();
+        printableImageGenerator = new PrintableImageGenerator(this);
     }
 
     @Override

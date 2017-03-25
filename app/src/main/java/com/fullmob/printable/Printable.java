@@ -2,6 +2,9 @@ package com.fullmob.printable;
 
 import android.support.annotation.NonNull;
 
+import com.fullmob.printable.exceptions.PrintableException;
+import com.fullmob.printable.generators.AbstractPrintableGenerator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +17,8 @@ public class Printable {
 
     public final Element PARENT;
 
-    final Map<String, Element> elementsById = new HashMap<>();
-    final List<Element> elements;
+    public final Map<String, Element> elementsById = new HashMap<>();
+    public final List<Element> elements;
     private String id;
 
     public Printable(String id) {
