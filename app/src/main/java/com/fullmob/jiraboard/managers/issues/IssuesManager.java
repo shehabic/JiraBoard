@@ -85,14 +85,14 @@ public class IssuesManager {
     ) {
         HashMap<String, UIIssueStatus> statuses = getUniqueStatuses(projectId);
         UIIssueTransitionGroups transitionGroups = new UIIssueTransitionGroups();
-        HashSet<String> addedStatuses = new HashSet<>();
+        HashSet<String> added = new HashSet<>();
         List<UIIssueTransition> transitions = sortDirectTransitionsFirst(status, uiTransitions);
         for (UIIssueTransition uiIssueTransition : transitions) {
-            if (!addedStatuses.contains(uiIssueTransition.toName)) {
+            if (!added.contains(uiIssueTransition.toName) && !uiIssueTransition.toName.equals(status.getName())) {
                 if (statuses.containsKey(uiIssueTransition.toName)) {
                     uiIssueTransition.color = statuses.get(uiIssueTransition.toName).getStatusCategory().getColorName();
                 }
-                addedStatuses.add(uiIssueTransition.toName);
+                added.add(uiIssueTransition.toName);
                 if (isDirectTransition(status, uiIssueTransition)) {
                     transitionGroups.getDirectTransitions().add(uiIssueTransition);
                 } else {
