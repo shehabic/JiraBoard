@@ -41,6 +41,7 @@ public class IssueScreenPresenter extends AbstractPresenter<IssueScreenView> {
                     }
                 });
             getView().showLoading();
+            getView().hideIssueView();
         } else {
             getView().renderIssue(issue);
             getView().hideLoading();

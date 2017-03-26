@@ -68,7 +68,6 @@ public class SearchFragment extends BaseFragment implements TicketsScreenView, S
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                presenter.onSearchQueryChanged(newText);
                 return false;
             }
         });
@@ -182,5 +181,6 @@ public class SearchFragment extends BaseFragment implements TicketsScreenView, S
         } catch (Exception e) {
             e.printStackTrace();
         }
+        presenter.onViewResumed();
     }
 }

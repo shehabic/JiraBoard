@@ -55,6 +55,7 @@ public class TicketsScreenPresenter extends AbstractPresenter<TicketsScreenView>
                     getView().hideLoading();
                 }
             });
+        onSearchQueryChanged(searchText);
     }
 
     private void searchForTicket(String projectKey, String searchText) {

@@ -65,4 +65,6 @@
     <string name="issue_components">Components</string>
     <string name="issue_fix_version">Fix Version(s)</string>
     <string name="issue_affects_version">Affect Version(s)</string>
+    <string name="issue_updated">Updated at</string>
+    <string name="issue_created">Create at</string>
 </resources>

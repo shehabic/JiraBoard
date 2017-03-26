@@ -8,12 +8,15 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fullmob.jiraapi.models.Issue;
+import com.fullmob.jiraapi.models.issue.Component;
+import com.fullmob.jiraapi.models.issue.FixVersion;
 import com.fullmob.jiraapi.models.issue.IssueFields;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
@@ -51,23 +54,42 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
     @BindView(R.id.project) TextView project;
     @BindView(R.id.issue_key) TextView issueKey;
     @BindView(R.id.project_icon) ImageView projectIcon;
+    @BindView(R.id.issue_type_icon2) ImageView issueTypeIcon2;
+    @BindView(R.id.reporter_image) ImageView reporterImage;
+    @BindView(R.id.issue_priority_icon) ImageView issuePriorityIcon;
     @BindView(R.id.assignee_image) CircleImageView assigneeImage;
     @BindView(R.id.issue_type_icon) ImageView issueTypeIcon;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.app_bar) AppBarLayout appBarLayout;
     @BindView(R.id.title) TextView title;
+    @BindView(R.id.issue_view) View issueView;
+    @BindView(R.id.issue_labels) TextView issueLabels;
+    @BindView(R.id.issue_components) TextView issueComponents;
+    @BindView(R.id.issue_reporter) TextView issueReporter;
+    @BindView(R.id.issue_priority) TextView issuePriority;
+    @BindView(R.id.issue_fix_version) TextView issueFixVersion;
+    @BindView(R.id.issue_created) TextView issueCreated;
+    @BindView(R.id.issue_updated) TextView issueUpdated;
+    @BindView(R.id.issue_type)
+    TextView issueType;
+
     private float maxSize = 0f;
 
-    @OnClick(R.id.fab) void onFabClick() {
+    @OnClick(R.id.fab)
+    void onFabClick() {
         printIssue(issue);
     }
-    @OnClick(R.id.close_bottom_sheet) void closeBottomSheetBtn() {
+
+    @OnClick(R.id.close_bottom_sheet)
+    void closeBottomSheetBtn() {
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
-    @Inject IssueScreenPresenter presenter;
-    @Inject SecuredImagesManagerInterface imageLoader;
+    @Inject
+    IssueScreenPresenter presenter;
+    @Inject
+    SecuredImagesManagerInterface imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +105,7 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
     }
 
     private void initUI() {
+        issueSummary.setText(issue.getIssueFields().getSummary());
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setPeekHeight(0);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -102,19 +125,21 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
             private float percent;
             private float scrollRate;
             private float textSize;
-            private final float factor = 0.4f;
+            private float minSize;
+            private final float factor = 0.2f;
+
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 scrollRate = 1f - Math.abs(verticalOffset / (float) appBarLayout.getTotalScrollRange());
                 issueSummary.setAlpha(scrollRate);
-                textSize = (factor * maxSize) + (scrollRate * factor * maxSize);
+                textSize = (minSize) + (scrollRate * (maxSize - minSize));
                 if (maxSize > 0f) {
-                    issueSummary.setTextSize(textSize);
-                    Log.d("TEXT_SIZE_INITIAL", String.valueOf(textSize));
+                    issueSummary.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
                 } else {
                     maxSize = issueSummary.getTextSize();
-                    Log.d("TEXT_SIZE_INITIAL", String.valueOf(maxSize));
+                    minSize = title.getTextSize();
                 }
+                Log.d("SCROLL_RATE", String.valueOf(scrollRate));
                 if (scrollRate > factor) {
                     title.setAlpha(0f);
                 } else {
@@ -140,6 +165,7 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
 
     @Override
     public void renderIssue(Issue issue) {
+        issueView.setVisibility(View.VISIBLE);
         IssueFields field = issue.getIssueFields();
         issueSummary.setText(issue.getIssueFields().getSummary());
         title.setText(issue.getIssueFields().getSummary());
@@ -158,6 +184,51 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
         imageLoader.loadImage(field.getAssignee().getAvatarUrls().get48x48(), this, assigneeImage);
         imageLoader.loadSVG(field.getProject().getAvatarUrls().get48x48(), this, projectIcon);
         imageLoader.loadSVG(field.getIssuetype().getIconUrl(), this, issueTypeIcon);
+        imageLoader.loadSVG(field.getIssuetype().getIconUrl(), this, issueTypeIcon2);
+        imageLoader.loadImage(field.getReporter().getAvatarUrls().get48x48(), this, reporterImage);
+        imageLoader.loadSVG(field.getPriority().getIconUrl(), this, issuePriorityIcon);
+        issueType.setText(field.getIssuetype().getName());
+        issueReporter.setText(field.getReporter().getName());
+        issuePriority.setText(field.getPriority().getName());
+        if (field.getLabels() != null) {
+            for (String label : field.getLabels()) {
+                String existingLabel = issueLabels.getText().toString().trim();
+                if (existingLabel.length() > 0) {
+                    existingLabel += ", ";
+                }
+                issueLabels.setText(existingLabel + "" + label);
+            }
+        } else {
+            issueLabels.setText("--");
+        }
+        if (field.getComponents() != null) {
+            for (Component component : field.getComponents()) {
+                String existingComponents = issueComponents.getText().toString().trim();
+                if (existingComponents.length() > 0) {
+                    existingComponents += ", ";
+                }
+                issueComponents.setText(existingComponents + "" + component.getName());
+            }
+        } else {
+            issueComponents.setText("--");
+        }
+        if (field.getFixVersions() != null) {
+            for (FixVersion fixVersion : field.getFixVersions()) {
+                String existingFixVersions = issueFixVersion.getText().toString().trim();
+                if (existingFixVersions.length() > 0) {
+                    existingFixVersions += ", ";
+                }
+                issueFixVersion.setText(existingFixVersions + "" + fixVersion.getName());
+            }
+        } else {
+            issueFixVersion.setText("--");
+        }
+        issueCreated.setText(issue.getRenderedFields().getCreated());
+        issueUpdated.setText(
+            issue.getRenderedFields().getUpdated() != null
+                ? issue.getRenderedFields().getUpdated()
+                : issue.getRenderedFields().getCreated()
+        );
     }
 
     @Override
@@ -187,14 +258,19 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
         webView.loadData(tableHtml, "Text/HTML", "UTF-8");
         fab.setVisibility(View.INVISIBLE);
         Observable.timer(200, TimeUnit.MILLISECONDS)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<Long>() {
-            @Override
-            public void accept(Long aLong) throws Exception {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-        });
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Consumer<Long>() {
+                @Override
+                public void accept(Long aLong) throws Exception {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            });
 
+    }
+
+    @Override
+    public void hideIssueView() {
+        issueView.setVisibility(View.GONE);
     }
 
     private class ClickableTableSpanImpl extends ClickableTableSpan {
@@ -211,7 +287,9 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
 
     @Override
     public void onBackPressed() {
-        if (bottomSheet.isShown()) {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED
+            || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_SETTLING
+            ) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         } else {
             finish();

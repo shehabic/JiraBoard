@@ -12,4 +12,6 @@ public interface IssueScreenView extends BaseView {
     void onError(Throwable throwable);
 
     void renderTable(String tableHtml);
+
+    void hideIssueView();
 }
