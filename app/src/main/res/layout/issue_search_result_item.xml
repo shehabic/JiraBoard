@@ -6,9 +6,10 @@
                 android:gravity="center"
                 android:minHeight="48dp"
                 android:orientation="horizontal"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:paddingTop="8dp"
+                android:paddingBottom="8dp"
     >
 
     <android.support.v7.widget.AppCompatImageView
@@ -21,7 +22,7 @@
         android:paddingTop="2dp"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="0dp"
         android:adjustViewBounds="false"
         />
@@ -61,12 +62,4 @@
             android:textSize="10sp"
             />
     </LinearLayout>
-
-    <View
-        android:background="@color/separator_color"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="40dp"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp" />
-
 </RelativeLayout>

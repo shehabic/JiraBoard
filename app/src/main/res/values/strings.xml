@@ -67,4 +67,6 @@
     <string name="issue_affects_version">Affect Version(s)</string>
     <string name="issue_updated">Updated at</string>
     <string name="issue_created">Create at</string>
+    <string name="issue_status">Status</string>
+    <string name="none">None</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.fullmob.jiraboard.ui.issue;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
@@ -48,6 +50,7 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
     @BindView(R.id.issue_summary) TextView issueSummary;
     @BindView(R.id.issue_description) HtmlTextView issueDescription;
     @BindView(R.id.bottom_sheet) View bottomSheet;
+    @BindView(R.id.section_issue_description) View sectionIssueDescription;
     @BindView(R.id.webview) WebView webView;
     @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.issue_assignee) TextView assignee;
@@ -71,10 +74,15 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
     @BindView(R.id.issue_fix_version) TextView issueFixVersion;
     @BindView(R.id.issue_created) TextView issueCreated;
     @BindView(R.id.issue_updated) TextView issueUpdated;
+    @BindView(R.id.issue_status) TextView issueStatus;
     @BindView(R.id.issue_type)
     TextView issueType;
 
     private float maxSize = 0f;
+
+    @OnClick(R.id.section_issue_status) void onIssueTransit() {
+        presenter.onIssueTransitionRequired(issue);
+    }
 
     @OnClick(R.id.fab)
     void onFabClick() {
@@ -169,28 +177,26 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
         IssueFields field = issue.getIssueFields();
         issueSummary.setText(issue.getIssueFields().getSummary());
         title.setText(issue.getIssueFields().getSummary());
-        String html = issue.getRenderedFields().getDescription();
-        html = html.replaceAll("</?(div|tbody)[^>]*>", "").trim().replace("\n", "");
-        DrawTableLinkSpan drawTableLinkSpan = new DrawTableLinkSpan();
-        drawTableLinkSpan.setTextSize(120f);
-        drawTableLinkSpan.setTextColor(getResources().getColor(R.color.colorPrimary));
-        drawTableLinkSpan.setTableLinkText("Tap to view the Table");
-        issueDescription.setDrawTableLinkSpan(drawTableLinkSpan);
-        issueDescription.setClickableTableSpan(new ClickableTableSpanImpl());
-        issueDescription.setHtml(html, new HtmlHttpImageGetter(issueDescription));
+        renderDescription(issue);
         issueKey.setText(issue.getKey());
         project.setText(field.getProject().getName());
-        assignee.setText(field.getAssignee().getName());
-        imageLoader.loadImage(field.getAssignee().getAvatarUrls().get48x48(), this, assigneeImage);
+        if (field.getAssignee() != null) {
+            assignee.setText(field.getAssignee().getDisplayName());
+            imageLoader.loadImage(field.getAssignee().getAvatarUrls().get48x48(), this, assigneeImage);
+        } else {
+            assignee.setText(getString(R.string.none));
+        }
         imageLoader.loadSVG(field.getProject().getAvatarUrls().get48x48(), this, projectIcon);
         imageLoader.loadSVG(field.getIssuetype().getIconUrl(), this, issueTypeIcon);
         imageLoader.loadSVG(field.getIssuetype().getIconUrl(), this, issueTypeIcon2);
         imageLoader.loadImage(field.getReporter().getAvatarUrls().get48x48(), this, reporterImage);
         imageLoader.loadSVG(field.getPriority().getIconUrl(), this, issuePriorityIcon);
         issueType.setText(field.getIssuetype().getName());
-        issueReporter.setText(field.getReporter().getName());
+        issueReporter.setText(field.getReporter().getDisplayName());
         issuePriority.setText(field.getPriority().getName());
+
         if (field.getLabels() != null) {
+            issueLabels.setText("");
             for (String label : field.getLabels()) {
                 String existingLabel = issueLabels.getText().toString().trim();
                 if (existingLabel.length() > 0) {
@@ -202,6 +208,7 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
             issueLabels.setText("--");
         }
         if (field.getComponents() != null) {
+            issueComponents.setText("");
             for (Component component : field.getComponents()) {
                 String existingComponents = issueComponents.getText().toString().trim();
                 if (existingComponents.length() > 0) {
@@ -213,6 +220,7 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
             issueComponents.setText("--");
         }
         if (field.getFixVersions() != null) {
+            issueFixVersion.setText("");
             for (FixVersion fixVersion : field.getFixVersions()) {
                 String existingFixVersions = issueFixVersion.getText().toString().trim();
                 if (existingFixVersions.length() > 0) {
@@ -229,6 +237,56 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
                 ? issue.getRenderedFields().getUpdated()
                 : issue.getRenderedFields().getCreated()
         );
+        issueStatus.setText(field.getStatus().getName());
+        adjustStatus(issueStatus, field.getStatus().getStatusCategory().getColorName());
+    }
+
+    private void renderDescription(Issue issue) {
+        final String html = issue.getRenderedFields().getDescription()
+            .replaceAll("</?(div|tbody)[^>]*>", "")
+            .trim()
+            .replace("\t", "");
+        try {
+            DrawTableLinkSpan drawTableLinkSpan = new DrawTableLinkSpan();
+            drawTableLinkSpan.setTextSize(120f);
+            drawTableLinkSpan.setTextColor(getResources().getColor(R.color.colorPrimary));
+            drawTableLinkSpan.setTableLinkText("Tap to view details");
+            issueDescription.setDrawTableLinkSpan(drawTableLinkSpan);
+            issueDescription.setClickableTableSpan(new ClickableTableSpanImpl());
+            issueDescription.setHtml(html, new HtmlHttpImageGetter(issueDescription));
+        } catch (Exception e) {
+            issueDescription.setText("Tap to view details");
+            issueDescription.setTextColor(getResources().getColor(R.color.colorPrimary));
+            sectionIssueDescription.setClickable(true);
+            sectionIssueDescription.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    presenter.onTableClicked(html);
+                }
+            });
+        }
+    }
+
+    private void adjustStatus(TextView textView, String colorName) {
+        Drawable background;
+        @ColorInt int color = getResources().getColor(R.color.white);
+        switch (colorName.toLowerCase()) {
+            case "yellow":
+                background = getResources().getDrawable(R.drawable.status_color_yellow);
+                color = getResources().getColor(R.color.black);
+                break;
+
+            case "green":
+                background = getResources().getDrawable(R.drawable.status_color_green);
+                break;
+
+            default:
+                background = getResources().getDrawable(R.drawable.status_color_grey);
+                break;
+        }
+
+        textView.setBackgroundDrawable(background);
+        textView.setTextColor(color);
     }
 
     @Override

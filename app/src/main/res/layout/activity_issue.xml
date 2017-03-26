@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="8dp"
-                android:paddingRight="16dp">
+                android:paddingRight="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -124,14 +124,87 @@
                         android:layout_weight="1"/>
                 </LinearLayout>
 
-                <org.sufficientlysecure.htmltextview.HtmlTextView
-                    android:id="@+id/issue_description"
+                <LinearLayout
+                    android:id="@+id/section_issue_status"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:textAppearance="@android:style/TextAppearance.Small"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_weight="0"
+                        android:gravity="center">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/issue_transit"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_status"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        >
+
+                        <TextView
+                            style="@style/IssueSection"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/issue_status"/>
+
+                        <TextView
+                            android:id="@+id/issue_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/status_color_grey"
+                            android:gravity="center"
+                            android:paddingBottom="1dp"
+                            android:paddingEnd="6dp"
+                            android:paddingStart="6dp"
+                            android:textColor="@color/white"
+                            android:textSize="10sp"
+                            />
+                    </LinearLayout>
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/transit_issue"
+                        android:layout_width="48dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginRight="12dp"
+                        android:paddingBottom="4dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingTop="4dp"
+                        android:src="@drawable/ic_transit"
+                        android:tint="@color/colorPrimary"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/section_issue_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <org.sufficientlysecure.htmltextview.HtmlTextView
+                        android:id="@+id/issue_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/activity_vertical_margin"
+                        android:paddingLeft="@dimen/activity_horizontal_margin"
+                        android:paddingRight="@dimen/activity_horizontal_margin"
+                        android:textAppearance="@android:style/TextAppearance.Small"/>
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/section_assignee"
@@ -291,10 +364,10 @@
                         android:gravity="center">
 
                         <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/issue_priority_icon"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_gravity="center"
-                            android:id="@+id/issue_priority_icon"
                             />
                     </LinearLayout>
 
@@ -334,8 +407,8 @@
                     <LinearLayout
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:gravity="center"
-                        android:layout_weight="0">
+                        android:layout_weight="0"
+                        android:gravity="center">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/reporter_image"
@@ -383,15 +456,15 @@
                     <LinearLayout
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:gravity="center"
-                        android:layout_weight="0">
+                        android:layout_weight="0"
+                        android:gravity="center">
 
                         <android.support.v7.widget.AppCompatImageView
-                            android:tint="@color/off_white"
-                            android:src="@drawable/ic_label"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_label"
+                            android:tint="@color/off_white"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -430,15 +503,15 @@
                     <LinearLayout
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:gravity="center"
-                        android:layout_weight="0">
+                        android:layout_weight="0"
+                        android:gravity="center">
 
                         <android.support.v7.widget.AppCompatImageView
-                            android:tint="@color/off_white"
-                            android:src="@drawable/ic_component"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_component"
+                            android:tint="@color/off_white"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -478,15 +551,15 @@
                     <LinearLayout
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:gravity="center"
-                        android:layout_weight="0">
+                        android:layout_weight="0"
+                        android:gravity="center">
 
                         <android.support.v7.widget.AppCompatImageView
-                            android:tint="@color/off_white"
-                            android:src="@drawable/ic_list"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_list"
+                            android:tint="@color/off_white"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -525,15 +598,15 @@
                     <LinearLayout
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:gravity="center"
-                        android:layout_weight="0">
+                        android:layout_weight="0"
+                        android:gravity="center">
 
                         <android.support.v7.widget.AppCompatImageView
-                            android:tint="@color/off_white"
-                            android:src="@drawable/ic_clock"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_clock"
+                            android:tint="@color/off_white"/>
                     </LinearLayout>
 
                     <LinearLayout

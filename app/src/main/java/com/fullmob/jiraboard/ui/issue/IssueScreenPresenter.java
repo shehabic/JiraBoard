@@ -51,4 +51,8 @@ public class IssueScreenPresenter extends AbstractPresenter<IssueScreenView> {
     public void onTableClicked(String tableHtml) {
         getView().renderTable(tableHtml);
     }
+
+    public void onIssueTransitionRequired(Issue issue) {
+
+    }
 }
