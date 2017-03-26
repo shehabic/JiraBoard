@@ -29,12 +29,6 @@ public class To {
     @SerializedName("id")
     @Expose
     private String id;
-    /**
-     * Status Category
-     * <p>
-     * 
-     * 
-     */
     @SerializedName("statusCategory")
     @Expose
     private StatusCategory statusCategory;
@@ -79,22 +73,10 @@ public class To {
         this.id = id;
     }
 
-    /**
-     * Status Category
-     * <p>
-     * 
-     * 
-     */
     public StatusCategory getStatusCategory() {
         return statusCategory;
     }
 
-    /**
-     * Status Category
-     * <p>
-     * 
-     * 
-     */
     public void setStatusCategory(StatusCategory statusCategory) {
         this.statusCategory = statusCategory;
     }

@@ -2,20 +2,24 @@ package com.fullmob.jiraboard.managers.db;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.fullmob.jiraapi.models.AvatarUrls;
 import com.fullmob.jiraapi.models.Project;
 import com.fullmob.jiraapi.models.ProjectIssueTypeStatus;
 import com.fullmob.jiraapi.models.issue.Status;
 import com.fullmob.jiraapi.models.issue.StatusCategory;
+import com.fullmob.jiraapi.requests.issue.Transition;
 import com.fullmob.jiraboard.db.data.JiraAvatarUrls;
 import com.fullmob.jiraboard.db.data.JiraIssueStatus;
 import com.fullmob.jiraboard.db.data.JiraIssueType;
 import com.fullmob.jiraboard.db.data.JiraProject;
 import com.fullmob.jiraboard.db.data.JiraStatusCategory;
 import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
+import com.fullmob.jiraboard.db.data.workflow.Vertices;
 import com.fullmob.jiraboard.ui.models.UIAvatarUrls;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
+import com.fullmob.jiraboard.ui.models.UIIssueTransition;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
 import com.fullmob.jiraboard.ui.models.UIStatusCategory;
@@ -226,6 +230,25 @@ public class Mapper {
         return issueStatuses;
     }
 
+    public UIIssueTransition createUIIssueTransitionsFromDirectTransition(Transition transition, @Nullable Status currentStatus) {
+        UIIssueTransition uiIssueTransition = new UIIssueTransition();
+        uiIssueTransition.viaId = transition.getId();
+        uiIssueTransition.viaName = transition.getName();
+        uiIssueTransition.toId = transition.getTo().getId();
+        uiIssueTransition.toName = transition.getTo().getName();
+        uiIssueTransition.color = transition.getTo().getStatusCategory().getColorName();
+        if (currentStatus != null) {
+            uiIssueTransition.fromId = currentStatus.getId();
+            uiIssueTransition.fromName = currentStatus.getName();
+        }
+
+        return uiIssueTransition;
+    }
+
+    public UIIssueTransition createUIIssueTransitionsFromDirectTransition(Transition transition) {
+        return createUIIssueTransitionsFromDirectTransition(transition, null);
+    }
+
     private UIIssueStatus createIssueStatusFromJiraIssueStatus(JiraIssueStatus status) {
         UIIssueStatus issueStatus = new UIIssueStatus();
         issueStatus.setName(status.getName());
@@ -247,5 +270,26 @@ public class Mapper {
         uiStatusCategory.setKey(statusCategory.getKey());
 
         return uiStatusCategory;
+    }
+
+    public HashSet<UIIssueTransition> convertVerticesToDistinctUIIssueTransitions(RealmResults<Vertices> vertices) {
+        HashSet<UIIssueTransition> transitions = new HashSet<>();
+        for (Vertices vertex : vertices) {
+            transitions.add(createTransitionFromVertex(vertex));
+        }
+
+        return transitions;
+    }
+
+    private UIIssueTransition createTransitionFromVertex(Vertices vertex) {
+        UIIssueTransition transition = new UIIssueTransition();
+        transition.fromId = vertex.getSourceStatusId();
+        transition.fromName = vertex.getSourceStatusName();
+        transition.toName = vertex.getTargetStatusName();
+        transition.toId = vertex.getTargetStatusId();
+        transition.viaId = vertex.getLinkId();
+        transition.viaName = vertex.getLinkName();
+
+        return transition;
     }
 }

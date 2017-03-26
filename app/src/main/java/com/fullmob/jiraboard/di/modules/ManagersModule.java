@@ -29,8 +29,8 @@ public class ManagersModule {
     }
 
     @Provides
-    public IssuesManager providesIssuesManager(IssuesApiClient issuesApiClient) {
-        return new IssuesManager(issuesApiClient);
+    public IssuesManager providesIssuesManager(IssuesApiClient issuesApiClient, DBManagerInterface dbManager) {
+        return new IssuesManager(issuesApiClient, dbManager);
     }
 
     @Provides

@@ -44,15 +44,15 @@ class IssueStatusesAdapter extends RecyclerView.Adapter<IssueStatusesAdapter.Sea
         Drawable background;
         switch (colorName.toLowerCase()) {
             case "yellow":
-                background = holder.itemView.getContext().getResources().getDrawable(R.drawable.status_color_yellow);
+                background = holder.itemView.getContext().getResources().getDrawable(R.drawable.circle_yellow);
                 break;
 
             case "green":
-                background = holder.itemView.getContext().getResources().getDrawable(R.drawable.status_color_green);
+                background = holder.itemView.getContext().getResources().getDrawable(R.drawable.circle_green);
                 break;
 
             default:
-                background = holder.itemView.getContext().getResources().getDrawable(R.drawable.status_color_grey);
+                background = holder.itemView.getContext().getResources().getDrawable(R.drawable.circle_blue);
                 break;
         }
 

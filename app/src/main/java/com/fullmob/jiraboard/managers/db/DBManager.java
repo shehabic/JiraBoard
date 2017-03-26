@@ -16,6 +16,7 @@ import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
 import com.fullmob.jiraboard.db.data.workflow.Vertices;
 import com.fullmob.jiraboard.ui.models.SubDomain;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
+import com.fullmob.jiraboard.ui.models.UIIssueTransition;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
 import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
@@ -377,8 +378,10 @@ public class DBManager implements DBManagerInterface {
         vertex.setIssueType(job.getTypeId());
         vertex.setLinkId(link.linkId);
         vertex.setLinkName(link.linkName);
-        vertex.setSourceStatus(link.from);
-        vertex.setTargetStatus(link.to);
+        vertex.setSourceStatusName(link.fromName);
+        vertex.setTargetStatusName(link.toName);
+        vertex.setTargetStatusId(link.toId);
+        vertex.setSourceStatusId(link.fromId);
         vertex.setWorkflowDiscoveryTicket(job);
         getRealm().commitTransaction();
     }
@@ -403,5 +406,14 @@ public class DBManager implements DBManagerInterface {
     @Override
     public HashSet<UIIssueStatus> findProjectIssueStatuses(String projectId) {
         return mapper.createDistinctUIIssueStatuses(fetchDistinctProjectIssueTypes(projectId));
+    }
+
+    @Override
+    public HashSet<UIIssueTransition> findDistinctTransitions(String projectId) {
+        RealmResults<Vertices> vertices = getRealm().where(Vertices.class)
+            .equalTo(COL_PROJECT_ID, projectId)
+            .findAll();
+
+        return mapper.convertVerticesToDistinctUIIssueTransitions(vertices);
     }
 }

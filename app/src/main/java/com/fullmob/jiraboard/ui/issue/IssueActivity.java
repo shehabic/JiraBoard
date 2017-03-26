@@ -1,8 +1,7 @@
 package com.fullmob.jiraboard.ui.issue;
 
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
@@ -23,6 +22,7 @@ import com.fullmob.jiraapi.models.issue.IssueFields;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
 import com.fullmob.jiraboard.ui.BaseActivity;
+import com.fullmob.jiraboard.ui.transitions.TransitionsActivity;
 
 import org.sufficientlysecure.htmltextview.ClickableTableSpan;
 import org.sufficientlysecure.htmltextview.DrawTableLinkSpan;
@@ -173,11 +173,12 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
 
     @Override
     public void renderIssue(Issue issue) {
+        this.issue = issue;
         issueView.setVisibility(View.VISIBLE);
         IssueFields field = issue.getIssueFields();
         issueSummary.setText(issue.getIssueFields().getSummary());
         title.setText(issue.getIssueFields().getSummary());
-        renderDescription(issue);
+        presenter.onDescriptionRenderingRequested(issue.getRenderedFields().getDescription());
         issueKey.setText(issue.getKey());
         project.setText(field.getProject().getName());
         if (field.getAssignee() != null) {
@@ -238,55 +239,7 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
                 : issue.getRenderedFields().getCreated()
         );
         issueStatus.setText(field.getStatus().getName());
-        adjustStatus(issueStatus, field.getStatus().getStatusCategory().getColorName());
-    }
-
-    private void renderDescription(Issue issue) {
-        final String html = issue.getRenderedFields().getDescription()
-            .replaceAll("</?(div|tbody)[^>]*>", "")
-            .trim()
-            .replace("\t", "");
-        try {
-            DrawTableLinkSpan drawTableLinkSpan = new DrawTableLinkSpan();
-            drawTableLinkSpan.setTextSize(120f);
-            drawTableLinkSpan.setTextColor(getResources().getColor(R.color.colorPrimary));
-            drawTableLinkSpan.setTableLinkText("Tap to view details");
-            issueDescription.setDrawTableLinkSpan(drawTableLinkSpan);
-            issueDescription.setClickableTableSpan(new ClickableTableSpanImpl());
-            issueDescription.setHtml(html, new HtmlHttpImageGetter(issueDescription));
-        } catch (Exception e) {
-            issueDescription.setText("Tap to view details");
-            issueDescription.setTextColor(getResources().getColor(R.color.colorPrimary));
-            sectionIssueDescription.setClickable(true);
-            sectionIssueDescription.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    presenter.onTableClicked(html);
-                }
-            });
-        }
-    }
-
-    private void adjustStatus(TextView textView, String colorName) {
-        Drawable background;
-        @ColorInt int color = getResources().getColor(R.color.white);
-        switch (colorName.toLowerCase()) {
-            case "yellow":
-                background = getResources().getDrawable(R.drawable.status_color_yellow);
-                color = getResources().getColor(R.color.black);
-                break;
-
-            case "green":
-                background = getResources().getDrawable(R.drawable.status_color_green);
-                break;
-
-            default:
-                background = getResources().getDrawable(R.drawable.status_color_grey);
-                break;
-        }
-
-        textView.setBackgroundDrawable(background);
-        textView.setTextColor(color);
+        adjustStatusField(issueStatus, field.getStatus().getStatusCategory().getColorName());
     }
 
     @Override
@@ -329,6 +282,37 @@ public class IssueActivity extends BaseActivity implements IssueScreenView {
     @Override
     public void hideIssueView() {
         issueView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderDescription(final String description) {
+        try {
+            DrawTableLinkSpan drawTableLinkSpan = new DrawTableLinkSpan();
+            drawTableLinkSpan.setTextSize(120f);
+            drawTableLinkSpan.setTextColor(getResources().getColor(R.color.colorPrimary));
+            drawTableLinkSpan.setTableLinkText(getString(R.string.tap_for_details));
+            issueDescription.setDrawTableLinkSpan(drawTableLinkSpan);
+            issueDescription.setClickableTableSpan(new ClickableTableSpanImpl());
+            issueDescription.setHtml(description, new HtmlHttpImageGetter(issueDescription));
+        } catch (Exception e) {
+            issueDescription.setText(getString(R.string.tap_for_details));
+            issueDescription.setTextColor(getResources().getColor(R.color.colorPrimary));
+            sectionIssueDescription.setClickable(true);
+            sectionIssueDescription.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    presenter.onTableClicked(description);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void openIssueTransitions(Issue issue) {
+        Intent i = new Intent(this, TransitionsActivity.class);
+        i.putExtra(TransitionsActivity.EXTRA_ISSUE, issue);
+        i.setExtrasClassLoader(Issue.class.getClassLoader());
+        startActivity(i);
     }
 
     private class ClickableTableSpanImpl extends ClickableTableSpan {

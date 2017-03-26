@@ -1,7 +1,5 @@
 package com.fullmob.printable;
 
-
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;

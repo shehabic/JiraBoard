@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/jira_green"/>
+    <solid android:color="@color/jira_yellow"/>
     <stroke
+
         android:width="3dip"
-        android:color="@color/jira_green"/>
-    <corners android:radius="4dip"/>
+        android:color="@color/jira_yellow"/>
+    <corners android:radius="12dip"/>
     <padding
         android:bottom="0dip"
         android:left="0dip"

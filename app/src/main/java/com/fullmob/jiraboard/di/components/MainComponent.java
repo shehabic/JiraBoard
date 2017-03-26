@@ -50,5 +50,4 @@ public interface MainComponent {
     DBManagerInterface getDb();
 
     ApiComponent plus();
-
 }

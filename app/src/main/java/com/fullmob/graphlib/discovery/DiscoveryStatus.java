@@ -47,8 +47,8 @@ public class DiscoveryStatus {
 
     public void addTransition(TransitionLink vertex) {
         vertices.add(vertex);
-        uniqueNodes.add(vertex.from);
-        uniqueNodes.add(vertex.to);
+        uniqueNodes.add(vertex.fromName);
+        uniqueNodes.add(vertex.toName);
     }
 
     public void increasePasses() {

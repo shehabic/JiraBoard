@@ -6,6 +6,7 @@ import com.fullmob.jiraapi.models.Project;
 import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
 import com.fullmob.jiraboard.ui.models.SubDomain;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
+import com.fullmob.jiraboard.ui.models.UIIssueTransition;
 import com.fullmob.jiraboard.ui.models.UIIssueType;
 import com.fullmob.jiraboard.ui.models.UIProject;
 import com.fullmob.jiraboard.ui.models.UIWorkflowQueueJob;
@@ -49,4 +50,6 @@ public interface DBManagerInterface {
     List<UIWorkflowQueueJob> findProcessedAndInProgressWorkflows(String projectId);
 
     HashSet<UIIssueStatus> findProjectIssueStatuses(String projectId);
+
+    HashSet<UIIssueTransition> findDistinctTransitions(String projectId);
 }

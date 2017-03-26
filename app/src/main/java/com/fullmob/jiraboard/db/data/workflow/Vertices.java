@@ -19,7 +19,7 @@ public class Vertices extends RealmObject {
     private String subDomain;
 
     @Required
-    private String sourceStatus;
+    private String sourceStatusName;
 
     @Required
     private String linkId;
@@ -28,7 +28,12 @@ public class Vertices extends RealmObject {
     private String linkName;
 
     @Required
-    private String targetStatus;
+    private String targetStatusName;
+
+    @Required
+    private String targetStatusId;
+
+    private String sourceStatusId;
 
     private WorkflowDiscoveryQueueJob workflowDiscoveryTicket;
 
@@ -56,12 +61,12 @@ public class Vertices extends RealmObject {
         this.subDomain = subDomain;
     }
 
-    public String getSourceStatus() {
-        return sourceStatus;
+    public String getSourceStatusName() {
+        return sourceStatusName;
     }
 
-    public void setSourceStatus(String sourceStatus) {
-        this.sourceStatus = sourceStatus;
+    public void setSourceStatusName(String sourceStatus) {
+        this.sourceStatusName = sourceStatus;
     }
 
     public String getLinkId() {
@@ -80,12 +85,12 @@ public class Vertices extends RealmObject {
         this.linkName = linkName;
     }
 
-    public String getTargetStatus() {
-        return targetStatus;
+    public String getTargetStatusName() {
+        return targetStatusName;
     }
 
-    public void setTargetStatus(String targetStatus) {
-        this.targetStatus = targetStatus;
+    public void setTargetStatusName(String targetStatus) {
+        this.targetStatusName = targetStatus;
     }
 
     public WorkflowDiscoveryQueueJob getWorkflowDiscoveryTicket() {
@@ -94,5 +99,21 @@ public class Vertices extends RealmObject {
 
     public void setWorkflowDiscoveryTicket(WorkflowDiscoveryQueueJob workflowDiscoveryTicket) {
         this.workflowDiscoveryTicket = workflowDiscoveryTicket;
+    }
+
+    public void setTargetStatusId(String targetStatusId) {
+        this.targetStatusId = targetStatusId;
+    }
+
+    public String getTargetStatusId() {
+        return targetStatusId;
+    }
+
+    public void setSourceStatusId(String sourceStatusId) {
+        this.sourceStatusId = sourceStatusId;
+    }
+
+    public String getSourceStatusId() {
+        return sourceStatusId;
     }
 }

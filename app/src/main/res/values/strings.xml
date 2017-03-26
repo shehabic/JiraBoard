@@ -69,4 +69,8 @@
     <string name="issue_created">Create at</string>
     <string name="issue_status">Status</string>
     <string name="none">None</string>
+    <string name="tap_for_details">Tap to view details</string>
+    <string name="title_activity_transitions">TransitionsActivity</string>
+    <string name="direct_transitions">Direct transitions</string>
+    <string name="further_transitions">Further transitions</string>
 </resources>

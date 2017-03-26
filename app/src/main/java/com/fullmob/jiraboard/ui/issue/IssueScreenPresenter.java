@@ -53,6 +53,11 @@ public class IssueScreenPresenter extends AbstractPresenter<IssueScreenView> {
     }
 
     public void onIssueTransitionRequired(Issue issue) {
+        getView().openIssueTransitions(issue);
+    }
 
+    public void onDescriptionRenderingRequested(String description) {
+        description = description.replaceAll("</?(div|tbody)[^>]*>", "").trim().replace("\t", " ");
+        getView().renderDescription(description);
     }
 }

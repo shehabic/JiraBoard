@@ -14,4 +14,8 @@ public interface IssueScreenView extends BaseView {
     void renderTable(String tableHtml);
 
     void hideIssueView();
+
+    void renderDescription(String description);
+
+    void openIssueTransitions(Issue issue);
 }

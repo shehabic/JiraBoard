@@ -113,7 +113,7 @@ public class WorkflowDiscovery {
 
     private void addConnection(Node src, Node target, DiscoveryStatus status) {
         src.addTarget(target);
-        status.addTransition(new TransitionLink(src.toName, target.id, target.name, target.toName));
+        status.addTransition(new TransitionLink(src.toId, src.toName, target.id, target.name, target.toName, target.toId));
     }
 
     private void exploreOptimized(

@@ -62,6 +62,10 @@ public class IssuesApiClient extends AbstractApiManager<IssuesApi> {
         return api.getIssueSync(key).execute();
     }
 
+    public Observable<Response<IssueTransitionsResponse>> getPossibleIssueTransitions(String key) {
+        return api.getPossibleIssueTransitions(key);
+    }
+
     public Response<IssueTransitionsResponse> getPossibleIssueTransitionsSync(String key) throws IOException {
         String rand = String.valueOf(System.currentTimeMillis());
 

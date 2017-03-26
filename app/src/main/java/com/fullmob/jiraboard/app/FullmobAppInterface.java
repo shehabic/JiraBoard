@@ -13,6 +13,7 @@ import com.fullmob.jiraboard.di.components.ManagersComponent;
 import com.fullmob.jiraboard.di.components.ProjectsScreenComponent;
 import com.fullmob.jiraboard.di.components.StatusesScreenComponent;
 import com.fullmob.jiraboard.di.components.TicketsScreenComponent;
+import com.fullmob.jiraboard.di.components.TransitionsScreenComponent;
 import com.fullmob.jiraboard.di.components.WorkflowDiscoveryComponent;
 import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardView;
 import com.fullmob.jiraboard.ui.home.statuses.StatusesView;
@@ -21,6 +22,7 @@ import com.fullmob.jiraboard.ui.issue.IssueScreenView;
 import com.fullmob.jiraboard.ui.issuetypes.IssueTypesView;
 import com.fullmob.jiraboard.ui.login.LoginView;
 import com.fullmob.jiraboard.ui.projects.ProjectsView;
+import com.fullmob.jiraboard.ui.transitions.TransitionsScreenView;
 
 public interface FullmobAppInterface {
     Context getContext();
@@ -48,4 +50,6 @@ public interface FullmobAppInterface {
     StatusesScreenComponent createStatusesScreenComponent(StatusesView view);
 
     IssueScreenComponent createIssueScreenComponent(IssueScreenView view);
+
+    TransitionsScreenComponent createTransitionsScreenComponent(TransitionsScreenView view);
 }

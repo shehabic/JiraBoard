@@ -4,24 +4,32 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class TransitionLink {
-    @SerializedName("from")
+    @SerializedName("fromId")
     @Expose
-    public String from;
+    public String fromId;
+    @SerializedName("fromName")
+    @Expose
+    public String fromName;
     @SerializedName("linkId")
     @Expose
     public String linkId;
     @SerializedName("linkName")
     @Expose
     public String linkName;
-    @SerializedName("to")
+    @SerializedName("toName")
     @Expose
-    public String to;
+    public String toName;
+    @SerializedName("toId")
+    @Expose
+    public String toId;
 
-    public TransitionLink(String from, String linkId, String linkName, String to) {
-        this.from = from;
+    public TransitionLink(String fromId, String fromName, String linkId, String linkName, String toName, String toId) {
+        this.fromId = fromId;
+        this.fromName = fromName;
         this.linkId = linkId;
         this.linkName = linkName;
-        this.to = to;
+        this.toName = toName;
+        this.toId = toId;
     }
 
     @Override
@@ -31,13 +39,13 @@ public class TransitionLink {
 
         TransitionLink that = (TransitionLink) o;
 
-        return this.from.equals(that.from)
+        return this.fromName.equals(that.fromName)
             && this.linkId.equals(that.linkId)
-            && this.to.equals(that.to);
+            && this.toName.equals(that.toName);
     }
 
     @Override
     public int hashCode() {
-        return (from + to + linkId).hashCode();
+        return (fromName + "_" + toName + "_" + linkId).hashCode();
     }
 }

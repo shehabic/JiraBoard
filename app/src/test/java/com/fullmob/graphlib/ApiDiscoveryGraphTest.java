@@ -39,7 +39,7 @@ public class ApiDiscoveryGraphTest extends BaseUnitTest {
                     System.out.println(new Gson().toJson(status));
                     lock.countDown();
                     for (TransitionLink link : status.getVertices()) {
-                        System.out.print(link.from + "-----[" + link.linkId + "]------>" + link.to);
+                        System.out.print(link.fromName + "-----[" + link.linkId + "]------>" + link.toName);
                     }
                 }
             }

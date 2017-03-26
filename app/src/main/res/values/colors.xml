@@ -10,4 +10,11 @@
     <color name="off_white">#888888</color>
     <color name="black">#111111</color>
     <color name="separator_color">#EEEEEE</color>
+    <color name="very_light_cyan">#88F2F4F7</color>
+    <color name="nice_blue">#30548B</color>
+
+    <color name="jira_yellow">#ffd351</color>
+    <color name="jira_blue">#FF4a6785</color>
+    <color name="jira_green">#14892c</color>
+    <color name="jira_red">#d9534f</color>
 </resources>

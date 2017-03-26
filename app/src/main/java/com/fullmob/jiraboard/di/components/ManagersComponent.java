@@ -9,6 +9,7 @@ import com.fullmob.jiraboard.di.modules.ManagersModule;
 import com.fullmob.jiraboard.di.modules.ProjectsScreenModule;
 import com.fullmob.jiraboard.di.modules.StatusesScreenModule;
 import com.fullmob.jiraboard.di.modules.TicketsScreenModule;
+import com.fullmob.jiraboard.di.modules.TransitionScreenModule;
 import com.fullmob.jiraboard.di.modules.WorkflowDiscoveryModule;
 import com.fullmob.jiraboard.managers.projects.ProjectsManager;
 import com.fullmob.jiraboard.managers.user.UserManager;
@@ -27,4 +28,5 @@ public interface ManagersComponent {
     TicketsScreenComponent plusTicketsScreenComponent(TicketsScreenModule module);
     StatusesScreenComponent plusStatusesScreenComponent(StatusesScreenModule module);
     IssueScreenComponent plusIssueScreenComponent(IssueScreenModule module);
+    TransitionsScreenComponent plusTransitionsScreenComponent(TransitionScreenModule modules);
 }

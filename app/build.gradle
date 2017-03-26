@@ -114,6 +114,7 @@ dependencies {
 
 
 
+
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'com.github.shehabix.MultiModuleTest:api:1.0.8'
     compile 'com.github.shehabix.MultiModuleTest:core:1.0.8'
@@ -149,7 +150,6 @@ dependencies {
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'org.sufficientlysecure:html-textview:3.3'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-
     testCompile 'junit:junit:4.12'
     apt 'com.google.dagger:dagger-compiler:2.0.2'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
