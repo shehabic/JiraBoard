@@ -236,10 +236,11 @@ public class Mapper {
         uiIssueTransition.viaName = transition.getName();
         uiIssueTransition.toId = transition.getTo().getId();
         uiIssueTransition.toName = transition.getTo().getName();
-        uiIssueTransition.color = transition.getTo().getStatusCategory().getColorName();
+        uiIssueTransition.toColor = transition.getTo().getStatusCategory().getColorName();
         if (currentStatus != null) {
             uiIssueTransition.fromId = currentStatus.getId();
             uiIssueTransition.fromName = currentStatus.getName();
+            uiIssueTransition.fromColor = currentStatus.getStatusCategory().getColorName();
         }
 
         return uiIssueTransition;

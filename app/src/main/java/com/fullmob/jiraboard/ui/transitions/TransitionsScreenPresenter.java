@@ -3,6 +3,7 @@ package com.fullmob.jiraboard.ui.transitions;
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.managers.issues.IssuesManager;
 import com.fullmob.jiraboard.managers.projects.ProjectsManager;
+import com.fullmob.jiraboard.transitions.TransitionManager;
 import com.fullmob.jiraboard.ui.AbstractPresenter;
 import com.fullmob.jiraboard.ui.models.UIIssueTransition;
 import com.fullmob.jiraboard.ui.models.UIIssueTransitionGroups;
@@ -22,13 +23,16 @@ public class TransitionsScreenPresenter extends AbstractPresenter<TransitionsScr
 
     private final IssuesManager issuesManager;
     private final ProjectsManager projectsManager;
+    private final TransitionManager transitionManager;
 
     public TransitionsScreenPresenter(
         TransitionsScreenView view,
         IssuesManager issuesManager,
-        ProjectsManager projectsManager
+        ProjectsManager projectsManager,
+        TransitionManager transitionManager
     ) {
         super(view);
+        this.transitionManager = transitionManager;
         this.issuesManager = issuesManager;
         this.projectsManager = projectsManager;
     }
@@ -74,6 +78,6 @@ public class TransitionsScreenPresenter extends AbstractPresenter<TransitionsScr
     }
 
     public void onTransitionRequested(Issue issue, UITransitionItem issueStatus) {
-
+        transitionManager.findShortestPath(issue, issueStatus);
     }
 }

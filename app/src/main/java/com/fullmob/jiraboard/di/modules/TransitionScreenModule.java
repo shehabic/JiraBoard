@@ -2,6 +2,7 @@ package com.fullmob.jiraboard.di.modules;
 
 import com.fullmob.jiraboard.managers.issues.IssuesManager;
 import com.fullmob.jiraboard.managers.projects.ProjectsManager;
+import com.fullmob.jiraboard.transitions.TransitionManager;
 import com.fullmob.jiraboard.ui.transitions.TransitionsScreenPresenter;
 import com.fullmob.jiraboard.ui.transitions.TransitionsScreenView;
 
@@ -25,8 +26,9 @@ public class TransitionScreenModule {
     @Provides
     public TransitionsScreenPresenter providesTransitionsScreenPresenter(
         IssuesManager issuesManager,
-        ProjectsManager projectsManager
+        ProjectsManager projectsManager,
+        TransitionManager transitionManager
     ) {
-        return new TransitionsScreenPresenter(view.get(), issuesManager, projectsManager);
+        return new TransitionsScreenPresenter(view.get(), issuesManager, projectsManager, transitionManager);
     }
 }

@@ -51,5 +51,7 @@ public interface DBManagerInterface {
 
     HashSet<UIIssueStatus> findProjectIssueStatuses(String projectId);
 
+    HashSet<UIIssueTransition> findDistinctTransitionsForIssue(Issue issue);
+
     HashSet<UIIssueTransition> findDistinctTransitions(String projectId);
 }

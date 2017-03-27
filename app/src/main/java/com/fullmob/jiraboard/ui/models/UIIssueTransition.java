@@ -10,7 +10,8 @@ public class UIIssueTransition implements Parcelable {
     public String viaId;
     public String toName;
     public String toId;
-    public String color = "blue";
+    public String toColor = "blue";
+    public String fromColor = "blue";
 
     @Override
     public int describeContents() {
@@ -25,7 +26,8 @@ public class UIIssueTransition implements Parcelable {
         dest.writeString(this.viaId);
         dest.writeString(this.toName);
         dest.writeString(this.toId);
-        dest.writeString(this.color);
+        dest.writeString(this.toColor);
+        dest.writeString(this.fromColor);
     }
 
     public UIIssueTransition() {
@@ -38,7 +40,8 @@ public class UIIssueTransition implements Parcelable {
         this.viaId = in.readString();
         this.toName = in.readString();
         this.toId = in.readString();
-        this.color = in.readString();
+        this.toColor = in.readString();
+        this.fromColor = in.readString();
     }
 
     public static final Parcelable.Creator<UIIssueTransition> CREATOR = new Parcelable.Creator<UIIssueTransition>() {

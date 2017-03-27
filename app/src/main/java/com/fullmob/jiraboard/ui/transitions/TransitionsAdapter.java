@@ -108,8 +108,7 @@ class TransitionsAdapter extends RecyclerView.Adapter<TransitionsAdapter.Transit
                 itemName.setText(itemName.getContext().getString(R.string.further_transitions));
             } else if (transitionItem.type == UITransitionItem.TRANSITION_ITEM) {
                 itemName.setText(transitionItem.transition.toName);
-                String colorName = transitionItem.transition.color;
-                adjustStatusColor(colorName, this);
+                adjustStatusColor(transitionItem.transition.toColor, this);
                 bindEvents(listener);
             }
         }

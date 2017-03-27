@@ -17,6 +17,7 @@ import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
 import com.fullmob.jiraboard.managers.storage.LocalStorageInterface;
 import com.fullmob.jiraboard.managers.user.UserManager;
 import com.fullmob.jiraboard.managers.workflow.WorkflowDiscoveryManager;
+import com.fullmob.jiraboard.transitions.TransitionManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -66,5 +67,10 @@ public class ManagersModule {
         handler.addJobHandler(WorkflowDiscoveryJob.JOB_TYPE, new WorkflowJobHandler(discoveryManager, notifManager));
 
         return handler;
+    }
+
+    @Provides
+    public TransitionManager providesTransitionManager(DBManagerInterface dbManager, IssuesManager issuesManager) {
+        return new TransitionManager(dbManager, issuesManager);
     }
 }

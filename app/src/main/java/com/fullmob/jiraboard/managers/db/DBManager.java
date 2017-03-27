@@ -409,6 +409,25 @@ public class DBManager implements DBManagerInterface {
     }
 
     @Override
+    public HashSet<UIIssueTransition> findDistinctTransitionsForIssue(Issue issue) {
+        JiraIssueType issueType = getRealm().where(JiraIssueType.class)
+            .equalTo(COL_ID, issue.getIssueFields().getIssuetype().getId())
+            .findAll()
+            .where()
+            .equalTo(COL_PROJECT_ID, issue.getIssueFields().getProject().getId())
+            .findFirst();
+
+        RealmResults<Vertices> vertices = getRealm().where(Vertices.class)
+            .equalTo(COL_PROJECT_ID, issue.getIssueFields().getProject().getId())
+            .findAll()
+            .where()
+            .equalTo("workflowDiscoveryTicket.workflowKey", issueType.getWorkflowKey())
+            .findAll();
+
+        return mapper.convertVerticesToDistinctUIIssueTransitions(vertices);
+    }
+
+    @Override
     public HashSet<UIIssueTransition> findDistinctTransitions(String projectId) {
         RealmResults<Vertices> vertices = getRealm().where(Vertices.class)
             .equalTo(COL_PROJECT_ID, projectId)

@@ -71,7 +71,7 @@ public class IssuesManager {
     private Observable<UIIssueTransitionGroups> getAllPossibleTransitions(Issue issue) {
         final Status status = issue.getIssueFields().getStatus();
         String projectId = issue.getIssueFields().getProject().getId();
-        HashSet<UIIssueTransition> uiTransitions = dbManager.findDistinctTransitions(projectId);
+        HashSet<UIIssueTransition> uiTransitions = dbManager.findDistinctTransitionsForIssue(issue);
 
         return uiTransitions.size() == 0
             ? returnPossibleTransitionsFromServer(issue, status)
@@ -90,7 +90,10 @@ public class IssuesManager {
         for (UIIssueTransition uiIssueTransition : transitions) {
             if (!added.contains(uiIssueTransition.toName) && !uiIssueTransition.toName.equals(status.getName())) {
                 if (statuses.containsKey(uiIssueTransition.toName)) {
-                    uiIssueTransition.color = statuses.get(uiIssueTransition.toName).getStatusCategory().getColorName();
+                    uiIssueTransition.toColor = statuses.get(uiIssueTransition.toName).getStatusCategory().getColorName();
+                }
+                if (statuses.containsKey(uiIssueTransition.fromName)) {
+                    uiIssueTransition.fromColor = statuses.get(uiIssueTransition.fromName).getStatusCategory().getColorName();
                 }
                 added.add(uiIssueTransition.toName);
                 if (isDirectTransition(status, uiIssueTransition)) {
@@ -121,7 +124,7 @@ public class IssuesManager {
         return transitions;
     }
 
-    private HashMap<String, UIIssueStatus> getUniqueStatuses(String projectId) {
+    public HashMap<String, UIIssueStatus> getUniqueStatuses(String projectId) {
         HashSet<UIIssueStatus> statuses = dbManager.findProjectIssueStatuses(projectId);
         HashMap<String, UIIssueStatus> map = new HashMap<>();
         for (UIIssueStatus status : statuses) {
@@ -165,8 +168,8 @@ public class IssuesManager {
         Collections.sort(transitionList, new Comparator<UIIssueTransition>() {
             @Override
             public int compare(UIIssueTransition o1, UIIssueTransition o2) {
-                int val1 = valForColor(o1.color);
-                int val2 = valForColor(o2.color);
+                int val1 = valForColor(o1.toColor);
+                int val2 = valForColor(o2.toColor);
 
                 return (val1 == val2) ? o1.toName.compareTo(o2.toName) : val1 - val2;
             }
