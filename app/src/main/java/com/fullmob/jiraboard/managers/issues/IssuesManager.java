@@ -74,7 +74,7 @@ public class IssuesManager {
         HashSet<UIIssueTransition> uiTransitions = dbManager.findDistinctTransitionsForIssue(issue);
 
         return uiTransitions.size() == 0
-            ? returnPossibleTransitionsFromServer(issue, status)
+            ? fetchPossibleTransitionsFromServer(issue, status)
             : returnPossibleTransitionsFromDB(status, uiTransitions, projectId);
     }
 
@@ -134,7 +134,7 @@ public class IssuesManager {
         return map;
     }
 
-    private Observable<UIIssueTransitionGroups> returnPossibleTransitionsFromServer(Issue issue, final Status status) {
+    public Observable<UIIssueTransitionGroups> fetchPossibleTransitionsFromServer(Issue issue, final Status status) {
         try {
             return api.getPossibleIssueTransitions(issue.getKey())
                 .subscribeOn(Schedulers.io())

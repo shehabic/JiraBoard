@@ -3,13 +3,13 @@ package com.fullmob.jiraboard.transitions;
 /**
  * Created by shehabic on 27/03/2017.
  */
-class TransitionStep {
-    private final String viaId;
-    private final String viaName;
-    private final String toId;
-    private final String toName;
-    private final String fromColor;
-    private final String toColor;
+public class TransitionStep {
+    public final String viaId;
+    public final String viaName;
+    public final String toId;
+    public final String toName;
+    public final String fromColor;
+    public final String toColor;
 
     public TransitionStep(String viaId, String viaName, String toId, String toName, String fromColor, String toColor) {
         this.viaId = viaId;

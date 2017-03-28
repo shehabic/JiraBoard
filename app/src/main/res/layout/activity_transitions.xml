@@ -72,6 +72,15 @@
                 android:textSize="10sp"
                 />
         </LinearLayout>
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/no_transitions_available"
+            android:text="@string/no_transitions_available_for_your_user"
+            android:textColor="@color/errorRed"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/transitions"
             android:layout_width="match_parent"

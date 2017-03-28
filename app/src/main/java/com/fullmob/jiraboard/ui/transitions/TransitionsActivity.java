@@ -1,16 +1,20 @@
 package com.fullmob.jiraboard.ui.transitions;
 
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
+import com.fullmob.jiraboard.transitions.TransitionStep;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.models.UITransitionItem;
 
@@ -29,6 +33,7 @@ public class TransitionsActivity extends BaseActivity implements TransitionsScre
     @BindView(R.id.transitions) RecyclerView transitionsList;
     @BindView(R.id.issue_type_icon) ImageView issueTypeIcon;
     @BindView(R.id.issue_key) TextView issueKey;
+    @BindView(R.id.no_transitions_available) TextView noTransitionsAvailable;
     @BindView(R.id.issue_status) TextView issueStatus;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
@@ -37,6 +42,7 @@ public class TransitionsActivity extends BaseActivity implements TransitionsScre
 
     @Inject TransitionsScreenPresenter presenter;
     @Inject SecuredImagesManagerInterface imageLoader;
+    private AlertDialog confirmationDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +90,40 @@ public class TransitionsActivity extends BaseActivity implements TransitionsScre
     @Override
     public void renderTransitions(List<UITransitionItem> transitionItemList) {
         adapter.setStatuses(transitionItemList);
+        transitionsList.setVisibility(View.VISIBLE);
+        noTransitionsAvailable.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showNoTransitionsAvailableForCurrentState() {
+        transitionsList.setVisibility(View.GONE);
+        noTransitionsAvailable.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showTransitionConfirmation(final List<TransitionStep> steps) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        TransitionListAdapter adapter = new TransitionListAdapter(steps, issue);
+        View dialogView = inflater.inflate(R.layout.dialog_transition_confirmation, null);
+        RecyclerView recyclerView = (RecyclerView) dialogView.findViewById(R.id.transitions_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+        dialogView.findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmationDialog.dismiss();
+                presenter.onConfirmTransition(steps);
+            }
+        });
+        dialogView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmationDialog.dismiss();
+            }
+        });
+        builder.setView(dialogView);
+        confirmationDialog = builder.show();
     }
 
     @Override
@@ -94,6 +134,13 @@ public class TransitionsActivity extends BaseActivity implements TransitionsScre
                 finish();
                 break;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_ISSUE, issue);
     }
 }

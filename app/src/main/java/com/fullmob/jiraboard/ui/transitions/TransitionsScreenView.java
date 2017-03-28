@@ -1,5 +1,6 @@
 package com.fullmob.jiraboard.ui.transitions;
 
+import com.fullmob.jiraboard.transitions.TransitionStep;
 import com.fullmob.jiraboard.ui.BaseView;
 import com.fullmob.jiraboard.ui.models.UITransitionItem;
 
@@ -13,4 +14,8 @@ public interface TransitionsScreenView extends BaseView {
     void renderTransitions(List<UITransitionItem> transitionItemList);
 
     void showError(Throwable throwable);
+
+    void showNoTransitionsAvailableForCurrentState();
+
+    void showTransitionConfirmation(List<TransitionStep> steps);
 }

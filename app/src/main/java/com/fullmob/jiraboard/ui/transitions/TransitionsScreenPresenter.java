@@ -4,6 +4,7 @@ import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.managers.issues.IssuesManager;
 import com.fullmob.jiraboard.managers.projects.ProjectsManager;
 import com.fullmob.jiraboard.transitions.TransitionManager;
+import com.fullmob.jiraboard.transitions.TransitionStep;
 import com.fullmob.jiraboard.ui.AbstractPresenter;
 import com.fullmob.jiraboard.ui.models.UIIssueTransition;
 import com.fullmob.jiraboard.ui.models.UIIssueTransitionGroups;
@@ -41,27 +42,35 @@ public class TransitionsScreenPresenter extends AbstractPresenter<TransitionsScr
         fetchPossibleTransitions(issue);
     }
 
-    private void fetchPossibleTransitions(Issue issue) {
+    private void fetchPossibleTransitions(final Issue issue) {
         getView().showLoading();
         issuesManager.getPossibleTransitions(issue)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<UIIssueTransitionGroups>() {
-            @Override
-            public void accept(UIIssueTransitionGroups uiIssueTransitionGroups) throws Exception {
-                prepareAndRenderTransitions(uiIssueTransitionGroups);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                getView().hideLoading();
-                getView().showError(throwable);
-            }
-        });
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Consumer<UIIssueTransitionGroups>() {
+                @Override
+                public void accept(UIIssueTransitionGroups uiIssueTransitionGroups) throws Exception {
+                    prepareAndRenderTransitions(uiIssueTransitionGroups, issue);
+                }
+            }, new Consumer<Throwable>() {
+                @Override
+                public void accept(Throwable throwable) throws Exception {
+                    getView().hideLoading();
+                    getView().showError(throwable);
+                }
+            });
 
     }
 
-    private void prepareAndRenderTransitions(UIIssueTransitionGroups transitionGroups) {
+    private void prepareAndRenderTransitions(UIIssueTransitionGroups transitionGroups, Issue issue) {
+        if (transitionGroups.getDirectTransitions().size() == 0) {
+            combineServerTransitionsAndLocalOnes(transitionGroups, issue);
+        } else {
+            finalizeTransitionsAndRender(transitionGroups);
+        }
+    }
+
+    private void finalizeTransitionsAndRender(UIIssueTransitionGroups transitionGroups) {
         List<UITransitionItem> items = new ArrayList<>();
         if (transitionGroups.getDirectTransitions().size() > 0) {
             items.add(new UITransitionItem(UITransitionItem.TRANSITION_HEADER_DIRECT));
@@ -69,15 +78,43 @@ public class TransitionsScreenPresenter extends AbstractPresenter<TransitionsScr
                 items.add(new UITransitionItem(UITransitionItem.TRANSITION_ITEM, uiIssueTransition));
             }
         }
-        items.add(new UITransitionItem(UITransitionItem.TRANSITION_HEADER_FURTHER));
-        for (UIIssueTransition uiIssueTransition : transitionGroups.getFurtherTransitions()) {
-            items.add(new UITransitionItem(UITransitionItem.TRANSITION_ITEM, uiIssueTransition));
+        if (transitionGroups.getFurtherTransitions().size() > 0) {
+            items.add(new UITransitionItem(UITransitionItem.TRANSITION_HEADER_FURTHER));
+            for (UIIssueTransition uiIssueTransition : transitionGroups.getFurtherTransitions()) {
+                items.add(new UITransitionItem(UITransitionItem.TRANSITION_ITEM, uiIssueTransition));
+            }
         }
         getView().hideLoading();
-        getView().renderTransitions(items);
+        if (items.size() > 0) {
+            getView().renderTransitions(items);
+        } else {
+            getView().showNoTransitionsAvailableForCurrentState();
+        }
+    }
+
+    private void combineServerTransitionsAndLocalOnes(final UIIssueTransitionGroups transitionGroups, Issue issue) {
+        issuesManager.fetchPossibleTransitionsFromServer(issue, issue.getIssueFields().getStatus())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Consumer<UIIssueTransitionGroups>() {
+                @Override
+                public void accept(UIIssueTransitionGroups uiIssueTransitionGroups) throws Exception {
+                    finalizeTransitionsAndRender(uiIssueTransitionGroups);
+                }
+            }, new Consumer<Throwable>() {
+                @Override
+                public void accept(Throwable throwable) throws Exception {
+                    getView().showError(throwable);
+                }
+            });
     }
 
     public void onTransitionRequested(Issue issue, UITransitionItem issueStatus) {
-        transitionManager.findShortestPath(issue, issueStatus);
+        List<TransitionStep> steps = transitionManager.findShortestPath(issue, issueStatus);
+        getView().showTransitionConfirmation(steps);
+    }
+
+    public void onConfirmTransition(List<TransitionStep> steps) {
+
     }
 }
