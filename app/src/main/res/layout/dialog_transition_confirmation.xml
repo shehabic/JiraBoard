@@ -7,6 +7,7 @@
 
 
     <TextView
+        android:layout_weight="0"
         style="?android:attr/windowTitleStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,6 +20,7 @@
         android:textAlignment="viewStart"/>
 
     <TextView
+        android:layout_weight="0"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:paddingLeft="?attr/dialogPreferredPadding"
@@ -28,11 +30,16 @@
         android:layout_height="wrap_content"/>
 
     <android.support.v7.widget.RecyclerView
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_weight="1"
         android:id="@+id/transitions_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="0dp"/>
 
     <android.support.v7.widget.ButtonBarLayout
+        android:layout_weight="0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom"

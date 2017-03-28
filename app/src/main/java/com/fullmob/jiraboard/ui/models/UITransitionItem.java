@@ -12,6 +12,7 @@ public class UITransitionItem implements Parcelable {
     public static final int TRANSITION_HEADER_DIRECT = 1;
     public static final int TRANSITION_HEADER_FURTHER = 2;
     public static final int TRANSITION_ITEM = 3;
+    private boolean isDirect = false;
 
     @IntDef({TRANSITION_HEADER_DIRECT, TRANSITION_HEADER_FURTHER, TRANSITION_ITEM})
     @Retention(RetentionPolicy.SOURCE)
@@ -25,12 +26,25 @@ public class UITransitionItem implements Parcelable {
     }
 
     public UITransitionItem(@TransitionItemType int type) {
-        this(type, null);
+        this(type, null, false);
     }
 
     public UITransitionItem(@TransitionItemType int type, UIIssueTransition uiIssueTransition) {
+        this(type, uiIssueTransition, false);
+    }
+
+    public UITransitionItem(@TransitionItemType int type, UIIssueTransition uiIssueTransition, boolean isDirect) {
         this.type = type;
         this.transition = uiIssueTransition;
+        this.isDirect = isDirect;
+    }
+
+    public boolean isDirect() {
+        return isDirect;
+    }
+
+    public void setDirect(boolean direct) {
+        isDirect = direct;
     }
 
     @Override
@@ -40,12 +54,14 @@ public class UITransitionItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.isDirect ? (byte) 1 : (byte) 0);
         dest.writeString(this.title);
         dest.writeParcelable(this.transition, flags);
         dest.writeInt(this.type);
     }
 
     protected UITransitionItem(Parcel in) {
+        this.isDirect = in.readByte() != 0;
         this.title = in.readString();
         this.transition = in.readParcelable(UIIssueTransition.class.getClassLoader());
         this.type = in.readInt();

@@ -33,12 +33,31 @@ public class TransitionManager {
     }
 
     public List<TransitionStep> findShortestPath(Issue issue, UITransitionItem transitionItem) {
+        if (transitionItem.isDirect()) {
+            return directTransition(issue, transitionItem);
+        }
+
         Graph.Builder builder = createTransitionBuilder(issue);
         Vertex source = builder.getVertex(issue.getIssueFields().getStatus().getName());
         Vertex target = builder.getVertex(transitionItem.transition.toName);
         Graph graph = builder.build();
 
         return findShortestPath(source, target, graph, builder);
+
+    }
+
+    private List<TransitionStep> directTransition(Issue issue, UITransitionItem transitionItem) {
+        List<TransitionStep> transitionSteps = new ArrayList<>();
+        transitionSteps.add(new TransitionStep(
+            transitionItem.transition.viaId,
+            transitionItem.transition.viaName,
+            transitionItem.transition.toId,
+            transitionItem.transition.toName,
+            issue.getIssueFields().getStatus().getStatusCategory().getColorName(),
+            transitionItem.transition.toColor
+        ));
+
+        return transitionSteps;
     }
 
     @NonNull

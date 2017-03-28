@@ -75,7 +75,7 @@ public class TransitionsScreenPresenter extends AbstractPresenter<TransitionsScr
         if (transitionGroups.getDirectTransitions().size() > 0) {
             items.add(new UITransitionItem(UITransitionItem.TRANSITION_HEADER_DIRECT));
             for (UIIssueTransition uiIssueTransition : transitionGroups.getDirectTransitions()) {
-                items.add(new UITransitionItem(UITransitionItem.TRANSITION_ITEM, uiIssueTransition));
+                items.add(new UITransitionItem(UITransitionItem.TRANSITION_ITEM, uiIssueTransition, true));
             }
         }
         if (transitionGroups.getFurtherTransitions().size() > 0) {
