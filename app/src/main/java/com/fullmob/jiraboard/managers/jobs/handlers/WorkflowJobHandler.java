@@ -38,6 +38,10 @@ public class WorkflowJobHandler implements JobHandlerInterface {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        notificationsManager.cancelNotification(
+                            NotificationsManager.WORKFLOW_NOTIF_ID_PREFIX,
+                            Integer.valueOf(job.getKey())
+                        );
 
                     }
                 });

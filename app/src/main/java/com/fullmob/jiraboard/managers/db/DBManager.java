@@ -12,8 +12,12 @@ import com.fullmob.jiraboard.db.data.JiraIssueType;
 import com.fullmob.jiraboard.db.data.JiraProject;
 import com.fullmob.jiraboard.db.data.JiraStatusCategory;
 import com.fullmob.jiraboard.db.data.JiraSubDomain;
+import com.fullmob.jiraboard.db.data.TransitionQueueJob;
 import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
 import com.fullmob.jiraboard.db.data.workflow.Vertices;
+import com.fullmob.jiraboard.managers.serializers.SerializerInterface;
+import com.fullmob.jiraboard.transitions.TransitionJob;
+import com.fullmob.jiraboard.transitions.TransitionSteps;
 import com.fullmob.jiraboard.ui.models.SubDomain;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.models.UIIssueTransition;
@@ -43,13 +47,15 @@ public class DBManager implements DBManagerInterface {
     public static final String COL_ID = "id";
     public static final String COL_WORKFLOW_KEY = "workflowKey";
     public static final String COL_JIRA_ID = "jiraId";
-    private static final String COL_WORKFLOW_QUEUE_JOB_KEY = "jobKey";
+    private static final String COL_JOB_KEY = "jobKey";
     private static final String COL_DISCOVERY_STATUS = "discoveryStatus";
     private static final String COL_NAME = "name";
     private final Mapper mapper;
+    private SerializerInterface serializer;
 
-    public DBManager() {
+    public DBManager(SerializerInterface serializerInterface) {
         mapper = new Mapper();
+        serializer = serializerInterface;
     }
 
     private Realm getRealm() {
@@ -357,7 +363,7 @@ public class DBManager implements DBManagerInterface {
 
     @Override
     public WorkflowDiscoveryQueueJob findWorkflowQueueJob(String key) {
-        return getRealm().where(WorkflowDiscoveryQueueJob.class).equalTo(COL_WORKFLOW_QUEUE_JOB_KEY, key).findFirst();
+        return getRealm().where(WorkflowDiscoveryQueueJob.class).equalTo(COL_JOB_KEY, key).findFirst();
     }
 
     @Override
@@ -434,5 +440,46 @@ public class DBManager implements DBManagerInterface {
             .findAll();
 
         return mapper.convertVerticesToDistinctUIIssueTransitions(vertices);
+    }
+
+    @Override
+    public TransitionJob createTransitionQueueJob(Issue issue, TransitionSteps steps) {
+        getRealm().beginTransaction();
+        TransitionQueueJob queueJob = getRealm().createObject(TransitionQueueJob.class);
+        String jobKey
+            = issue.getKey() + "_" + issue.getIssueFields().getProject().getId() + "_" + System.currentTimeMillis();
+        queueJob.setAttempts(0);
+        queueJob.setJobKey(jobKey);
+        queueJob.setTransitionSteps(serializer.serialize(steps));
+        queueJob.setIssueKey(issue.getKey());
+        queueJob.setCurrentState(issue.getIssueFields().getStatus().getName());
+        queueJob.setStatus(TransitionQueueJob.STATUS_PENDING);
+        getRealm().commitTransaction();
+
+        return mapper.createTransitionJobFromTransitionQueueJob(queueJob);
+    }
+
+    @Override
+    public TransitionJob findTransitionJob(String jobKey) {
+        TransitionJob transitionJob = null;
+        TransitionQueueJob job = getRealm().where(TransitionQueueJob.class).equalTo(COL_JOB_KEY, jobKey).findFirst();
+        if (job != null) {
+            transitionJob = mapper.createTransitionJobFromTransitionQueueJob(job);
+            transitionJob.setTransitionSteps(serializer.deSerialize(job.getTransitionSteps(), TransitionSteps.class));
+        }
+
+        return transitionJob;
+    }
+
+    @Override
+    public void updateTransitionJob(TransitionJob job) {
+        getRealm().beginTransaction();
+        TransitionQueueJob queueJob = findTransitionQueueJob(job.getJobKey());
+        mapper.updateTransitionQueueJob(queueJob, job);
+        getRealm().commitTransaction();
+    }
+
+    private TransitionQueueJob findTransitionQueueJob(String jobKey) {
+        return getRealm().where(TransitionQueueJob.class).equalTo(COL_JOB_KEY, jobKey).findFirst();
     }
 }

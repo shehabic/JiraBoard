@@ -15,8 +15,10 @@ import com.fullmob.jiraboard.db.data.JiraIssueStatus;
 import com.fullmob.jiraboard.db.data.JiraIssueType;
 import com.fullmob.jiraboard.db.data.JiraProject;
 import com.fullmob.jiraboard.db.data.JiraStatusCategory;
+import com.fullmob.jiraboard.db.data.TransitionQueueJob;
 import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
 import com.fullmob.jiraboard.db.data.workflow.Vertices;
+import com.fullmob.jiraboard.transitions.TransitionJob;
 import com.fullmob.jiraboard.ui.models.UIAvatarUrls;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.models.UIIssueTransition;
@@ -185,6 +187,7 @@ public class Mapper {
     public UIWorkflowQueueJob createUIWorkflowQueueJob(WorkflowDiscoveryQueueJob job) {
         UIWorkflowQueueJob uiJob = new UIWorkflowQueueJob();
 
+        uiJob.setAttempts(job.getAttempts());
         uiJob.setJobKey(job.getJobKey());
         uiJob.setKey(job.getKey());
         uiJob.setSubDomain(job.getSubDomain());
@@ -292,5 +295,26 @@ public class Mapper {
         transition.viaName = vertex.getLinkName();
 
         return transition;
+    }
+
+    public TransitionJob createTransitionJobFromTransitionQueueJob(TransitionQueueJob queueJob) {
+        TransitionJob transitionJob = new TransitionJob();
+        transitionJob.setAttempts(queueJob.getAttempts());
+        transitionJob.setCurrentState(queueJob.getCurrentState());
+        transitionJob.setIssueKey(queueJob.getIssueKey());
+        transitionJob.setJobKey(queueJob.getJobKey());
+        transitionJob.setProjectId(queueJob.getProjectId());
+        transitionJob.setStatus(queueJob.getStatus());
+        transitionJob.setSubDomain(queueJob.getSubDomain());
+        transitionJob.setTransitionStepsSerialized(queueJob.getTransitionSteps());
+
+        return transitionJob;
+    }
+
+    public void updateTransitionQueueJob(TransitionQueueJob queueJob, TransitionJob job) {
+        queueJob.setAttempts(job.getAttempts());
+        queueJob.setCurrentState(job.getCurrentState());
+        queueJob.setStatus(job.getStatus());
+        queueJob.setTransitionSteps(job.getTransitionStepsSerialized());
     }
 }

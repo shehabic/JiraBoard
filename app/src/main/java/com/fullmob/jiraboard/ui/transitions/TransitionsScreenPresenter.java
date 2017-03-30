@@ -4,7 +4,7 @@ import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.managers.issues.IssuesManager;
 import com.fullmob.jiraboard.managers.projects.ProjectsManager;
 import com.fullmob.jiraboard.transitions.TransitionManager;
-import com.fullmob.jiraboard.transitions.TransitionStep;
+import com.fullmob.jiraboard.transitions.TransitionSteps;
 import com.fullmob.jiraboard.ui.AbstractPresenter;
 import com.fullmob.jiraboard.ui.models.UIIssueTransition;
 import com.fullmob.jiraboard.ui.models.UIIssueTransitionGroups;
@@ -110,11 +110,11 @@ public class TransitionsScreenPresenter extends AbstractPresenter<TransitionsScr
     }
 
     public void onTransitionRequested(Issue issue, UITransitionItem issueStatus) {
-        List<TransitionStep> steps = transitionManager.findShortestPath(issue, issueStatus);
+        TransitionSteps steps = transitionManager.findShortestPath(issue, issueStatus);
         getView().showTransitionConfirmation(steps);
     }
 
-    public void onConfirmTransition(List<TransitionStep> steps) {
-
+    public void onConfirmTransition(TransitionSteps steps, Issue issue) {
+        transitionManager.scheduleTransitionJob(issue, steps);
     }
 }

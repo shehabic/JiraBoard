@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
-import com.fullmob.jiraboard.transitions.TransitionStep;
+import com.fullmob.jiraboard.transitions.TransitionSteps;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.models.UITransitionItem;
 
@@ -101,7 +101,7 @@ public class TransitionsActivity extends BaseActivity implements TransitionsScre
     }
 
     @Override
-    public void showTransitionConfirmation(final List<TransitionStep> steps) {
+    public void showTransitionConfirmation(final TransitionSteps steps) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         TransitionListAdapter adapter = new TransitionListAdapter(steps, issue);
@@ -112,8 +112,8 @@ public class TransitionsActivity extends BaseActivity implements TransitionsScre
         dialogView.findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.onConfirmTransition(steps, issue);
                 confirmationDialog.dismiss();
-                presenter.onConfirmTransition(steps);
             }
         });
         dialogView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {

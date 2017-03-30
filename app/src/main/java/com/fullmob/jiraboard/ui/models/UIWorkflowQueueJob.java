@@ -26,6 +26,11 @@ public class UIWorkflowQueueJob {
 
     private String discoveryStatus = STATUS_NONE;
 
+    private int attempts = 0;
+
+    public UIWorkflowQueueJob() {
+    }
+
     public String getSubDomain() {
         return subDomain;
     }
@@ -96,5 +101,13 @@ public class UIWorkflowQueueJob {
 
     public void setJobKey(String jobKey) {
         this.jobKey = jobKey;
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
     }
 }

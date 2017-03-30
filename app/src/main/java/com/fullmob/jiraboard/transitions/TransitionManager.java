@@ -9,15 +9,21 @@ import com.fullmob.graphlib.dijkstra.Vertex;
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.issues.IssuesManager;
+import com.fullmob.jiraboard.managers.queue.QueueManager;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.models.UIIssueTransition;
 import com.fullmob.jiraboard.ui.models.UITransitionItem;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 /**
  * Created by shehabic on 27/03/2017.
@@ -26,13 +32,15 @@ public class TransitionManager {
 
     private final DBManagerInterface db;
     private final IssuesManager issuesManager;
+    private final QueueManager queue;
 
-    public TransitionManager(DBManagerInterface db, IssuesManager issuesManager) {
+    public TransitionManager(DBManagerInterface db, IssuesManager issuesManager, QueueManager queue) {
         this.db = db;
         this.issuesManager = issuesManager;
+        this.queue = queue;
     }
 
-    public List<TransitionStep> findShortestPath(Issue issue, UITransitionItem transitionItem) {
+    public TransitionSteps findShortestPath(Issue issue, UITransitionItem transitionItem) {
         if (transitionItem.isDirect()) {
             return directTransition(issue, transitionItem);
         }
@@ -46,9 +54,9 @@ public class TransitionManager {
 
     }
 
-    private List<TransitionStep> directTransition(Issue issue, UITransitionItem transitionItem) {
-        List<TransitionStep> transitionSteps = new ArrayList<>();
-        transitionSteps.add(new TransitionStep(
+    private TransitionSteps directTransition(Issue issue, UITransitionItem transitionItem) {
+        TransitionSteps steps = new TransitionSteps();
+        steps.add(new TransitionStep(
             transitionItem.transition.viaId,
             transitionItem.transition.viaName,
             transitionItem.transition.toId,
@@ -57,12 +65,12 @@ public class TransitionManager {
             transitionItem.transition.toColor
         ));
 
-        return transitionSteps;
+        return steps;
     }
 
     @NonNull
-    private List<TransitionStep> findShortestPath(Vertex source, Vertex target, Graph graph, Graph.Builder builder) {
-        List<TransitionStep> transitionSteps = new ArrayList<>();
+    private TransitionSteps findShortestPath(Vertex source, Vertex target, Graph graph, Graph.Builder builder) {
+        TransitionSteps steps = new TransitionSteps();
         DijkstraAlgorithm algorithm = new DijkstraAlgorithm(graph);
         algorithm.execute(source);
         LinkedList<Vertex> path = algorithm.getPath(target);
@@ -70,20 +78,21 @@ public class TransitionManager {
         for (Vertex v : path) {
             Edge edge = builder.getEdge(lastVertex.getName(), v.getName());
             if (edge != null) {
-                TransitionStep step = new TransitionStep(
-                    edge.getId(),
-                    edge.getEdgeName(),
-                    v.getId(),
-                    v.getName(),
-                    lastVertex.getColor(),
-                    v.getColor()
+                steps.add(
+                    new TransitionStep(
+                        edge.getId(),
+                        edge.getEdgeName(),
+                        v.getId(),
+                        v.getName(),
+                        lastVertex.getColor(),
+                        v.getColor()
+                    )
                 );
-                transitionSteps.add(step);
             }
             lastVertex = v;
         }
 
-        return transitionSteps;
+        return steps;
     }
 
     private String findColor(Map<String, UIIssueStatus> statuses, String name) {
@@ -109,5 +118,73 @@ public class TransitionManager {
             );
         }
         return builder;
+    }
+
+    public Observable<TransitionStatus> startTransition(final TransitionJob job) {
+        return Observable.create(new ObservableOnSubscribe<TransitionStatus>() {
+                @Override
+                public void subscribe(ObservableEmitter<TransitionStatus> e) throws Exception {
+                    TransitionStatus transitionStatus = new TransitionStatus(job);
+                    Issue issue = issuesManager.getIssueSync(job.getIssueKey());
+                    if (issue.getIssueFields().getStatus().getName().equals(job.getCurrentState())) {
+                        int completedSteps = 0;
+                        for (TransitionStep step : job.getTransitionSteps().getSteps()) {
+                            Response response = issuesManager.moveIssue(job.getIssueKey(), step.viaId);
+                            if (response.code() >= 200 && response.code() <= 210) {
+                                job.setCurrentState(step.toName);
+                                completedSteps++;
+                                updateJobStatus(job, null, completedSteps);
+                                transitionStatus.incrementCompletedSteps();
+                                transitionStatus.updateState(step.toName, step.toColor);
+                                e.onNext(transitionStatus);
+                            } else {
+                                transitionStatus.setIssueFailed(true);
+                                e.onNext(transitionStatus);
+                                throw new RuntimeException("Can't move ticket to " + step.toName);
+                            }
+                        }
+                    } else {
+                        // Handle another crap ship
+                    }
+                }
+            })
+            .doOnError(new Consumer<Throwable>() {
+                @Override
+                public void accept(Throwable throwable) throws Exception {
+                    updateJobStatus(job, throwable, 0);
+                }
+            })
+            .subscribeOn(Schedulers.io());
+    }
+
+    private void updateJobStatus(TransitionJob job, Throwable throwable, int completedSteps) {
+        if (throwable == null) {
+            TransitionJob jobToSave = job.clone();
+            TransitionSteps newSteps = new TransitionSteps();
+            if (job.getTransitionSteps().getSteps().size() > completedSteps) {
+                newSteps.getSteps().addAll(
+                    job.getTransitionSteps().getSteps().subList(
+                        completedSteps,
+                        job.getTransitionSteps().getSteps().size()
+                    )
+                );
+            }
+            jobToSave.getTransitionSteps().getSteps().clear();
+            jobToSave.getTransitionSteps().getSteps().addAll(newSteps.getSteps());
+            db.updateTransitionJob(job);
+        } else {
+            job.setAttempts(job.getAttempts() + 1);
+            job.setStatus(TransitionJob.STATUS_FAILED);
+            db.updateTransitionJob(job);
+        }
+    }
+
+    public TransitionJob getTransitionJob(String queueJobKey) {
+        return db.findTransitionJob(queueJobKey);
+    }
+
+    public void scheduleTransitionJob(Issue issue, TransitionSteps steps) {
+        TransitionJob job = db.createTransitionQueueJob(issue, steps);
+        queue.enqueueTransitionJob(job);
     }
 }

@@ -12,6 +12,7 @@ import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.models.UIIssueTransition;
 import com.fullmob.jiraboard.ui.models.UIIssueTransitionGroups;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,6 +35,10 @@ public class IssuesManager {
         this.api = issuesApiClient;
         this.dbManager = dbManager;
         this.mapper = new Mapper();
+    }
+
+    public Issue getIssueSync(String issueKey) throws IOException {
+        return api.getIssueSync(issueKey).body();
     }
 
     public Observable<Response<Issue>> getIssue(String issueKey) {
@@ -189,5 +194,9 @@ public class IssuesManager {
 
     private boolean isDirectTransition(Status status, UIIssueTransition uiIssueTransition) {
         return uiIssueTransition.fromName.toLowerCase().equals(status.getName().toLowerCase());
+    }
+
+    public Response moveIssue(String key, String targetId) throws IOException {
+        return api.moveIssueSync(key, targetId);
     }
 }

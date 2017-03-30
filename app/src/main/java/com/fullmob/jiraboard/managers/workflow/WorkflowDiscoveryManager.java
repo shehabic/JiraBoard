@@ -18,6 +18,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class WorkflowDiscoveryManager {
+    private static final int MAX_ATTEMPTS = 3;
     private final WorkflowDiscovery workflowDiscovery;
     private final DBManagerInterface dbManager;
     private final QueueManager queue;
@@ -49,21 +50,22 @@ public class WorkflowDiscoveryManager {
             });
     }
 
-    private void updateDiscoveryStatus(UIWorkflowQueueJob uiJob, DiscoveryStatus status, Throwable error) {
+    void updateDiscoveryStatus(UIWorkflowQueueJob uiJob, DiscoveryStatus status, Throwable error) {
         if (error != null) {
-            uiJob.setDiscoveryStatus(WorkflowDiscoveryQueueJob.STATUS_FAILED);
+            markJobFailed(uiJob);
+            reScheduleDiscoveryTask(uiJob);
         } else if (status != null && status.isCompleted()) {
             uiJob.setDiscoveryStatus(WorkflowDiscoveryQueueJob.STATUS_PROCESSED);
         } else {
             uiJob.setDiscoveryStatus(WorkflowDiscoveryQueueJob.STATUS_PROCESSING);
         }
         dbManager.updateWorkflowQueueJob(uiJob);
-        if (status.isCompleted()) {
+        if (status != null && status.isCompleted()) {
             createWorkflowVertices(status, uiJob);
         }
     }
 
-    private void createWorkflowVertices(DiscoveryStatus status, UIWorkflowQueueJob uiJob) {
+    void createWorkflowVertices(DiscoveryStatus status, UIWorkflowQueueJob uiJob) {
         for (TransitionLink link : status.getVertices()) {
             dbManager.addVertex(link, uiJob.getJobKey());
         }
@@ -71,5 +73,17 @@ public class WorkflowDiscoveryManager {
 
     public UIWorkflowQueueJob getDiscoveryJob(String queueJobKey) {
         return dbManager.getUIWorkflowDiscoveryJob(queueJobKey);
+    }
+
+    void markJobFailed(UIWorkflowQueueJob job) {
+        job.setDiscoveryStatus(UIWorkflowQueueJob.STATUS_FAILED);
+        job.setAttempts(job.getAttempts() + 1);
+        dbManager.updateWorkflowQueueJob(job);
+    }
+
+    void reScheduleDiscoveryTask(UIWorkflowQueueJob job) {
+        if (job.getAttempts() < MAX_ATTEMPTS) {
+            queue.enqueueWorkflowDiscoveryJob(job);
+        }
     }
 }

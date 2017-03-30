@@ -8,7 +8,9 @@ import com.fullmob.jiraapi.managers.ProjectsApiClient;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.issues.IssuesManager;
 import com.fullmob.jiraboard.managers.jobs.JobsHandler;
+import com.fullmob.jiraboard.managers.jobs.handlers.IssueTransitionJobHandler;
 import com.fullmob.jiraboard.managers.jobs.handlers.WorkflowJobHandler;
+import com.fullmob.jiraboard.managers.jobs.job.IssueTransitionJob;
 import com.fullmob.jiraboard.managers.jobs.job.WorkflowDiscoveryJob;
 import com.fullmob.jiraboard.managers.notifications.NotificationsManager;
 import com.fullmob.jiraboard.managers.projects.ProjectsManager;
@@ -62,15 +64,27 @@ public class ManagersModule {
     }
 
     @Provides
-    public JobsHandler jobsHandler(WorkflowDiscoveryManager discoveryManager, NotificationsManager notifManager) {
+    public JobsHandler jobsHandler(
+        WorkflowDiscoveryManager discoveryManager,
+        NotificationsManager notifManager,
+        TransitionManager transitionManager
+    ) {
         JobsHandler handler = new JobsHandler();
         handler.addJobHandler(WorkflowDiscoveryJob.JOB_TYPE, new WorkflowJobHandler(discoveryManager, notifManager));
+        handler.addJobHandler(
+            IssueTransitionJob.JOB_TYPE,
+            new IssueTransitionJobHandler(transitionManager, notifManager)
+        );
 
         return handler;
     }
 
     @Provides
-    public TransitionManager providesTransitionManager(DBManagerInterface dbManager, IssuesManager issuesManager) {
-        return new TransitionManager(dbManager, issuesManager);
+    public TransitionManager providesTransitionManager(
+        DBManagerInterface dbManager,
+        IssuesManager issuesManager,
+        QueueManager queueManager
+    ) {
+        return new TransitionManager(dbManager, issuesManager, queueManager);
     }
 }

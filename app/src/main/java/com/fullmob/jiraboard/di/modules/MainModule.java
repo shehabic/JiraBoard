@@ -69,7 +69,7 @@ public class MainModule {
     }
 
     @Provides
-    public DBManagerInterface providesDBManagerInterface(FullmobAppInterface app) {
+    public DBManagerInterface providesDBManagerInterface(FullmobAppInterface app, SerializerInterface serializer) {
         Realm.init(app.getContext());
 
 
@@ -78,7 +78,7 @@ public class MainModule {
             .deleteRealmIfMigrationNeeded();
         Realm.setDefaultConfiguration(builder.build());
 
-        return new DBManager();
+        return new DBManager(serializer);
     }
 
     @Provides

@@ -38,6 +38,12 @@ public class WorkflowDiscoveryQueueJob extends RealmObject {
     @Required
     private String discoveryStatus;
 
+    private int attempts;
+
+    public WorkflowDiscoveryQueueJob() {
+        this.attempts = 0;
+    }
+
     public String getSubDomain() {
         return subDomain;
     }
@@ -108,5 +114,13 @@ public class WorkflowDiscoveryQueueJob extends RealmObject {
 
     public void setJobKey(String jobKey) {
         this.jobKey = jobKey;
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
     }
 }

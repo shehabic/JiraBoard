@@ -4,6 +4,8 @@ import com.fullmob.graphlib.TransitionLink;
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraapi.models.Project;
 import com.fullmob.jiraboard.db.data.WorkflowDiscoveryQueueJob;
+import com.fullmob.jiraboard.transitions.TransitionJob;
+import com.fullmob.jiraboard.transitions.TransitionSteps;
 import com.fullmob.jiraboard.ui.models.SubDomain;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.models.UIIssueTransition;
@@ -17,6 +19,7 @@ import java.util.List;
 import rx.Observable;
 
 public interface DBManagerInterface {
+
     Observable<SubDomain> saveSubDomain(String subDomain);
 
     List<UIProject> findAllProjects(String domain);
@@ -54,4 +57,10 @@ public interface DBManagerInterface {
     HashSet<UIIssueTransition> findDistinctTransitionsForIssue(Issue issue);
 
     HashSet<UIIssueTransition> findDistinctTransitions(String projectId);
+
+    TransitionJob createTransitionQueueJob(Issue issue, TransitionSteps steps);
+
+    TransitionJob findTransitionJob(String jobKey);
+
+    void updateTransitionJob(TransitionJob job);
 }

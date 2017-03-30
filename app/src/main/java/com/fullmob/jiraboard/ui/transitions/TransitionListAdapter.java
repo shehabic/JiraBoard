@@ -12,6 +12,7 @@ import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraapi.models.issue.Status;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.transitions.TransitionStep;
+import com.fullmob.jiraboard.transitions.TransitionSteps;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ class TransitionListAdapter extends RecyclerView.Adapter<TransitionListAdapter.T
 
     private final List<TransitionStep> steps = new ArrayList<>();
 
-    TransitionListAdapter(List<TransitionStep> steps, Issue issue) {
+    TransitionListAdapter(TransitionSteps steps, Issue issue) {
         Status status = issue.getIssueFields().getStatus();
         this.steps.add(
             new TransitionStep(
@@ -38,7 +39,7 @@ class TransitionListAdapter extends RecyclerView.Adapter<TransitionListAdapter.T
                 status.getStatusCategory().getColorName()
             )
         );
-        this.steps.addAll(steps);
+        this.steps.addAll(steps.getSteps());
     }
 
     @Override
@@ -68,7 +69,7 @@ class TransitionListAdapter extends RecyclerView.Adapter<TransitionListAdapter.T
         TransitionStep transitionStep;
         TextView itemText;
 
-        public TransitionsViewHolder(View itemView) {
+        TransitionsViewHolder(View itemView) {
             super(itemView);
             itemText = (TextView) itemView.findViewById(R.id.title);
         }
