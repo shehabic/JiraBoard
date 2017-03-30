@@ -82,7 +82,7 @@ public class NotificationsManager {
     }
 
     private NotificationCompat.Builder buildProgressNotification(TransitionStatus transitionStatus) {
-        String title = context.getString(R.string.workflow_discovery);
+        String title = context.getString(R.string.ticket_transition);
         String content = transitionStatus.getJob().getIssueKey() + ": " + transitionStatus.getCurrentStatus();
 
         return createNotificationBuilder(title, content, !transitionStatus.isCompleted());
