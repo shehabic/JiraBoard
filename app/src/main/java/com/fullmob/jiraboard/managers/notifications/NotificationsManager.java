@@ -30,10 +30,9 @@ public class NotificationsManager {
                     builder.setDefaults(Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT);
                 }
                 builder.setProgress(Math.max(progress, status.getCompletedSteps()), status.getCompletedSteps(), false);
-                if (!status.isCompleted()) {
-                    getNotificationManager().notify(getNotificationKey(status), builder.build());
-                } else {
-                    cancelNotification(TRANSITION_NOTIF_ID_PREFIX, getNotificationKey(status));
+                getNotificationManager().notify(getNotificationKey(status), builder.build());
+                if (status.isCompleted()) {
+                    cancelNotification(getNotificationKey(status));
                 }
             }
         });
@@ -50,10 +49,9 @@ public class NotificationsManager {
                     builder.setDefaults(Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT);
                 }
                 builder.setProgress(progress, status.getUniqueNodes(), false);
-                if (!status.isCompleted()) {
-                    getNotificationManager().notify(getNotificationKey(status), builder.build());
-                } else {
-                    // cancelNotification(status);
+                getNotificationManager().notify(getNotificationKey(status), builder.build());
+                if (status.isCompleted()) {
+                    cancelNotification(getNotificationKey(status));
                 }
             }
         });
