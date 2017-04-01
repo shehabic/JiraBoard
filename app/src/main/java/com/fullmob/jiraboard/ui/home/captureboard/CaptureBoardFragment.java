@@ -23,10 +23,12 @@ import android.widget.TextView;
 
 import com.fullmob.jiraboard.BuildConfig;
 import com.fullmob.jiraboard.R;
+import com.fullmob.jiraboard.analyzer.BoardStatusItem;
 import com.fullmob.jiraboard.data.Board;
 import com.fullmob.jiraboard.data.Column;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.BaseFragment;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
@@ -237,17 +239,19 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
         String headerOutput = "Columns: " + project.getColumns().size();
         String output = "";
         int ticketCount = 0;
-        for (int i = 0; i < project.getColumns().size(); i++) {
-            Column col = project.getColumns().get(i);
+        Gson gson = new Gson();
+        for (Column col : project.getColumns()) {
+            BoardStatusItem item = gson.fromJson(col.text, BoardStatusItem.class);
             ticketCount += col.tickets.size();
-            output += "in [" + col.text.toUpperCase() + "]: ";
+            output += "in [" + item.name + "]:";
             for (int j = 0; j < col.tickets.size(); j++) {
-                output += col.tickets.get(j).text + " , ";
+                output += "\n\t- " + col.tickets.get(j).text;
             }
-            output += " | ";
+            output += "\n";
         }
         output = headerOutput + ", Tickets: " + ticketCount + "\n" + output;
-        message.setText(output);
+        message.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        message.setText(output.trim());
         boardPreview.setImageBitmap(project.getBitmap());
     }
 

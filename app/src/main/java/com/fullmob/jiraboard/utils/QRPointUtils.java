@@ -5,17 +5,45 @@ import com.fullmob.jiraboard.data.Column;
 public class QRPointUtils {
 
     public static int minX(Column col) {
-        return min(col.points[0].x, col.points[1].x, col.points[2].x);
+        int min = -1;
+        for (int i = 0; i < col.points.length; i++) {
+            if (min == -1) {
+                min = (int) col.points[i].x;
+            }
+            min = (int) ((col.points[i].x > -1) ? Math.min(min, col.points[i].x) : min);
+        }
+
+        return min;
     }
+
     public static int maxX(Column col) {
-        return max(col.points[0].x, col.points[1].x, col.points[2].x);
+        int max = -1;
+        for (int i = 0; i < col.points.length; i++) {
+            max = (int) Math.max(max, col.points[i].x);
+        }
+
+        return max;
     }
 
-    public static int max(float f1, float f2, float f3) {
-        return (int) Math.max(f1, Math.max(f2, f3));
+    public static int minY(Column col) {
+        int min = -1;
+        for (int i = 0; i < col.points.length; i++) {
+            if (min == -1) {
+                min = (int) col.points[i].y;
+            }
+            min = (int) ((col.points[i].y > -1) ? Math.min(min, col.points[i].y) : min);
+        }
+
+        return min;
     }
 
-    public static int min(float f1, float f2, float f3) {
-        return (int) Math.min(f1, Math.min(f2, f3));
+    public static int maxY(Column col) {
+        int max = -1;
+        for (int i = 0; i < col.points.length; i++) {
+            max = (int) Math.max(max, col.points[i].y);
+        }
+
+        return max;
     }
+
 }

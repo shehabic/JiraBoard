@@ -88,7 +88,7 @@ public class QRActivity extends AppCompatActivity {
         dispatchTakePictureIntent();
     }
 
-    public int getCameraPhotoOrientation(Context context, Uri imageUri, String imagePath){
+    public int getCameraPhotoOrientation(Context context, Uri imageUri, String imagePath) {
         int rotate = 0;
         try {
             context.getContentResolver().notifyChange(imageUri, null);
@@ -116,7 +116,7 @@ public class QRActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK  && data != null && data.getData() != null) {
+        if (resultCode == RESULT_OK && data != null && data.getData() != null) {
             if (requestCode == PICK_IMAGE_REQUEST || requestCode == CAPTURE_IMAGE_REQUEST) {
                 Uri imageUri = data.getData();
                 try {
@@ -134,11 +134,11 @@ public class QRActivity extends AppCompatActivity {
                     int rotate = 0;
                     if (requestCode == PICK_IMAGE_REQUEST) {
                         rotate = getCameraPhotoOrientation(this, imageUri, filePath);
-                    } else if(getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE){
+                    } else if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
                         rotate = 90;
                     }
                     if (rotate != 0) {
-                        bitmap = imageProcessor.rotateImage(bitmap, rotate);
+                        project.setBitmap(imageProcessor.rotateImage(bitmap, rotate));
                     }
                     try {
                         imageProcessor.autoAdjustImage(project);
@@ -175,8 +175,7 @@ public class QRActivity extends AppCompatActivity {
         String headerOutput = "Columns: " + project.getColumns().size();
         String output = "";
         int ticketCount = 0;
-        for (int i = 0; i < project.getColumns().size(); i++) {
-            Column col = project.getColumns().get(i);
+        for (Column col : project.getColumns()) {
             ticketCount += col.tickets.size();
             output += "in [" + col.text.toUpperCase() + "]: ";
             for (int j = 0; j < col.tickets.size(); j++) {
