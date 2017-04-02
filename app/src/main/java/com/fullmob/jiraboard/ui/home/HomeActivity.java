@@ -26,6 +26,8 @@ import com.fullmob.jiraboard.ui.login.LoginActivity;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.projects.ProjectsActivity;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -33,18 +35,22 @@ public class HomeActivity extends BaseActivity implements
     NavigationView.OnNavigationItemSelectedListener,
     CaptureBoardFragment.OnFragmentInteractionListener,
     SearchFragment.OnFragmentInteractionListener,
-    StatusesFragment.OnIssueStatusesInteractor
+    StatusesFragment.OnIssueStatusesInteractor,
+    HomeScreenView
 {
-
     private int currentSelection = 0;
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
     @BindView(R.id.fragment_container) View fragmentContainer;
 
+    @Inject
+    HomeScreenPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        getApp().getHomeScreenComponent(this).inject(this);
         ButterKnife.bind(this);
         setupUI();
         Intent intent = getIntent();
@@ -60,7 +66,6 @@ public class HomeActivity extends BaseActivity implements
     private void setupUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
             this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -204,5 +209,15 @@ public class HomeActivity extends BaseActivity implements
     @Override
     public void onPrintStatusRequested(UIIssueStatus issueStatus) {
         printStatus(issueStatus);
+    }
+
+    public void setTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onViewResumed();
     }
 }

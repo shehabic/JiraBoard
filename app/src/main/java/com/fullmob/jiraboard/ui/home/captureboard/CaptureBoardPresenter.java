@@ -268,7 +268,7 @@ public class CaptureBoardPresenter extends AbstractPresenter<CaptureBoardView> i
             getView().showToast("Can only move issues prefixed with TST in debug mode");
         } else {
             Log.d("TRANSITION", issue.getKey());
-            // transitionManager.scheduleTransitionJob(issue, steps);
+            transitionManager.scheduleTransitionJob(issue, steps);
         }
     }
 }

@@ -8,6 +8,7 @@ import com.fullmob.jiraboard.DebugUtils;
 import com.fullmob.jiraboard.di.components.ApiComponent;
 import com.fullmob.jiraboard.di.components.CaptureBoardComponent;
 import com.fullmob.jiraboard.di.components.DaggerMainComponent;
+import com.fullmob.jiraboard.di.components.HomeScreenComponent;
 import com.fullmob.jiraboard.di.components.IssueScreenComponent;
 import com.fullmob.jiraboard.di.components.IssueTypesScreenComponent;
 import com.fullmob.jiraboard.di.components.LoginScreenComponent;
@@ -19,6 +20,7 @@ import com.fullmob.jiraboard.di.components.TicketsScreenComponent;
 import com.fullmob.jiraboard.di.components.TransitionsScreenComponent;
 import com.fullmob.jiraboard.di.components.WorkflowDiscoveryComponent;
 import com.fullmob.jiraboard.di.modules.CaptureBoardModule;
+import com.fullmob.jiraboard.di.modules.HomeScreenModule;
 import com.fullmob.jiraboard.di.modules.IssueScreenModule;
 import com.fullmob.jiraboard.di.modules.IssueTypesModule;
 import com.fullmob.jiraboard.di.modules.LoginScreenModule;
@@ -28,6 +30,7 @@ import com.fullmob.jiraboard.di.modules.StatusesScreenModule;
 import com.fullmob.jiraboard.di.modules.TicketsScreenModule;
 import com.fullmob.jiraboard.di.modules.TransitionScreenModule;
 import com.fullmob.jiraboard.di.modules.WorkflowDiscoveryModule;
+import com.fullmob.jiraboard.ui.home.HomeScreenView;
 import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardView;
 import com.fullmob.jiraboard.ui.home.statuses.StatusesView;
 import com.fullmob.jiraboard.ui.home.tickets.TicketsScreenView;
@@ -130,5 +133,10 @@ public class FullmobDiApp extends Application implements FullmobAppInterface {
     @Override
     public TransitionsScreenComponent createTransitionsScreenComponent(TransitionsScreenView view) {
         return getManagersModule().plusTransitionsScreenComponent(new TransitionScreenModule(view));
+    }
+
+    @Override
+    public HomeScreenComponent getHomeScreenComponent(HomeScreenView view) {
+        return getManagersModule().plusHomeScreenComponent(new HomeScreenModule(view));
     }
 }
