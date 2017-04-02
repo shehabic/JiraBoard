@@ -139,4 +139,10 @@ public class FullmobDiApp extends Application implements FullmobAppInterface {
     public HomeScreenComponent getHomeScreenComponent(HomeScreenView view) {
         return getManagersModule().plusHomeScreenComponent(new HomeScreenModule(view));
     }
+
+    @Override
+    public void reloadAfterUserLogin() {
+        apiComponent = null;
+        managersComponent = null;
+    }
 }

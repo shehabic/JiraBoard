@@ -70,7 +70,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showError(Throwable throwable) {
-        Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_LONG).show();
+        showToast(throwable.getMessage());
+    }
+
+    public void showToast(String str) {
+        Toast.makeText(this, str, Toast.LENGTH_LONG).show();
     }
 
     public void adjustStatusField(TextView textView, String colorName) {

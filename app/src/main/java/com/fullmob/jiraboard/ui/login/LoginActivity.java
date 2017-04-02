@@ -40,9 +40,13 @@ public class LoginActivity extends BaseActivity implements LoginView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getApp().createLoginScreenComponent(this).inject(this);
+        injectComponents();
         initUI();
         presenter.onViewCreated();
+    }
+
+    private void injectComponents() {
+        getApp().createLoginScreenComponent(this).inject(this);
     }
 
     private void initUI() {
@@ -141,27 +145,34 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void showInvalidCredentials() {
-
+        showToast("Invalid login credentials");
     }
 
     @Override
     public void showNetworkError() {
-
+        showToast("Network is not available");
     }
 
     @Override
     public void showUnknownError() {
-
+        showToast("An unknown error has occurred");
     }
 
     @Override
     public void preFillEmail(String email) {
-
+        this.emailText.setText(email);
     }
 
     @Override
     public void preFillSubDomain(String subDomain) {
+        this.subDomainText.setText(subDomain);
+    }
 
+    @Override
+    public void reloadAfterLogin() {
+        getApp().reloadAfterUserLogin();
+        injectComponents();
+        presenter.onUserLoggedIn();
     }
 
     @Override

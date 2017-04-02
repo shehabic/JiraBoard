@@ -1,5 +1,6 @@
 package com.fullmob.jiraboard.ui.home;
 
+import com.fullmob.jiraapi.models.User;
 import com.fullmob.jiraboard.ui.BaseView;
 
 /**
@@ -8,4 +9,6 @@ import com.fullmob.jiraboard.ui.BaseView;
 
 public interface HomeScreenView extends BaseView {
     void setTitle(String name);
+
+    void renderUserDetails(User user);
 }

@@ -5,17 +5,19 @@ import com.fullmob.jiraboard.ui.models.UIProject;
 
 public class EncryptedStorageManager implements EncryptedStorage {
 
-
     private static final String JIRA_KEY_USERNAME = "jira_username";
     private static final String JIRA_KEY_PASSWORD = "jira_password";
     private static final String JIRA_KEY_SUBDOMAIN = "jira_subdomain";
     private static final String JIRA_DEFAULT_PROJECT = "jira_default_project";
-    private static final String JIRA_LAST_SEARCH_QUERY = "jist_last_search_";
+    private static final String JIRA_LAST_SEARCH_QUERY = "jira_last_search_";
 
     private final LocalStorageInterface localStorage;
     private final EncrypterInterface encrypter;
 
-    public EncryptedStorageManager(LocalStorageInterface localStorageInterface, EncrypterInterface encrypter) {
+    public EncryptedStorageManager(
+        LocalStorageInterface localStorageInterface,
+        EncrypterInterface encrypter
+    ) {
         this.localStorage = localStorageInterface;
         this.encrypter = encrypter;
     }

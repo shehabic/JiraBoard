@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -65,23 +64,30 @@ public class CaptureBoardFragment extends BaseFragment
     private Board board;
     private CapturedBoardListAdapter adapter;
 
-    @BindView(R.id.board_preview) ImageView boardPreview;
-    @BindView(R.id.message) TextView message;
-    @BindView(R.id.board_results) RecyclerView boardResults;
+    @BindView(R.id.board_preview)
+    ImageView boardPreview;
+    @BindView(R.id.message)
+    TextView message;
+    @BindView(R.id.board_results)
+    RecyclerView boardResults;
 
 
-    @OnClick(R.id.capture) void onCaptureClicked() {
+    @OnClick(R.id.capture)
+    void onCaptureClicked() {
         boardPreview.setImageDrawable(null);
         startCameraCapture();
     }
 
-    @OnClick(R.id.pick) void onPickImageClicked() {
+    @OnClick(R.id.pick)
+    void onPickImageClicked() {
         boardPreview.setImageDrawable(null);
         startPickingFile();
     }
 
-    @Inject SecuredImagesManagerInterface imageLoader;
-    @Inject CaptureBoardPresenter presenter;
+    @Inject
+    SecuredImagesManagerInterface imageLoader;
+    @Inject
+    CaptureBoardPresenter presenter;
 
     public CaptureBoardFragment() {
     }
@@ -169,12 +175,10 @@ public class CaptureBoardFragment extends BaseFragment
     }
 
     private void startPickingFile() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            if (!getBaseActivity().permissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSIONS_REQUESTED);
+        if (!getBaseActivity().permissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSIONS_REQUESTED_FOR_PICKER);
 
-                return;
-            }
+            return;
         }
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -183,7 +187,6 @@ public class CaptureBoardFragment extends BaseFragment
     }
 
     private void dispatchTakePictureIntent() {
-
         if (
             !getBaseActivity().permissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
                 !getBaseActivity().permissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE) ||
@@ -252,27 +255,7 @@ public class CaptureBoardFragment extends BaseFragment
 
     @Override
     public void onAnalysisCompleted(Board board) {
-//        String headerOutput = "Columns: " + board.getColumns().size();
-//        String output = "";
-//        int ticketCount = 0;
-//        Gson gson = new Gson();
-//        for (Column col : board.getColumns()) {
-//            BoardStatusItem item;
-//            if (col.text.startsWith("{")) {
-//                item = gson.fromJson(col.text, BoardStatusItem.class);
-//            } else {
-//                item = new BoardStatusItem(col.text);
-//            }
-//            ticketCount += col.tickets.size();
-//            output += "in [" + item.name + "]:";
-//            for (int j = 0; j < col.tickets.size(); j++) {
-//                output += "\n\t- " + col.tickets.get(j).text;
-//            }
-//            output += "\n";
-//        }
-//        output = headerOutput + ", Tickets: " + ticketCount + "\n" + output;
-//        message.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-//        message.setText(output.trim());
+        message.setText("");
         boardPreview.setImageBitmap(board.getBitmap());
         board.setBitmap(null);
         this.board = board;
@@ -338,10 +321,12 @@ public class CaptureBoardFragment extends BaseFragment
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == STORAGE_PERMISSIONS_REQUESTED) {
-            dispatchTakePictureIntent();
-        } else if (requestCode == STORAGE_PERMISSIONS_REQUESTED_FOR_PICKER) {
-
+        if (grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == STORAGE_PERMISSIONS_REQUESTED) {
+                dispatchTakePictureIntent();
+            } else if (requestCode == STORAGE_PERMISSIONS_REQUESTED_FOR_PICKER) {
+                startPickingFile();
+            }
         }
     }
 

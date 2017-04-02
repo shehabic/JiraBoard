@@ -2,6 +2,7 @@ package com.fullmob.jiraboard.di.modules;
 
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
+import com.fullmob.jiraboard.managers.user.UserManager;
 import com.fullmob.jiraboard.ui.home.HomeScreenPresenter;
 import com.fullmob.jiraboard.ui.home.HomeScreenView;
 
@@ -23,7 +24,11 @@ public class HomeScreenModule {
     }
 
     @Provides
-    public HomeScreenPresenter providesHomeScreenPresenter(DBManagerInterface db, EncryptedStorage storage) {
-        return new HomeScreenPresenter(view.get(), storage, db);
+    public HomeScreenPresenter providesHomeScreenPresenter(
+        DBManagerInterface db,
+        EncryptedStorage storage,
+        UserManager userManager
+    ) {
+        return new HomeScreenPresenter(view.get(), storage, db, userManager);
     }
 }

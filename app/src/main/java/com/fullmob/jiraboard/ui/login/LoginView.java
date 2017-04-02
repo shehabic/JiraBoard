@@ -19,7 +19,5 @@ public interface LoginView extends BaseView {
 
     void preFillSubDomain(String subDomain);
 
-    void showLoading();
-
-    void hideLoading();
+    void reloadAfterLogin();
 }

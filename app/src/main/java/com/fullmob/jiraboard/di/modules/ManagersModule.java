@@ -15,6 +15,7 @@ import com.fullmob.jiraboard.managers.jobs.job.WorkflowDiscoveryJob;
 import com.fullmob.jiraboard.managers.notifications.NotificationsManager;
 import com.fullmob.jiraboard.managers.projects.ProjectsManager;
 import com.fullmob.jiraboard.managers.queue.QueueManager;
+import com.fullmob.jiraboard.managers.serializers.SerializerInterface;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
 import com.fullmob.jiraboard.managers.storage.LocalStorageInterface;
 import com.fullmob.jiraboard.managers.user.UserManager;
@@ -27,8 +28,12 @@ import dagger.Provides;
 @Module
 public class ManagersModule {
     @Provides
-    public UserManager providesUserManager(JiraCloudUserManager userManager, LocalStorageInterface localStorage) {
-        return new UserManager(userManager, localStorage);
+    public UserManager providesUserManager(
+        JiraCloudUserManager userManager,
+        LocalStorageInterface localStorage,
+        SerializerInterface serializer
+    ) {
+        return new UserManager(userManager, localStorage, serializer);
     }
 
     @Provides

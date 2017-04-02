@@ -56,4 +56,6 @@ public interface FullmobAppInterface {
     TransitionsScreenComponent createTransitionsScreenComponent(TransitionsScreenView view);
 
     HomeScreenComponent getHomeScreenComponent(HomeScreenView view);
+
+    void reloadAfterUserLogin();
 }

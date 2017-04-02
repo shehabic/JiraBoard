@@ -14,9 +14,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import com.fullmob.jiraapi.models.Issue;
+import com.fullmob.jiraapi.models.User;
 import com.fullmob.jiraboard.R;
+import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.BaseFragment;
 import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardFragment;
@@ -30,6 +33,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends BaseActivity implements
     NavigationView.OnNavigationItemSelectedListener,
@@ -42,9 +46,12 @@ public class HomeActivity extends BaseActivity implements
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
     @BindView(R.id.fragment_container) View fragmentContainer;
+    CircleImageView userProfileImage;
+    TextView username;
+    TextView email;
 
-    @Inject
-    HomeScreenPresenter presenter;
+    @Inject HomeScreenPresenter presenter;
+    @Inject SecuredImagesManagerInterface imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +81,10 @@ public class HomeActivity extends BaseActivity implements
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        username = (TextView) navigationView.getHeaderView(0).findViewById(R.id.username);
+        email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.email);
+        userProfileImage = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.user_profile_image);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -140,7 +151,7 @@ public class HomeActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.home, menu);
+//        getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
@@ -161,18 +172,18 @@ public class HomeActivity extends BaseActivity implements
 
         int id = item.getItemId();
         switch (id) {
-            case R.id.nav_camera:
-                startActivity(new Intent(this, QRActivity.class));
-                break;
-
-            case R.id.nav_gallery:
-                break;
-
-            case R.id.nav_slideshow:
-                break;
-
-            case R.id.nav_printing:
-                break;
+//            case R.id.nav_camera:
+//                startActivity(new Intent(this, QRActivity.class));
+//                break;
+//
+//            case R.id.nav_gallery:
+//                break;
+//
+//            case R.id.nav_slideshow:
+//                break;
+//
+//            case R.id.nav_printing:
+//                break;
 
             case R.id.nav_projects:
                 startActivity(new Intent(this, ProjectsActivity.class));
@@ -194,7 +205,6 @@ public class HomeActivity extends BaseActivity implements
 
     @Override
     public void onSearchItemClicked(Issue issue) {
-//        printIssue(issue);
         openIssue(issue);
     }
 
@@ -213,6 +223,13 @@ public class HomeActivity extends BaseActivity implements
 
     public void setTitle(String title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void renderUserDetails(User user) {
+        imageLoader.loadImage(user.getAvatarUrls().get48x48(), this, userProfileImage);
+        username.setText(user.getDisplayName());
+        email.setText(user.getEmailAddress());
     }
 
     @Override
