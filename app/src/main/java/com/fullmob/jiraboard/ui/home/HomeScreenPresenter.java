@@ -1,5 +1,6 @@
 package com.fullmob.jiraboard.ui.home;
 
+import com.fullmob.jiraapi.models.User;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
 import com.fullmob.jiraboard.managers.user.UserManager;
@@ -27,7 +28,11 @@ public class HomeScreenPresenter extends AbstractPresenter<HomeScreenView> {
     }
 
     public void onViewResumed() {
-        getView().renderUserDetails(userManager.getUser());
+        User user = userManager.getUser();
+        if (user.getAvatarUrls() != null && user.getAvatarUrls().get48x48() != null) {
+            user.getAvatarUrls().set48x48(user.getAvatarUrls().get48x48() + "&size=xxxlarge");
+        }
+        getView().renderUserDetails(user);
         getView().setTitle(db.getProject(encryptedStorage.getDefaultProject()).getName());
     }
 }
