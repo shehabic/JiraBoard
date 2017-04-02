@@ -1,11 +1,9 @@
 package com.fullmob.jiraboard.ui.transitions;
 
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
-import com.fullmob.jiraboard.transitions.TransitionSteps;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.models.UITransitionItem;
 
@@ -42,7 +39,6 @@ public class TransitionsActivity extends BaseActivity implements TransitionsScre
 
     @Inject TransitionsScreenPresenter presenter;
     @Inject SecuredImagesManagerInterface imageLoader;
-    private AlertDialog confirmationDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,32 +94,6 @@ public class TransitionsActivity extends BaseActivity implements TransitionsScre
     public void showNoTransitionsAvailableForCurrentState() {
         transitionsList.setVisibility(View.GONE);
         noTransitionsAvailable.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showTransitionConfirmation(final TransitionSteps steps) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        TransitionListAdapter adapter = new TransitionListAdapter(steps, issue);
-        View dialogView = inflater.inflate(R.layout.dialog_transition_confirmation, null);
-        RecyclerView recyclerView = (RecyclerView) dialogView.findViewById(R.id.transitions_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-        dialogView.findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onConfirmTransition(steps, issue);
-                confirmationDialog.dismiss();
-            }
-        });
-        dialogView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmationDialog.dismiss();
-            }
-        });
-        builder.setView(dialogView);
-        confirmationDialog = builder.show();
     }
 
     @Override

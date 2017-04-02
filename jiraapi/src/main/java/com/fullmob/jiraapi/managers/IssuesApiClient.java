@@ -9,6 +9,7 @@ import com.fullmob.jiraapi.responses.IssueTransitionsResponse;
 import com.fullmob.jiraapi.responses.SearchResults;
 
 import java.io.IOException;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -90,6 +91,24 @@ public class IssuesApiClient extends AbstractApiManager<IssuesApi> {
 
         return api.search(jql, limit, offset, fields);
     }
+
+
+    public Observable<Response<SearchResults>> multiTicketSearch(List<String> tickets, String fields) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("key in (");
+        for (String key : tickets) {
+            if (!key.endsWith("3200") && !key.endsWith("4200") && !key.endsWith("4280") && !key.endsWith("4150")) {
+                if (sb.length() > 8) {
+                    sb.append(",");
+                }
+                sb.append(key);
+            }
+        }
+        sb.append(")");
+
+        return api.search(sb.toString(), tickets.size(), 0, fields);
+    }
+
 
     private boolean isIssueKey(String projectKey, String searchText) {
         return searchText.trim().toUpperCase().startsWith(projectKey.toUpperCase() + "-")

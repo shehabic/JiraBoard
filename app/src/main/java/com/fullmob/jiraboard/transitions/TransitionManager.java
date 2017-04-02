@@ -45,13 +45,19 @@ public class TransitionManager {
             return directTransition(issue, transitionItem);
         }
 
+        String transitionToStateName = transitionItem.transition.toName;
+
+        return getTransitionSteps(issue, transitionToStateName);
+    }
+
+    @NonNull
+    public TransitionSteps getTransitionSteps(Issue issue, String transitionToStateName) {
         Graph.Builder builder = createTransitionBuilder(issue);
         Vertex source = builder.getVertex(issue.getIssueFields().getStatus().getName());
-        Vertex target = builder.getVertex(transitionItem.transition.toName);
+        Vertex target = builder.getVertex(transitionToStateName);
         Graph graph = builder.build();
 
         return findShortestPath(source, target, graph, builder);
-
     }
 
     private TransitionSteps directTransition(Issue issue, UITransitionItem transitionItem) {
@@ -74,22 +80,24 @@ public class TransitionManager {
         DijkstraAlgorithm algorithm = new DijkstraAlgorithm(graph);
         algorithm.execute(source);
         LinkedList<Vertex> path = algorithm.getPath(target);
-        Vertex lastVertex = path.getFirst();
-        for (Vertex v : path) {
-            Edge edge = builder.getEdge(lastVertex.getName(), v.getName());
-            if (edge != null) {
-                steps.add(
-                    new TransitionStep(
-                        edge.getId(),
-                        edge.getEdgeName(),
-                        v.getId(),
-                        v.getName(),
-                        lastVertex.getColor(),
-                        v.getColor()
-                    )
-                );
+        if (path != null) {
+            Vertex lastVertex = path.getFirst();
+            for (Vertex v : path) {
+                Edge edge = builder.getEdge(lastVertex.getName(), v.getName());
+                if (edge != null) {
+                    steps.add(
+                        new TransitionStep(
+                            edge.getId(),
+                            edge.getEdgeName(),
+                            v.getId(),
+                            v.getName(),
+                            lastVertex.getColor(),
+                            v.getColor()
+                        )
+                    );
+                }
+                lastVertex = v;
             }
-            lastVertex = v;
         }
 
         return steps;

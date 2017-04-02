@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+    >
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="0dp"
+        android:adjustViewBounds="false"
+        android:paddingTop="2dp"
+        />
+
+    <LinearLayout
+        android:layout_toLeftOf="@+id/fix_issue_icon"
+        android:layout_toRightOf="@id/icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="0dp"
+        android:gravity="left"
+        android:orientation="vertical"
+        android:paddingBottom="0dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:text="MOB-123456: Issue title should go here"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/status_color_grey"
+            android:gravity="center"
+            android:paddingBottom="1dp"
+            android:paddingEnd="6dp"
+            android:paddingStart="6dp"
+            android:text="Backlog"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            />
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:background="?android:attr/selectableItemBackground"
+        android:tint="@color/colorPrimaryDark"
+        android:src="@drawable/ic_fix_status"
+        android:id="@+id/fix_issue_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:adjustViewBounds="false"
+        android:paddingTop="2dp"
+        />
+</RelativeLayout>

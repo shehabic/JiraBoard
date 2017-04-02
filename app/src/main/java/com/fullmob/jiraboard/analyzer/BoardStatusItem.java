@@ -16,4 +16,9 @@ public class BoardStatusItem {
         this.name = null;
         this.id = null;
     }
+
+    public BoardStatusItem(String name) {
+        this.name = name;
+        this.id = null;
+    }
 }

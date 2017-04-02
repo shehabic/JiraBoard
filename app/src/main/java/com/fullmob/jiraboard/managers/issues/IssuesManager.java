@@ -6,6 +6,7 @@ import com.fullmob.jiraapi.models.issue.Status;
 import com.fullmob.jiraapi.requests.issue.Transition;
 import com.fullmob.jiraapi.responses.IssueTransitionsResponse;
 import com.fullmob.jiraapi.responses.SearchResults;
+import com.fullmob.jiraboard.data.Ticket;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.db.Mapper;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
@@ -14,6 +15,7 @@ import com.fullmob.jiraboard.ui.models.UIIssueTransitionGroups;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -67,6 +69,15 @@ public class IssuesManager {
 
     public Observable<Response<SearchResults>> search(String projectKey, String searchText, int limit, int offset, String fields) {
         return api.search(projectKey, searchText, limit, offset, fields);
+    }
+
+    public Observable<Response<SearchResults>> findTickets(Collection<Ticket> tickets) {
+        List<String> ticketKeys = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            ticketKeys.add(ticket.text);
+        }
+
+        return api.multiTicketSearch(ticketKeys, "fields=key,id,summary,status,issuetype,project");
     }
 
     public Observable<UIIssueTransitionGroups> getPossibleTransitions(Issue issue) {

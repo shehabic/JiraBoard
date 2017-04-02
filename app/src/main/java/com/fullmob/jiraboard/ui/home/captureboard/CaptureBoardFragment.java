@@ -15,25 +15,34 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.BuildConfig;
 import com.fullmob.jiraboard.R;
-import com.fullmob.jiraboard.analyzer.BoardStatusItem;
 import com.fullmob.jiraboard.data.Board;
-import com.fullmob.jiraboard.data.Column;
+import com.fullmob.jiraboard.managers.images.SecuredImagesManagerInterface;
+import com.fullmob.jiraboard.transitions.TransitionSteps;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.BaseFragment;
+import com.fullmob.jiraboard.ui.models.CapturedBoardListItem;
+import com.fullmob.jiraboard.ui.transitions.OnConfirmTransitionCallback;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,7 +50,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CaptureBoardFragment extends BaseFragment implements CaptureBoardView {
+public class CaptureBoardFragment extends BaseFragment
+    implements CaptureBoardView, CapturedBoardListAdapter.CapturedBoardCallback {
 
     public static final String TAG = CaptureBoardFragment.class.getSimpleName();
     private static final int STORAGE_PERMISSIONS_REQUESTED_FOR_PICKER = 999;
@@ -49,30 +59,29 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
     public static final int CAPTURE_IMAGE_REQUEST = 1002;
     public static final int PICK_IMAGE_REQUEST = 1001;
     private static final int STORAGE_PERMISSIONS_REQUESTED = 998;
-
-    @Inject
-    CaptureBoardPresenter presenter;
-
     private OnFragmentInteractionListener mListener;
-
     private String currentPhotoPath;
+    private final List<Issue> issues = new ArrayList<>();
+    private Board board;
+    private CapturedBoardListAdapter adapter;
 
-    @BindView(R.id.board_preview)
-    ImageView boardPreview;
-    @BindView(R.id.message)
-    TextView message;
+    @BindView(R.id.board_preview) ImageView boardPreview;
+    @BindView(R.id.message) TextView message;
+    @BindView(R.id.board_results) RecyclerView boardResults;
 
-    @OnClick(R.id.capture)
-    void onCaptureClicked() {
+
+    @OnClick(R.id.capture) void onCaptureClicked() {
         boardPreview.setImageDrawable(null);
         startCameraCapture();
     }
 
-    @OnClick(R.id.pick)
-    void onPickImageClicked() {
+    @OnClick(R.id.pick) void onPickImageClicked() {
         boardPreview.setImageDrawable(null);
         startPickingFile();
     }
+
+    @Inject SecuredImagesManagerInterface imageLoader;
+    @Inject CaptureBoardPresenter presenter;
 
     public CaptureBoardFragment() {
     }
@@ -100,6 +109,13 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_capture_board, container, false);
         ButterKnife.bind(this, view);
+        boardResults.setLayoutManager(new LinearLayoutManager(getActivity()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        boardResults.setNestedScrollingEnabled(false);
 
         return view;
     }
@@ -235,28 +251,51 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
     }
 
     @Override
-    public void showOutput(Board project) {
-        String headerOutput = "Columns: " + project.getColumns().size();
-        String output = "";
-        int ticketCount = 0;
-        Gson gson = new Gson();
-        for (Column col : project.getColumns()) {
-            BoardStatusItem item = gson.fromJson(col.text, BoardStatusItem.class);
-            ticketCount += col.tickets.size();
-            output += "in [" + item.name + "]:";
-            for (int j = 0; j < col.tickets.size(); j++) {
-                output += "\n\t- " + col.tickets.get(j).text;
-            }
-            output += "\n";
-        }
-        output = headerOutput + ", Tickets: " + ticketCount + "\n" + output;
-        message.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-        message.setText(output.trim());
-        boardPreview.setImageBitmap(project.getBitmap());
+    public void onAnalysisCompleted(Board board) {
+//        String headerOutput = "Columns: " + board.getColumns().size();
+//        String output = "";
+//        int ticketCount = 0;
+//        Gson gson = new Gson();
+//        for (Column col : board.getColumns()) {
+//            BoardStatusItem item;
+//            if (col.text.startsWith("{")) {
+//                item = gson.fromJson(col.text, BoardStatusItem.class);
+//            } else {
+//                item = new BoardStatusItem(col.text);
+//            }
+//            ticketCount += col.tickets.size();
+//            output += "in [" + item.name + "]:";
+//            for (int j = 0; j < col.tickets.size(); j++) {
+//                output += "\n\t- " + col.tickets.get(j).text;
+//            }
+//            output += "\n";
+//        }
+//        output = headerOutput + ", Tickets: " + ticketCount + "\n" + output;
+//        message.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+//        message.setText(output.trim());
+        boardPreview.setImageBitmap(board.getBitmap());
+        board.setBitmap(null);
+        this.board = board;
     }
 
     @Override
     public void showErrorOccurred() {
+    }
+
+    @Override
+    public void renderAnalysisResult(List<CapturedBoardListItem> boardResult) {
+        Log.d("BOARD", new Gson().toJson(boardResult));
+        adapter.setResults(boardResult);
+    }
+
+    @Override
+    public void showTransitionConfirmation(TransitionSteps steps, Issue issue, OnConfirmTransitionCallback callback) {
+        getBaseActivity().showTransitionConfirmation(steps, issue, callback);
+    }
+
+    @Override
+    public void showToast(String msg) {
+        Toast.makeText(getBaseActivity().getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
 
     public BaseActivity getBaseActivity() {
@@ -306,7 +345,26 @@ public class CaptureBoardFragment extends BaseFragment implements CaptureBoardVi
         }
     }
 
+    @Override
+    public void onFixStatusClicked(CapturedBoardListItem item) {
+        presenter.onFixItemTransitionRequested(item);
+    }
+
+    @Override
+    public void onIssueClicked(Issue issue) {
+        getBaseActivity().openIssue(issue);
+    }
+
     public interface OnFragmentInteractionListener {
         void onCaptureBoardFragmentInteraction();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter == null) {
+            adapter = new CapturedBoardListAdapter(new ArrayList<CapturedBoardListItem>(), imageLoader, this);
+            boardResults.setAdapter(adapter);
+        }
     }
 }

@@ -20,7 +20,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by shehabic on 26/03/2017.
  */
-public class TransitionsScreenPresenter extends AbstractPresenter<TransitionsScreenView> {
+public class TransitionsScreenPresenter extends AbstractPresenter<TransitionsScreenView> implements OnConfirmTransitionCallback {
 
     private final IssuesManager issuesManager;
     private final ProjectsManager projectsManager;
@@ -111,9 +111,10 @@ public class TransitionsScreenPresenter extends AbstractPresenter<TransitionsScr
 
     public void onTransitionRequested(Issue issue, UITransitionItem issueStatus) {
         TransitionSteps steps = transitionManager.findShortestPath(issue, issueStatus);
-        getView().showTransitionConfirmation(steps);
+        getView().showTransitionConfirmation(steps, issue, this);
     }
 
+    @Override
     public void onConfirmTransition(TransitionSteps steps, Issue issue) {
         transitionManager.scheduleTransitionJob(issue, steps);
     }

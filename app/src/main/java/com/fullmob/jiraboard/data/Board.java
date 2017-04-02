@@ -13,10 +13,12 @@ public class Board {
     private Bitmap bitmap;
     private List<Column> columns;
     private HashSet<Column> boxedColumns;
+    private List<Ticket> tickets = new ArrayList<>();
     public int minX = -1;
     public int minY = -1;
     public int maxX = -1;
     public int maxY = -1;
+    private boolean analysisCompleted = false;
 
     public Board(String prefix) {
         this.prefix = prefix;
@@ -58,5 +60,21 @@ public class Board {
 
     public List<Column> getStackedColumns() {
         return columns;
+    }
+
+    public void addTicket(Ticket ticket) {
+        tickets.add(ticket);
+    }
+
+    public void setAnalysisCompleted() {
+        this.analysisCompleted = true;
+    }
+
+    public boolean isAnalysisCompleted() {
+        return analysisCompleted;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
     }
 }

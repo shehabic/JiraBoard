@@ -30,6 +30,10 @@ public class GlideSecuredImagesLoader implements SecuredImagesManagerInterface {
 
     @Override
     public void loadSVG(final String url, final Context activityContext, final ImageView imageView) {
+        if (url.endsWith("gif") || url.endsWith("png") || url.endsWith("jpg") || url.endsWith("jpeg")) {
+            loadImage(url, activityContext, imageView);
+            return;
+        }
         GlideUrl glideUrl = createSecuredGlideUrl(getBiggerUrl(url));
         GenericRequestBuilder<GlideUrl, InputStream, SVG, PictureDrawable> requestBuilder = Glide.with(activityContext)
             .using(Glide.buildStreamModelLoader(GlideUrl.class, activityContext), InputStream.class)

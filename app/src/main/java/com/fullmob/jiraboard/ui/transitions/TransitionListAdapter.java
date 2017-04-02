@@ -20,14 +20,14 @@ import java.util.List;
 /**
  * Created by shehabic on 28/03/2017.
  */
-class TransitionListAdapter extends RecyclerView.Adapter<TransitionListAdapter.TransitionsViewHolder> {
+public class TransitionListAdapter extends RecyclerView.Adapter<TransitionListAdapter.TransitionsViewHolder> {
 
     private static final int TRANSITION_ITEM_TYPE_ARROW = 1;
     private static final int TRANSITION_ITEM_TYPE_STATUS = 2;
 
     private final List<TransitionStep> steps = new ArrayList<>();
 
-    TransitionListAdapter(TransitionSteps steps, Issue issue) {
+    public TransitionListAdapter(TransitionSteps steps, Issue issue) {
         Status status = issue.getIssueFields().getStatus();
         this.steps.add(
             new TransitionStep(

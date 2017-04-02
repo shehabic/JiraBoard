@@ -22,17 +22,16 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.multi.qrcode.QRCodeMultiReader;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 
 import static com.fullmob.jiraboard.utils.QRPointUtils.maxX;
 import static com.fullmob.jiraboard.utils.QRPointUtils.maxY;
@@ -42,10 +41,6 @@ import static com.fullmob.jiraboard.utils.QRPointUtils.minY;
 public class BoardAnalyzer {
 
     private boolean debug;
-
-    public BoardAnalyzer() {
-        this(false);
-    }
 
     public BoardAnalyzer(boolean debug) {
         this.debug = debug;
@@ -60,52 +55,70 @@ public class BoardAnalyzer {
         });
     }
 
-    public Board analyzeProjectFromImage(Board project) {
-        readQRImage(project.getBitmap(), project);
-        return project;
+    private Board analyzeProjectFromImage(Board board) throws NotFoundException {
+        return readQRImage(board, null);
     }
 
-    public void readQRImage(Bitmap bMap, Board board) {
 
-        Bitmap mutableBitmap = bMap.copy(Bitmap.Config.ARGB_8888, true);
+    public Board analyzeProjectFromImage(Board board, ObservableEmitter<Board> emitter) throws NotFoundException {
+        return readQRImage(board, emitter);
+    }
+
+    private Board readQRImage(Board board, ObservableEmitter<Board> emitter) throws NotFoundException {
+        Bitmap mutableBitmap = board.getBitmap().copy(Bitmap.Config.ARGB_8888, true);
 
         int[] intArray = new int[mutableBitmap.getWidth() * mutableBitmap.getHeight()];
 
         mutableBitmap.getPixels(intArray, 0, mutableBitmap.getWidth(), 0, 0, mutableBitmap.getWidth(), mutableBitmap.getHeight());
         LuminanceSource source = new RGBLuminanceSource(mutableBitmap.getWidth(), mutableBitmap.getHeight(), intArray);
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-        QRCodeMultiReader qrCodeMultiReader = new QRCodeMultiReader();
-        try {
-            Identifier identifier = new Identifier(board);
-            Hashtable<DecodeHintType, Object> hints = new Hashtable<>();
-            hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
-            Result[] results = qrCodeMultiReader.decodeMultiple(bitmap, hints);
-            analyzeResults(board, mutableBitmap, identifier, results);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        readTicketsAndColumns(board, bitmap);
+        orderColumnsAndTickets(board, mutableBitmap);
+        if (emitter != null) {
+            emitter.onNext(board);
         }
+        if (isDebug()) {
+            showAnalysisRegionsOnBoard(board, mutableBitmap);
+        }
+        adjustBoardBoundaries(board);
+        cropBoard(board);
+
+        return board;
     }
 
-    private void analyzeResults(Board board, Bitmap mutableBitmap, Identifier identifier, Result[] results) {
+    private void showAnalysisRegionsOnBoard(Board board, Bitmap mutableBitmap) {
+        for (Ticket ticket : board.getTickets()) {
+            drawSquare(mutableBitmap, ticket.minX, ticket.maxX, ticket.minY, ticket.maxY, Color.RED, 255);
+        }
+        drawDebugLines(board, mutableBitmap);
+        board.setBitmap(mutableBitmap);
+    }
+
+    private void readTicketsAndColumns(Board board, BinaryBitmap bitmap) throws NotFoundException {
+        QRCodeMultiReader qrCodeMultiReader = new QRCodeMultiReader();
+
+        Identifier identifier = new Identifier(board);
+        Hashtable<DecodeHintType, Object> hints = new Hashtable<>();
+        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+        Result[] results = qrCodeMultiReader.decodeMultiple(bitmap, hints);
+        analyzeResults(board, identifier, results);
+    }
+
+    private void analyzeResults(Board board, Identifier identifier, Result[] results) {
         if (isDebug()) {
             Log.d("RESULTS", new Gson().toJson(results));
         }
         Map<String, Column> columnsMap = new HashMap<>();
-        List<Column> ticketList = new ArrayList<>();
         board.setBoxed(isBoxedMode(identifier, results));
         boolean isColumn;
         for (Result r : results) {
             isColumn = identifier.isColumn(r.getText());
-            if (!isColumn) {
-                ticketList.add(createTicket(r));
-            } else {
+            if (isColumn) {
                 board.addColumn(createColumn(columnsMap, r));
+            } else {
+                board.addTicket(createTicket(r));
             }
         }
-        orderColumnsAndTickets(board, ticketList, mutableBitmap);
-        adjustBoardBoundaries(board);
-        cropBoard(board);
-        Log.d("RESULTS", new Gson().toJson(board.getColumns()));
     }
 
     private void cropBoard(Board board) {
@@ -140,16 +153,13 @@ public class BoardAnalyzer {
     private Ticket createColumn(Map<String, Column> columnsMap, Result r) {
         Ticket column = new Ticket();
         column.text = r.getText();
-        column.initPoints(6);
         for (int i = 0; i < 3; i++) {
-            column.points[i] = new Point(r.getResultPoints()[i].getX(), r.getResultPoints()[i].getY());
+            column.points.add(new Point(r.getResultPoints()[i].getX(), r.getResultPoints()[i].getY()));
         }
         if (!columnsMap.containsKey(column.text)) {
             columnsMap.put(column.text, column);
         } else {
-            columnsMap.get(column.text).points[3] = column.points[0];
-            columnsMap.get(column.text).points[4] = column.points[1];
-            columnsMap.get(column.text).points[5] = column.points[2];
+            columnsMap.get(column.text).points.addAll(column.points);
         }
 
         return column;
@@ -157,9 +167,8 @@ public class BoardAnalyzer {
 
     private Ticket createTicket(Result r) {
         Ticket ticket = new Ticket(r.getText());
-        ticket.initPoints(3);
         for (int i = 0; i < 3; i++) {
-            ticket.points[i] = new Point(r.getResultPoints()[i].getX(), r.getResultPoints()[i].getY());
+            ticket.points.add(new Point(r.getResultPoints()[i].getX(), r.getResultPoints()[i].getY()));
         }
 
         return ticket;
@@ -184,14 +193,13 @@ public class BoardAnalyzer {
         return boxedMode;
     }
 
-    private void orderColumnsAndTickets(Board board, List<Column> ticketList, Bitmap mutableBitmap) {
+    private void orderColumnsAndTickets(Board board, Bitmap mutableBitmap) {
         if (board.isBoxed()) {
             prepareBoxedColumns(board);
         } else {
             prepareStackedColumns(board, mutableBitmap.getWidth(), mutableBitmap.getHeight());
         }
-        for (int i = 0; i < ticketList.size(); i++) {
-            Column ticket = ticketList.get(i);
+        for (Ticket ticket : board.getTickets()) {
             ticket.minX = minX(ticket);
             ticket.minY = minY(ticket);
             ticket.maxY = maxY(ticket);
@@ -200,16 +208,10 @@ public class BoardAnalyzer {
             ticket.midY = (ticket.minY + ticket.maxY) / 2;
             for (Column col : board.getColumns()) {
                 if (ticket.midX > col.minX && ticket.midX <= col.maxX && ticket.midY > col.minY && ticket.midY <= col.maxY) {
-                    col.tickets.add(ticketList.get(i));
+                    ticket.setColumnName(col.text);
+                    col.tickets.add(ticket);
                 }
             }
-            if (isDebug()) {
-                drawSquare(mutableBitmap, ticket.minX, ticket.maxX, ticket.minY, ticket.maxY, Color.RED, 255);
-            }
-        }
-        if (isDebug()) {
-            drawDebugLines(board, mutableBitmap);
-            board.setBitmap(mutableBitmap);
         }
     }
 

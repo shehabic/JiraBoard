@@ -1,5 +1,6 @@
 package com.fullmob.jiraboard.ui.transitions;
 
+import com.fullmob.jiraapi.models.Issue;
 import com.fullmob.jiraboard.transitions.TransitionSteps;
 import com.fullmob.jiraboard.ui.BaseView;
 import com.fullmob.jiraboard.ui.models.UITransitionItem;
@@ -17,5 +18,5 @@ public interface TransitionsScreenView extends BaseView {
 
     void showNoTransitionsAvailableForCurrentState();
 
-    void showTransitionConfirmation(TransitionSteps steps);
+    void showTransitionConfirmation(TransitionSteps steps, Issue issue, OnConfirmTransitionCallback callback);
 }

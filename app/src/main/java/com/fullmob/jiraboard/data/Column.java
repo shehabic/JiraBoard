@@ -1,7 +1,6 @@
 package com.fullmob.jiraboard.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Column implements Cloneable {
@@ -12,15 +11,8 @@ public class Column implements Cloneable {
     public int maxY = -1;
     public int midY = -1;
     public String text;
-    public Point[] points;
-    public List<Column> tickets = new ArrayList<>();
-
-    public void initPoints(int size) {
-        if (points == null) {
-            points = new Point[size];
-            Arrays.fill(points, new Point(-1, -1));
-        }
-    }
+    public List<Point> points = new ArrayList<>();
+    public List<Ticket> tickets = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
