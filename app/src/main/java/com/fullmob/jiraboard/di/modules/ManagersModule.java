@@ -5,6 +5,7 @@ import com.fullmob.graphlib.discovery.WorkflowDiscovery;
 import com.fullmob.jiraapi.managers.IssuesApiClient;
 import com.fullmob.jiraapi.managers.JiraCloudUserManager;
 import com.fullmob.jiraapi.managers.ProjectsApiClient;
+import com.fullmob.jiraboard.di.scopes.UserScope;
 import com.fullmob.jiraboard.managers.db.DBManagerInterface;
 import com.fullmob.jiraboard.managers.issues.IssuesManager;
 import com.fullmob.jiraboard.managers.jobs.JobsHandler;
@@ -26,7 +27,10 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
+@UserScope
 public class ManagersModule {
+
+    @UserScope
     @Provides
     public UserManager providesUserManager(
         JiraCloudUserManager userManager,
@@ -36,11 +40,13 @@ public class ManagersModule {
         return new UserManager(userManager, localStorage, serializer);
     }
 
+    @UserScope
     @Provides
     public IssuesManager providesIssuesManager(IssuesApiClient issuesApiClient, DBManagerInterface dbManager) {
         return new IssuesManager(issuesApiClient, dbManager);
     }
 
+    @UserScope
     @Provides
     public ProjectsManager providesProjManager(
         ProjectsApiClient manager,
@@ -51,6 +57,7 @@ public class ManagersModule {
         return new ProjectsManager(manager, issuesApiClient, db, storage);
     }
 
+    @UserScope
     @Provides
     public WorkflowDiscovery providesWorkflowDiscovery(
         ProjectsApiClient manager,
@@ -59,6 +66,7 @@ public class ManagersModule {
         return new WorkflowDiscovery(issuesApiClient, manager);
     }
 
+    @UserScope
     @Provides
     public WorkflowDiscoveryManager providesWorkflowDiscoveryManager(
         DBManagerInterface db,
@@ -68,6 +76,7 @@ public class ManagersModule {
         return new WorkflowDiscoveryManager(workflowDiscovery, db, queue);
     }
 
+    @UserScope
     @Provides
     public JobsHandler jobsHandler(
         WorkflowDiscoveryManager discoveryManager,
@@ -84,6 +93,7 @@ public class ManagersModule {
         return handler;
     }
 
+    @UserScope
     @Provides
     public TransitionManager providesTransitionManager(
         DBManagerInterface dbManager,

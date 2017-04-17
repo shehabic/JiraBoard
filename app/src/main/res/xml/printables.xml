@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.fullmob.printable.PrintableGroup>
-    <com.fullmob.printable.Printable id="template_1" size="A9">
+    <com.fullmob.printable.Printable id="template_1" size="A7" orientation="landscape">
         <com.fullmob.printable.Element
-
             alignTop="@+id/parent"
             centerHorizontalIn="@+id/parent"
             id="qr"
@@ -23,18 +22,36 @@
             />
     </com.fullmob.printable.Printable>
 
-    <com.fullmob.printable.Printable id="template_2" size="A9">
+    <com.fullmob.printable.Printable
+        id="template_2"
+        size="A4"
+        background="#FFFFFF"
+        orientation="portrait"
+        >
         <com.fullmob.printable.Element
-            alignLeft="@+id/parent"
+            centerHorizontalIn="@+id/parent"
+            alignTop="@+id/parent"
+            id="mid_spacer"
+            relativeWidthTarget="@+id/parent"
+            relativeWidthField="width"
+            relativeWidthValue="0.2f"
+            relativeHeightTarget="@+id/parent"
+            relativeHeightField="height"
+            relativeHeightValue="1.0f"
+            type="spacer"
+            />
+
+        <com.fullmob.printable.Element
+            alignToLeftOf="@+id/mid_spacer"
             alignTop="@+id/parent"
 
             relativeWidthTarget="@+id/parent"
             relativeWidthField="width"
-            relativeWidthValue="0.5f"
+            relativeWidthValue="0.25f"
 
-            relativeHeightTarget="@+id/parent"
-            relativeHeightField="height"
-            relativeHeightValue="0.5f"
+            relativeHeightTarget="@+id/self"
+            relativeHeightField="width"
+            relativeHeightValue="1.0f"
 
             id="text1"
             textHAlign="center"
@@ -43,17 +60,34 @@
             type="qr"
             />
 
+
         <com.fullmob.printable.Element
-            alignTop="@+id/parent"
-            alignRight="@+id/parent"
+            alignBottom="@+id/parent"
+            alignToRightOf="@+id/mid_spacer"
 
             relativeWidthTarget="@+id/parent"
             relativeWidthField="width"
-            relativeWidthValue="0.5f"
+            relativeWidthValue="0.25f"
 
-            relativeHeightTarget="@+id/parent"
-            relativeHeightField="height"
-            relativeHeightValue="0.5f"
+            relativeHeightTarget="@+id/self"
+            relativeHeightField="width"
+            relativeHeightValue="1.0f"
+
+            id="text3"
+            type="qr"
+            />
+
+        <com.fullmob.printable.Element
+            alignTop="@+id/parent"
+            alignToRightOf="@+id/mid_spacer"
+
+            relativeWidthTarget="@+id/parent"
+            relativeWidthField="width"
+            relativeWidthValue="0.25f"
+
+            relativeHeightTarget="@+id/self"
+            relativeHeightField="width"
+            relativeHeightValue="1.0f"
 
             id="text2"
             textHAlign="center"
@@ -64,39 +98,17 @@
 
         <com.fullmob.printable.Element
             alignBottom="@+id/parent"
-            alignRight="@+id/parent"
+            alignToLeftOf="@+id/mid_spacer"
 
             relativeWidthTarget="@+id/parent"
             relativeWidthField="width"
-            relativeWidthValue="0.5f"
+            relativeWidthValue="0.25f"
 
-            relativeHeightTarget="@+id/parent"
-            relativeHeightField="height"
-            relativeHeightValue="0.5f"
-
-            id="text3"
-            textHAlign="center"
-            textSize="200"
-            textVAlign="middle"
-            type="qr"
-            />
-
-        <com.fullmob.printable.Element
-            alignBottom="@+id/parent"
-            alignLeft="@+id/parent"
-
-            relativeWidthTarget="@+id/parent"
-            relativeWidthField="width"
-            relativeWidthValue="0.5f"
-
-            relativeHeightTarget="@+id/parent"
-            relativeHeightField="height"
-            relativeHeightValue="0.5f"
+            relativeHeightTarget="@+id/self"
+            relativeHeightField="width"
+            relativeHeightValue="1.0f"
 
             id="text4"
-            textHAlign="center"
-            textSize="200"
-            textVAlign="middle"
             type="qr"
             />
 

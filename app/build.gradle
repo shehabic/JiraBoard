@@ -116,9 +116,6 @@ dependencies {
 
 
     provided 'javax.annotation:jsr250-api:1.0'
-    compile 'com.github.shehabix.MultiModuleTest:api:1.0.8'
-    compile 'com.github.shehabix.MultiModuleTest:core:1.0.8'
-    compile 'com.github.shehabix.MultiModuleTest:datastore:1.0.8'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.facebook.conceal:conceal:1.1.3@aar'
@@ -146,7 +143,6 @@ dependencies {
     compile 'com.google.firebase:firebase-config:10.0.1'
     compile 'com.firebase:firebase-jobdispatcher-with-gcm-dep:0.5.2'
     compile 'com.android.support:support-v4:25.2.0'
-    compile 'com.github.florent37:camerafragment:1.0.4'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'org.sufficientlysecure:html-textview:3.3'
     compile 'de.hdodenhof:circleimageview:2.1.0'

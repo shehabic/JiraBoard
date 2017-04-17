@@ -7,10 +7,11 @@ import android.graphics.Paint;
 
 import com.fullmob.printable.Element;
 import com.fullmob.printable.Printable;
+import com.fullmob.printable.drawers.BitmapDrawer;
 import com.fullmob.printable.drawers.DrawableDrawer;
 import com.fullmob.printable.drawers.ElementDrawer;
-import com.fullmob.printable.drawers.BitmapDrawer;
 import com.fullmob.printable.drawers.QRDrawer;
+import com.fullmob.printable.drawers.SpacerDrawer;
 import com.fullmob.printable.drawers.TextElementDrawer;
 import com.fullmob.printable.exceptions.PrintableException;
 
@@ -39,6 +40,7 @@ public abstract class AbstractPrintableGenerator<T> implements PrintableGenerato
         elementDrawers.put("text", new TextElementDrawer());
         elementDrawers.put("image", new BitmapDrawer());
         elementDrawers.put("drawable", new DrawableDrawer(context));
+        elementDrawers.put("spacer", new SpacerDrawer());
     }
 
     @Override
@@ -47,14 +49,23 @@ public abstract class AbstractPrintableGenerator<T> implements PrintableGenerato
     }
 
     @Override
+    public T createPrintable(Printable printable) {
+        int[] size = findSize(printable.sizeString, printable.orientation == Printable.PRINTABLE_ORIENTATION_LANDSCAPE);
+
+        return createPrintable(printable, size[0] / 2, size[1] / 2);
+    }
+
+    @Override
     public T createPrintable(Printable printable, PaperSize paperSize) {
-        int[] size = findSize(paperSize, true);
+        int[] size = findSize(paperSize, printable.orientation == Printable.PRINTABLE_ORIENTATION_LANDSCAPE);
 
         return createPrintable(printable, size[0] / 2, size[1] / 2);
     }
 
     public static int[] findSize(String sizeString, boolean landscape) {
         switch (sizeString.toUpperCase()) {
+            case "A4":
+                return findSize(PaperSize.A4, landscape);
             case "A5":
                 return findSize(PaperSize.A5, landscape);
             case "A6":
@@ -75,7 +86,15 @@ public abstract class AbstractPrintableGenerator<T> implements PrintableGenerato
     public static int[] findSize(PaperSize paperSize, boolean landscape) {
         int h = 0, w = 0;
         switch (paperSize) {
-            // TODO: add the missing sizes
+            case A4:
+                h = 11690;
+                w = 8270;
+                break;
+
+            case A5:
+                h = 8270;
+                w = 5830;
+                break;
 
             case A6:
                 h = 4130;
@@ -235,9 +254,11 @@ public abstract class AbstractPrintableGenerator<T> implements PrintableGenerato
 
     void drawPrintableInCanvas(Printable printable, int width, int height, Canvas canvas) {
         boolean allDrawn = false;
-        Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(0, 0, width, height, paint);
+        if (printable.background != Color.TRANSPARENT) {
+            Paint paint = new Paint();
+            paint.setColor(printable.background);
+            canvas.drawRect(0, 0, width, height, paint);
+        }
         prepareParent(printable, width, height);
         int i = 0;
         while (!allDrawn) {

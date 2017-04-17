@@ -3,6 +3,7 @@ package com.fullmob.printable.inflators;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.XmlRes;
 
 import com.fullmob.printable.Element;
@@ -10,9 +11,6 @@ import com.fullmob.printable.Printable;
 import com.fullmob.printable.PrintableGroup;
 import com.fullmob.printable.exceptions.PrintableException;
 
-/**
- * Created by shehabic on 19/03/2017.
- */
 public class PrintableInflator {
 
     private Context context;
@@ -93,7 +91,7 @@ public class PrintableInflator {
         }
     }
 
-    private Object getAttributeValue(String val, Printable printable, Element currentElement) {
+    private Object getAttributeValue(String val, Printable printable, @Nullable Element currentElement) {
         String resValue = val.contains("/") ? val.split("/")[1] : val;
         if (val.startsWith("@+id/")) {
             return resValue.toLowerCase().equals("self") ? currentElement : printable.findElementById(resValue);
@@ -128,6 +126,9 @@ public class PrintableInflator {
         for (int i = 0; i < xrp.getAttributeCount(); i++) {
             String attrib = xrp.getAttributeName(i);
             Object val = xrp.getAttributeValue(i);
+            if (val.toString().contains("@")) {
+                val = getAttributeValue(val.toString(), printable, null);
+            }
             printable.setAttribute(attrib, val);
         }
     }

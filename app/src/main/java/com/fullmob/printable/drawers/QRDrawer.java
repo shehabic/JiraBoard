@@ -30,7 +30,12 @@ public class QRDrawer implements ElementDrawer {
 
     @Override
     public void requestLayout(Element element) {
-        element.height = element.width = (int) (element.getParent().height * 0.7f);
+//        if (element.height == -1) {
+//            element.height = (int) (element.getParent().height * 0.7f);
+//        }
+//        if (element.width == -1) {
+//            element.width = (int) (element.getParent().height * 0.7f);
+//        }
     }
 
     private Bitmap encodeAsBitmap(String str, int side) throws WriterException {

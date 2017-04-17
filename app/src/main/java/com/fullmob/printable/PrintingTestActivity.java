@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.fullmob.jiraboard.R;
-import com.fullmob.printable.generators.PrintableGenerator;
 import com.fullmob.printable.generators.PrintableImageGenerator;
 import com.fullmob.printable.inflators.PrintableInflator;
 import com.google.gson.Gson;
@@ -46,15 +45,12 @@ public class PrintingTestActivity extends AppCompatActivity {
         printable.findElementById("text2").content = "second text";
         printable.findElementById("text3").content = "third text";
         printable.findElementById("text4").content = "fourth text";
-        preview.setImageBitmap(
-            printableImageGenerator.createPrintable(group.getPrintables().get(1), PrintableGenerator.PaperSize.A6)
-        );
+        preview.setImageBitmap(printableImageGenerator.createPrintable(group.getPrintables().get(1)));
     }
 
     private void printSingleImage(PrintableGroup group) {
         group.getPrintables().get(0).findElementById("summary").content = "test text";
-        Bitmap bitmap
-            = printableImageGenerator.createPrintable(group.getPrintables().get(0), PrintableGenerator.PaperSize.A6);
+        Bitmap bitmap = printableImageGenerator.createPrintable(group.getPrintables().get(0));
         preview.setImageBitmap(bitmap);
         Log.d("PRINT_GROUP", new Gson().toJson(group));
     }

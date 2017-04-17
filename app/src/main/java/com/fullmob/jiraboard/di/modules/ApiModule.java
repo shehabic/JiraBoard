@@ -13,6 +13,7 @@ import com.fullmob.jiraapi.managers.JiraCloudUserManager;
 import com.fullmob.jiraapi.managers.ProjectsApiClient;
 import com.fullmob.jiraboard.BuildConfig;
 import com.fullmob.jiraboard.app.FullmobAppInterface;
+import com.fullmob.jiraboard.di.scopes.UserScope;
 import com.fullmob.jiraboard.managers.storage.EncryptedStorage;
 import com.fullmob.jiraboard.managers.user.AuthenticationManager;
 
@@ -20,9 +21,11 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 
+@UserScope
 @Module
 public class ApiModule {
 
+    @UserScope
     @Provides
     public ApiConfig getApiConfig(EncryptedStorage encryptedStorage) {
         ApiConfig apiConfig = new ApiConfig();
@@ -38,26 +41,31 @@ public class ApiModule {
         return apiConfig;
     }
 
+    @UserScope
     @Provides
     public IssuesApiClient providesIssuesManager(OkHttpClient httpClient, ApiConfig apiConfig) {
         return new IssuesApiClient(getApi(IssuesApi.class, apiConfig, httpClient));
     }
 
+    @UserScope
     @Provides
     public JiraCloudUserManager providesJiraCloudUserManager(OkHttpClient httpClient, ApiConfig apiConfig) {
         return new JiraCloudUserManager(getApi(UserApi.class, apiConfig, httpClient));
     }
 
+    @UserScope
     @Provides
     public ProjectsApiClient providesProjectsManager(OkHttpClient httpClient, ApiConfig apiConfig) {
         return new ProjectsApiClient(getApi(ProjectsApi.class, apiConfig, httpClient));
     }
 
+    @UserScope
     @Provides
     public AuthManager providesAuthManager(OkHttpClient httpClient, ApiConfig apiConfig) {
         return new AuthManager(getApi(AuthApi.class, apiConfig, httpClient));
     }
 
+    @UserScope
     @Provides
     public OkHttpClient providesOkHttpClient(ApiConfig apiConfig, FullmobAppInterface app) {
         HttpClientBuilder builder = new HttpClientBuilder(apiConfig);
@@ -66,6 +74,7 @@ public class ApiModule {
         return builder.build();
     }
 
+    @UserScope
     @Provides
     public AuthenticationManager providesAuthenticationManager(AuthManager auth, EncryptedStorage encryption) {
         return new AuthenticationManager(auth, encryption);

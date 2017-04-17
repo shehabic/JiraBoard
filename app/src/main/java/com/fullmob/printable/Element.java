@@ -35,9 +35,10 @@ public class Element {
     public static final String TYPE_QR = "qr";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_TEXT = "text";
+    public static final String TYPE_SPACER = "spacer";
     public static final String TYPE_PARENT = "parent";
     public static final String TYPE_CUSTOM = "custom";
-    @StringDef({TYPE_QR, TYPE_IMAGE, TYPE_TEXT, TYPE_PARENT, TYPE_CUSTOM})
+    @StringDef({TYPE_QR, TYPE_IMAGE, TYPE_TEXT, TYPE_PARENT, TYPE_CUSTOM, TYPE_SPACER})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ElementType { }
 
@@ -216,27 +217,39 @@ public class Element {
                 break;
 
             case "below":
+            case "alignBelow":
                 below = (Element) val;
                 validateRelativity((Element) val);
                 break;
 
             case "above":
+            case "alignAbove":
                 above = (Element) val;
                 validateRelativity((Element) val);
                 break;
 
             case "toLeftOf":
+            case "alignToLeftOf":
                 toLeftOf = (Element) val;
                 validateRelativity((Element) val);
                 break;
 
             case "toRightOf":
+            case "alignToRightOf":
                 toRightOf = (Element) val;
                 validateRelativity((Element) val);
                 break;
 
             case "content":
                 content = (String) val;
+                break;
+
+            case "centerIn":
+            case "center":
+                centerHorizontalIn = (Element) val;
+                validateRelativity((Element) val);
+                centerVerticalIn = (Element) val;
+                validateRelativity((Element) val);
                 break;
 
             case "centerHorizontalIn":
