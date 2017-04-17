@@ -33,7 +33,7 @@ public class JiraPrintablesGenerator {
         topSpacer.alignTop = parent;
         topSpacer.alignLeft = parent;
         topSpacer.alignRight = parent;
-        topSpacer.setRelativeDimenRule(parent, Element.RELATIVE_FIELD_HEIGHT, Element.RELATIVE_FIELD_HEIGHT, 0.01f);
+        topSpacer.setRelativeDimenRule(parent, Element.RELATIVE_FIELD_HEIGHT, Element.RELATIVE_FIELD_HEIGHT, 0.001f);
         topSpacer.id = "top_spacer";
         Element lastElement = topSpacer;
         printable.addElement(verticalSpacer);
@@ -59,7 +59,7 @@ public class JiraPrintablesGenerator {
             title.textSizeMultiplier = parent;
             title.id = "title" + i;
             title.setRelativeDimenRule(parent, Element.RELATIVE_FIELD_WIDTH, Element.RELATIVE_FIELD_WIDTH, 0.49f);
-            title.setRelativeDimenRule(parent, Element.RELATIVE_FIELD_HEIGHT, Element.RELATIVE_FIELD_HEIGHT, 0.03f);
+            title.setRelativeDimenRule(parent, Element.RELATIVE_FIELD_HEIGHT, Element.RELATIVE_FIELD_HEIGHT, 0.02f);
             if (i % 2 == 0) {
                 title.alignLeft = parent;
                 qr.toLeftOf = verticalSpacer;

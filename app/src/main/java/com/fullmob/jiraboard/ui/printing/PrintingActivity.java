@@ -2,8 +2,10 @@ package com.fullmob.jiraboard.ui.printing;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.print.PrintAttributes;
 import android.print.PrintJob;
@@ -11,20 +13,31 @@ import android.print.PrintManager;
 import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.annotation.StringDef;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.FileProvider;
 import android.support.v4.print.PrintHelper;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.fullmob.jiraapi.models.Issue;
+import com.fullmob.jiraboard.BuildConfig;
 import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.ui.BaseActivity;
 import com.fullmob.jiraboard.ui.models.PrintableIssueStatuses;
 import com.fullmob.printable.Printable;
 import com.fullmob.printable.generators.PrintableImageGenerator;
 import com.fullmob.printable.generators.PrintablePDFGenerator;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +47,15 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class PrintingActivity extends BaseActivity implements JiraBoardPdfDocumentAdapter.Listener {
+
+    private final static String ACTION_SHARE = "share";
+    private final static String ACTION_PRINT = "print";
+    private final static String ACTION_OPEN_GALLERY = "gallery";
+    private static final String ACTION_RENDER = "render";
+
+    @StringDef({ACTION_SHARE, ACTION_PRINT, ACTION_OPEN_GALLERY, ACTION_RENDER})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PrintableAction { }
 
     public static final String EXTRA_PAYLOAD_TYPE = "payload_type";
     public static final String EXTRA_TYPE_ISSUE = "type_issue";
@@ -68,15 +90,12 @@ public class PrintingActivity extends BaseActivity implements JiraBoardPdfDocume
         }
         Printable printable  = createPrintable(payload, payloadType);
         if (printable != null) {
-            generatePrintableImage(printable);
+            generatePrintableImage(printable, ACTION_RENDER);
         }
         initUI();
     }
-    private void generatePrintableImage(Printable printable) {
-        generatePrintableImage(printable, false);
-    }
 
-    private void generatePrintableImage(final Printable printable, final boolean print) {
+    private void generatePrintableImage(final Printable printable, final @PrintableAction String action) {
         showLoading();
         Observable.just(qrBitmapGenerator.createPrintable(printable, PrintableImageGenerator.PaperSize.A8))
             .subscribeOn(Schedulers.io())
@@ -84,9 +103,30 @@ public class PrintingActivity extends BaseActivity implements JiraBoardPdfDocume
             .subscribe(new Consumer<Bitmap>() {
                 @Override
                 public void accept(Bitmap bitmap) throws Exception {
-                    if (print) {
+                    if (action.equals(ACTION_PRINT)) {
                         printBitmap(printable, bitmap);
-                    } else {
+                    } else if (action.equals(ACTION_SHARE) || action.equals(ACTION_OPEN_GALLERY)) {
+                        try {
+                            String filename = "printable.png";
+                            File storageDir = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                            storageDir.mkdirs();
+                            FileOutputStream stream = new FileOutputStream(storageDir + "/" + filename);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                            stream.close();
+                            File newFile = new File(storageDir, filename);
+                            Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID, newFile);
+                            if (contentUri != null) {
+                                Intent shareIntent = new Intent();
+                                shareIntent.setAction(Intent.ACTION_SEND);
+                                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                shareIntent.setDataAndType(contentUri, getContentResolver().getType(contentUri));
+                                shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                                startActivity(Intent.createChooser(shareIntent, "Choose an app"));
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (action.equals(ACTION_RENDER)) {
                         qrPreview.setImageBitmap(bitmap);
                     }
                     hideLoading();
@@ -127,7 +167,7 @@ public class PrintingActivity extends BaseActivity implements JiraBoardPdfDocume
             @Override
             public void onClick(View view) {
                 Printable printable  = createPrintable(payload, payloadType);
-                generatePrintableImage(printable, true);
+                generatePrintableImage(printable, ACTION_PRINT);
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //                    generatePrintableGraphics(printable);
 //                } else {
@@ -215,4 +255,26 @@ public class PrintingActivity extends BaseActivity implements JiraBoardPdfDocume
     public void onPrintingFinished() {
         Log.d("PRINTING", "finished");
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_printing, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_share) {
+            Printable printable  = createPrintable(payload, payloadType);
+            generatePrintableImage(printable, ACTION_SHARE);
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
