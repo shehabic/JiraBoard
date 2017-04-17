@@ -342,6 +342,15 @@ public class Element {
         }
     }
 
+    public void setRelativeDimenRule(Element target, @RelativeField String relativeField, String field, float value) {
+        if (!relativeDimenRules.containsKey(relativeField)) {
+            relativeDimenRules.put(relativeField, new RelativeDimen());
+        }
+        relativeDimenRules.get(relativeField).field = field;
+        relativeDimenRules.get(relativeField).target = target;
+        relativeDimenRules.get(relativeField).value = value;
+    }
+
     private void validateRelativity(Element relativeElement) {
         if (relativeElement == this) {
             throw new PrintableException(

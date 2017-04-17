@@ -36,11 +36,11 @@ public abstract class AbstractPrintableGenerator<T> implements PrintableGenerato
 
     public AbstractPrintableGenerator(Context context) {
         this.context = new WeakReference<>(context);
-        elementDrawers.put("qr", new QRDrawer());
-        elementDrawers.put("text", new TextElementDrawer());
-        elementDrawers.put("image", new BitmapDrawer());
+        elementDrawers.put(Element.TYPE_QR, new QRDrawer());
+        elementDrawers.put(Element.TYPE_TEXT, new TextElementDrawer());
+        elementDrawers.put(Element.TYPE_IMAGE, new BitmapDrawer());
+        elementDrawers.put(Element.TYPE_SPACER, new SpacerDrawer());
         elementDrawers.put("drawable", new DrawableDrawer(context));
-        elementDrawers.put("spacer", new SpacerDrawer());
     }
 
     @Override
@@ -57,9 +57,39 @@ public abstract class AbstractPrintableGenerator<T> implements PrintableGenerato
 
     @Override
     public T createPrintable(Printable printable, PaperSize paperSize) {
+        printable.sizeString = getSizeString(paperSize);
         int[] size = findSize(paperSize, printable.orientation == Printable.PRINTABLE_ORIENTATION_LANDSCAPE);
 
         return createPrintable(printable, size[0] / 2, size[1] / 2);
+    }
+
+    public String getSizeString(PaperSize paperSize) {
+        String size = null;
+        switch (paperSize) {
+            case A4:
+                size = "A4";
+                break;
+            case A5:
+                size = "A5";
+                break;
+            case A6:
+                size = "A6";
+                break;
+            case A7:
+                size = "A7";
+                break;
+            case A8:
+                size = "A8";
+                break;
+            case A9:
+                size = "A9";
+                break;
+            case A10:
+                size = "A10";
+                break;
+        }
+
+        return size;
     }
 
     public static int[] findSize(String sizeString, boolean landscape) {
@@ -87,13 +117,13 @@ public abstract class AbstractPrintableGenerator<T> implements PrintableGenerato
         int h = 0, w = 0;
         switch (paperSize) {
             case A4:
-                h = 11690;
-                w = 8270;
+                h = 8270;
+                w = 11690;
                 break;
 
             case A5:
-                h = 8270;
-                w = 5830;
+                h = 5830;
+                w = 8270;
                 break;
 
             case A6:
