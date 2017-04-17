@@ -44,7 +44,7 @@ public class Printable {
     }
 
     public void setSize(String size) {
-        int[] sizes = AbstractPrintableGenerator.findSize(size, orientation == PRINTABLE_ORIENTATION_LANDSCAPE);
+        int[] sizes = AbstractPrintableGenerator.findSize(size, isLandscape());
         PARENT.width = sizes[0];
         PARENT.height = sizes[1];
     }
@@ -102,5 +102,9 @@ public class Printable {
             default:
                 throw new PrintableException("Unsupported attribute " + attribute);
         }
+    }
+
+    public boolean isLandscape() {
+        return orientation == PRINTABLE_ORIENTATION_LANDSCAPE;
     }
 }

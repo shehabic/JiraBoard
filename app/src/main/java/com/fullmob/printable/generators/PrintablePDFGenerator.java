@@ -29,8 +29,13 @@ public class PrintablePDFGenerator extends AbstractPrintableGenerator<PrintedPdf
         int pageHeight = height;
         int pageWidth = width;
         if (printAttributes.getMediaSize() != null) {
-            pageHeight = printAttributes.getMediaSize().asLandscape().getHeightMils() / 1000 * 72;
-            pageWidth = printAttributes.getMediaSize().asLandscape().getWidthMils() / 1000 * 72;
+            if (printable.isLandscape()) {
+                pageHeight = printAttributes.getMediaSize().asLandscape().getHeightMils() / 1000 * 72;
+                pageWidth = printAttributes.getMediaSize().asLandscape().getWidthMils() / 1000 * 72;
+            } else {
+                pageHeight = printAttributes.getMediaSize().getHeightMils() / 1000 * 72;
+                pageWidth = printAttributes.getMediaSize().getWidthMils() / 1000 * 72;
+            }
         }
         PdfDocument.PageInfo newPage = new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 0).create();
         PdfDocument.Page page = pdfDocument.startPage(newPage);

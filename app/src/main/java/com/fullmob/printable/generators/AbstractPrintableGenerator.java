@@ -50,7 +50,7 @@ public abstract class AbstractPrintableGenerator<T> implements PrintableGenerato
 
     @Override
     public T createPrintable(Printable printable) {
-        int[] size = findSize(printable.sizeString, printable.orientation == Printable.PRINTABLE_ORIENTATION_LANDSCAPE);
+        int[] size = findSize(printable.sizeString, printable.isLandscape());
 
         return createPrintable(printable, size[0] / 2, size[1] / 2);
     }
@@ -58,7 +58,7 @@ public abstract class AbstractPrintableGenerator<T> implements PrintableGenerato
     @Override
     public T createPrintable(Printable printable, PaperSize paperSize) {
         printable.sizeString = getSizeString(paperSize);
-        int[] size = findSize(paperSize, printable.orientation == Printable.PRINTABLE_ORIENTATION_LANDSCAPE);
+        int[] size = findSize(paperSize, printable.isLandscape());
 
         return createPrintable(printable, size[0] / 2, size[1] / 2);
     }

@@ -19,6 +19,7 @@ import com.fullmob.jiraboard.R;
 import com.fullmob.jiraboard.app.FullmobAppInterface;
 import com.fullmob.jiraboard.transitions.TransitionSteps;
 import com.fullmob.jiraboard.ui.issue.IssueActivity;
+import com.fullmob.jiraboard.ui.models.PrintableIssueStatuses;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.printing.PrintingActivity;
 import com.fullmob.jiraboard.ui.transitions.OnConfirmTransitionCallback;
@@ -46,10 +47,10 @@ public class BaseActivity extends AppCompatActivity {
         return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
-    public void printStatus(UIIssueStatus issueStatus) {
+    public void printStatuses(PrintableIssueStatuses printableIssueStatuses) {
         Intent i = new Intent(this, PrintingActivity.class);
         i.putExtra(PrintingActivity.EXTRA_PAYLOAD_TYPE, PrintingActivity.EXTRA_TYPE_ISSUE_STATUS);
-        i.putExtra(PrintingActivity.EXTRA_PAYLOAD, issueStatus);
+        i.putExtra(PrintingActivity.EXTRA_PAYLOAD, printableIssueStatuses);
         i.setExtrasClassLoader(UIIssueStatus.class.getClassLoader());
         startActivity(i);
     }

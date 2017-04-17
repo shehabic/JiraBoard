@@ -26,6 +26,7 @@ import com.fullmob.jiraboard.ui.home.captureboard.CaptureBoardFragment;
 import com.fullmob.jiraboard.ui.home.statuses.StatusesFragment;
 import com.fullmob.jiraboard.ui.home.tickets.SearchFragment;
 import com.fullmob.jiraboard.ui.login.LoginActivity;
+import com.fullmob.jiraboard.ui.models.PrintableIssueStatuses;
 import com.fullmob.jiraboard.ui.models.UIIssueStatus;
 import com.fullmob.jiraboard.ui.projects.ProjectsActivity;
 
@@ -218,7 +219,10 @@ public class HomeActivity extends BaseActivity implements
 
     @Override
     public void onPrintStatusRequested(UIIssueStatus issueStatus) {
-        printStatus(issueStatus);
+        PrintableIssueStatuses printableIssueStatuses = new PrintableIssueStatuses();
+        printableIssueStatuses.statuses.clear();
+        printableIssueStatuses.statuses.add(issueStatus);
+        printStatuses(printableIssueStatuses);
     }
 
     public void setTitle(String title) {

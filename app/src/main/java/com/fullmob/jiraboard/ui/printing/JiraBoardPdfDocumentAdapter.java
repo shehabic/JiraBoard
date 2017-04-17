@@ -17,9 +17,11 @@ import java.io.IOException;
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 class JiraBoardPdfDocumentAdapter extends PrintDocumentAdapter {
     private PrintedPdfDocument document;
+    private final Listener listener;
 
-    public JiraBoardPdfDocumentAdapter(PrintedPdfDocument document) {
+    public JiraBoardPdfDocumentAdapter(PrintedPdfDocument document, Listener listener) {
         this.document = document;
+        this.listener = listener;
     }
 
     @Override
@@ -35,15 +37,32 @@ class JiraBoardPdfDocumentAdapter extends PrintDocumentAdapter {
     @Override
     public void onWrite(PageRange[] pages, ParcelFileDescriptor destination, CancellationSignal cancellationSignal, WriteResultCallback callback) {
         try {
-            document.writeTo(new FileOutputStream(
-                destination.getFileDescriptor()));
+            document.writeTo(new FileOutputStream(destination.getFileDescriptor()));
         } catch (IOException e) {
             callback.onWriteFailed(e.toString());
             return;
         } finally {
+            if (document == null) {
+                return;
+            }
             document.close();
             document = null;
         }
         callback.onWriteFinished(pages);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onFinish() {
+        super.onFinish();
+    }
+
+    public interface Listener {
+        void onPrintingStarted();
+        void onPrintingFinished();
     }
 }
